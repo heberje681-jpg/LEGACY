@@ -291,6 +291,41 @@
             return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size*0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
         }
 
+        const randomEvents = [
+            {
+                title: "Pelea en el Vestidor",
+                desc: "Un compañero de línea te culpa a gritos por una jugada fallida frente a todo el equipo. ¿Respondes o lo dejas pasar?",
+                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Encararlo de Vuelta", succ: 0.5, rwd: 3, pen: -3 },
+                optSafe: { label: "Mantener la Calma", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Entrevista Polémica",
+                desc: "En conferencia de prensa te preguntan si el coordinador está dirigiendo mal al equipo. ¿Disparas con la verdad?",
+                imgRisk: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1495467033336-2effd08cee9d?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Criticar al Coordinador", succ: 0.45, rwd: 4, pen: -3 },
+                optSafe: { label: "Responder con Cautela", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Patrocinio Oscuro",
+                desc: "Te ofrecen ser la imagen de un suplemento no aprobado por la liga a cambio de mucho dinero. ¿Firmas?",
+                imgRisk: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Aceptar el Trato", succ: 0.55, rwd: 4, pen: -4 },
+                optSafe: { label: "Declinar la Oferta", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Jugada al Límite",
+                desc: "Puedes jugar más agresivo para intimidar al rival, arriesgando una sanción o una lesión. ¿Te vas con todo?",
+                imgRisk: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Jugar al Límite del Reglamento", succ: 0.55, rwd: 4, pen: -3 },
+                optSafe: { label: "Jugar Limpio y Disciplinado", succ: 1.0, rwd: 1, pen: 0 }
+            }
+        ];
+
         function posGroup(pos) {
             if (pos === 'QB') return 'QB';
             if (pos === 'RB' || pos === 'WR' || pos === 'TE') return 'SKILL';
@@ -410,19 +445,21 @@
                 return;
             }
 
-            let imgTrain = "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=400";
+            // Evento Normal: elegir situación al azar del banco de eventos
+            let ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
             panel.innerHTML = `
-                <h4>Preparación de Temporada</h4>
-                <p>Un régimen intenso en el gimnasio puede traer grandes resultados o dejarte lesionado.</p>
+                <h4>${ev.title}</h4>
+                <p>${ev.desc}</p>
                 <div class="decisions-grid">
-                    <button class="dec-btn" onclick="processDecision(this, true, 3, -2, 0.6)">
-                        <div class="dec-img-container"><img src="${imgTrain}" class="dec-img"></div>
-                        <div class="dec-title">Entrenamiento Intenso (Riesgo)</div>
-                        <div class="dec-prob"><span style="color:var(--success)">+3 OVR (60%)</span> | <span style="color:var(--danger)">-2 OVR (40%)</span></div>
+                    <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ})">
+                        <div class="dec-img-container"><img src="${ev.imgRisk}" class="dec-img"></div>
+                        <div class="dec-title">${ev.optRisk.label}</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+${ev.optRisk.rwd} OVR (${ev.optRisk.succ*100}%)</span> | <span style="color:var(--danger)">${ev.optRisk.pen} OVR (${100 - ev.optRisk.succ*100}%)</span></div>
                     </button>
-                    <button class="dec-btn" onclick="processDecision(this, false, 1, 0, 1)">
-                        <div class="dec-title">Rutina Segura</div>
-                        <div class="dec-prob"><span style="color:#FFF">+1 OVR Garantizado</span></div>
+                    <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ})">
+                        <div class="dec-img-container"><img src="${ev.imgSafe}" class="dec-img"></div>
+                        <div class="dec-title">${ev.optSafe.label}</div>
+                        <div class="dec-prob"><span style="color:#FFF">+${ev.optSafe.rwd} OVR Garantizado</span></div>
                     </button>
                 </div>
             `;
@@ -580,7 +617,7 @@
             trophiesArr.forEach((t, i) => {
                 container.innerHTML += `
                     <div class="cinematic-trophy" style="animation-delay: ${i*0.2}s">
-                        <img src="${t.img}" class="cinematic-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3112/3112946.png';">
+                        <img src="${t.img}" class="cinematic-img" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cpath%20fill%3D%22%23F59E0B%22%20d%3D%22M30%2010h40v8c12%200%2018%208%2018%2018%200%2014-10%2022-22%2024-3%2010-10%2016-16%2018v10h14v8H36v-8h14V78c-6-2-13-8-16-18-12-2-22-10-22-24%200-10%206-18%2018-18v-8zm-8%2016c-6%200-10%204-10%2010%200%208%206%2013%2013%2015-2-8-3-16-3-25zm56%200c0%209-1%2017-3%2025%207-2%2013-7%2013-15%200-6-4-10-10-10z%22/%3E%3C/svg%3E';">
                         <div class="cinematic-title">${t.name}</div>
                     </div>`;
             });
