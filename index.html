@@ -16,7 +16,8 @@
 
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
         .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none;}
-        .logo span { color: var(--legacy-gold); }
+        .logo-img { height: 35px; object-fit: contain; } /* Clase para tu logo en imagen */
+        
         .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
 
         .hero-section { text-align: left; padding: 60px 40px 20px 40px; max-width: 1200px; margin: 0 auto; width: 100%; }
@@ -41,18 +42,22 @@
 
         footer { background-color: var(--bg-card); border-top: 1px solid var(--border-color); padding: 50px 60px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-top: auto; }
         .ft-col h4 { color: #FFF; font-size: 13px; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
-        .ft-col p { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; }
-        .ft-col p:hover { color: var(--legacy-gold); }
+        .ft-col p, .ft-col a { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; font-weight: 500; cursor: pointer; transition: 0.2s; text-decoration: none; display: block; }
+        .ft-col p:hover, .ft-col a:hover { color: var(--legacy-gold); }
     </style>
 </head>
 <body>
 
+    <!-- TICKER HÍBRIDO (Fijo + API) -->
     <div class="live-ticker" id="live-ticker-container">
         <div class="live-match">Cargando marcadores en vivo...</div>
     </div>
 
     <header>
-        <a href="index.html" class="logo">legacy<span>.</span></a>
+        <!-- AQUI VA TU IMAGEN LOGO. Asegúrate de tener logo.png en tu carpeta -->
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="Legacy" class="logo-img" onerror="this.outerHTML='legacy<span>.</span>'">
+        </a>
         <div class="nav-links">
             <span style="color: #FFF;">Juegos</span>
             <span>Comunidad</span>
@@ -88,61 +93,70 @@
         </a>
 
         <!-- BÁSQUETBOL -->
-        <div class="game-card" style="cursor: not-allowed; border-color: #1E293B;">
-            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800" class="game-bg" style="filter: grayscale(100%); opacity: 0.2;" alt="NBA">
+        <a href="nba.html" class="game-card">
+            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="NBA">
             <div class="game-overlay">
-                <div class="game-tag">PRÓXIMAMENTE</div>
+                <div class="game-tag tag-active">RUMBO AL DRAFT</div>
                 <div class="game-title">Básquetbol (NBA)</div>
-                <div class="game-desc">Domina la duela colegial y prepárate para ser el Pick #1 del Draft.</div>
+                <div class="game-desc">Domina la duela colegial y prepárate para ser el Pick #1 de la liga.</div>
             </div>
-        </div>
+        </a>
 
         <!-- FÚTBOL AMERICANO -->
-        <div class="game-card" style="cursor: not-allowed; border-color: #1E293B;">
-            <img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=800" class="game-bg" style="filter: grayscale(100%); opacity: 0.2;" alt="NFL">
+        <a href="nfl.html" class="game-card">
+            <img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="NFL">
             <div class="game-overlay">
-                <div class="game-tag">PRÓXIMAMENTE</div>
+                <div class="game-tag tag-active">FRANQUICIA</div>
                 <div class="game-title">Americano (NFL)</div>
                 <div class="game-desc">Sobrevive al Combine, lanza pases de anotación y levanta el Vince Lombardi.</div>
             </div>
-        </div>
+        </a>
 
     </div>
 
     <footer>
         <div class="ft-col">
-            <div class="logo" style="margin-bottom: 15px;">legacy<span>.</span></div>
+            <!-- AQUI VA TU IMAGEN LOGO EN EL FOOTER -->
+            <img src="logo.png" alt="Legacy" style="height: 25px; object-fit: contain; margin-bottom: 15px;" onerror="this.outerHTML='<div class=&quot;logo&quot; style=&quot;margin-bottom:15px;&quot;>legacy<span>.</span></div>'">
             <p style="color: var(--text-muted); margin-bottom: 20px; max-width: 250px;">El primer simulador RPG de carrera deportiva. Toma decisiones, asume consecuencias.</p>
         </div>
         <div class="ft-col">
             <h4>Deportes</h4>
-            <p>Fútbol</p>
-            <p>Béisbol (MLB)</p>
-            <p>Básquetbol (NBA)</p>
-            <p>Fútbol Americano (NFL)</p>
+            <a href="futbol.html">Fútbol</a>
+            <a href="beisbol.html">Béisbol (MLB)</a>
+            <a href="nba.html">Básquetbol (NBA)</a>
+            <a href="nfl.html">Fútbol Americano (NFL)</a>
         </div>
         <div class="ft-col">
-            <h4>Plataforma</h4>
-            <p>Salón de la Fama</p>
-            <p>Comunidad</p>
-            <p>Soporte</p>
+            <h4>Comunidad</h4>
+            <!-- ENLACES DE REDES SOCIALES AQUI -->
+            <a href="#" target="_blank">Instagram</a>
+            <a href="#" target="_blank">TikTok</a>
         </div>
         <div class="ft-col">
             <h4>Legal</h4>
-            <p>Términos de Uso</p>
-            <p>Privacidad</p>
+            <a href="#">Términos de Uso</a>
+            <a href="#">Privacidad</a>
         </div>
     </footer>
 
     <script>
-        async function loadMLBTicker() {
+        async function loadGlobalTicker() {
             const ticker = document.getElementById('live-ticker-container');
+            let html = '';
+            
+            // Juegos Top Estáticos (Para rellenar deportes sin API en vivo por ahora)
+            html += `<div class="live-match">⚽ <b>RMA</b> 2 - 1 <b>BAR</b> <span>FT</span></div>`;
+            html += `<div class="live-match">⚽ <b>AMX</b> 3 - 0 <b>CHV</b> <span>FT</span></div>`;
+            html += `<div class="live-match">🏀 <b>LAL</b> 112 - 108 <b>GSW</b> <span>4Q</span></div>`;
+            html += `<div class="live-match">🏈 <b>KC</b> 24 - 17 <b>SF</b> <span>3Q</span></div>`;
+
             try {
                 const res = await fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore');
                 const data = await res.json();
-                let html = '';
                 if (data.dates && data.dates.length > 0) {
-                    data.dates[0].games.forEach(g => {
+                    // Limitamos a 4 juegos de MLB para no hacer la barra infinita
+                    data.dates[0].games.slice(0, 4).forEach(g => {
                         let away = g.teams.away.team.teamName.substring(0,3).toUpperCase(); 
                         let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
                         let aScore = g.teams.away.score || 0; let hScore = g.teams.home.score || 0;
@@ -151,11 +165,12 @@
                         if(status === 'Final') inning = 'FT'; if(status === 'Preview') inning = 'Próximo';
                         html += `<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`;
                     });
-                } else { html = '<div class="live-match">⚾ Sin juegos programados hoy</div>'; }
-                ticker.innerHTML = html;
-            } catch (e) { ticker.innerHTML = '<div class="live-match">⚾ Cargando marcadores...</div>'; }
+                }
+            } catch (e) { console.log("Error cargando API MLB"); }
+            
+            ticker.innerHTML = html;
         }
-        loadMLBTicker();
+        loadGlobalTicker();
     </script>
 </body>
 </html>
