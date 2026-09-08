@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy MLB | Camino a Las Mayores</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #07090F;
+            --bg-card: #131A2B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #1E293B;
+            --legacy-gold: #F59E0B;
+            --baseball-red: #EF4444;
+            --dirt: #78350F;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 8px 20px; display: flex; gap: 30px; overflow-x: auto; white-space: nowrap; font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .live-match b { color: #FFF; }
+        .live-match span { color: var(--legacy-gold); margin-left: 5px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; }
+        .logo span { color: var(--baseball-red); }
+        .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
+        .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: block; }
+
+        /* SETUP */
+        .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; }
+        .setup-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+        .jersey-container { width: 150px; height: 150px; margin: 0 auto; }
+        .jersey-svg { width: 100%; height: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
+        
+        .pitch-container { position: relative; width: 100%; height: 260px; background: var(--dirt); border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; margin-top: 10px; }
+        .pitch-line-center { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 150px; height: 150px; border: 2px solid rgba(255,255,255,0.3); background: #064E3B; }
+        
+        .pos-dot { position: absolute; width: 34px; height: 34px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; transform: translate(-50%, -50%); }
+        .pos-dot.active { background: var(--baseball-red); border-color: #fff; color: #FFF; z-index: 10; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
+
+        .input-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+        .input-group.row { flex-direction: row; gap: 15px; }
+        .input-group.row > div { flex: 1; display: flex; flex-direction: column; }
+        label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        input, select { background: var(--bg-main); border: 1px solid var(--border-color); color: #FFF; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; outline: none; }
+        input:focus, select:focus { border-color: var(--baseball-red); }
+
+        .btn-main { background: #FFF; color: #000; border: none; padding: 16px 30px; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-main:hover { background: var(--baseball-red); color: #FFF; transform: translateY(-2px); }
+
+        /* JUEGO */
+        .game-layout { display: grid; grid-template-columns: 440px 1fr; gap: 30px; align-items: start; }
+        .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
+        .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #EF4444, #991B1B); color: #FFF; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+        .player-name { font-size: 24px; font-weight: 900; color: #FFF; margin-bottom: 4px; display: flex; align-items: center; gap: 15px;}
+        .player-nat { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .player-club { font-size: 14px; font-weight: 800; color: var(--baseball-red); margin-top: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-main); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
+        .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
+
+        /* PANEL DECISIONES */
+        .action-panel { margin-top: 25px; }
+        .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+        .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
+        .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .decisions-grid.full { grid-template-columns: 1fr; }
+        
+        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+        .dec-img-container { height: 90px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; }
+        .dec-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .dec-btn:hover .dec-img { opacity: 1; transform: scale(1.05); }
+
+        .dec-title { color: #FFF; font-weight: 800; font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
+        .dec-prob { font-size: 12px; font-weight: 600; }
+        
+        .dec-btn.processing { border-color: #FFF; animation: pulse-border 1s infinite alternate; pointer-events: none; justify-content: center; align-items: center; }
+        .dec-btn.success-anim { border-color: var(--success); background: rgba(16, 185, 129, 0.15); justify-content: center; align-items: center; }
+        .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 100% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.8); } }
+
+        /* HISTORIAL */
+        .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; max-height: 700px; overflow-y: auto;}
+        .history-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        .history-table th { color: var(--text-muted); padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .history-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 600; color: #FFF; }
+        .history-table th:nth-child(2), .history-table td:nth-child(2) { text-align: left; } /* Club alinea izq */
+        .history-table tr.empty-row td { color: var(--border-color); }
+        .history-table tr.current { background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--baseball-red); }
+        .history-table tr.current td { color: var(--baseball-red); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="live-ticker">
+        <div class="live-match">⚾ <b>NYY</b> 5 - 2 <b>BOS</b> <span>Alta 7°</span></div>
+        <div class="live-match">⚾ <b>LAD</b> 0 - 0 <b>SD</b> <span>Baja 3°</span></div>
+        <div class="live-match">⚾ <b>HOU</b> 8 - 1 <b>TEX</b> <span>Final</span></div>
+    </div>
+
+    <header>
+        <div class="logo">legacy<span>.mlb</span></div>
+        <div class="nav-links">
+            <span>Fútbol</span>
+            <span style="color: #FFF;">Béisbol (MLB)</span>
+            <span>Básquetbol (NBA)</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- SETUP -->
+        <div id="screen-setup" class="screen active">
+            <div class="setup-card">
+                <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center;">El Diamante te Espera</h1>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 40px; text-align: center;">Define tu prospecto colegial. Empiezas a los 18 años en División 1.</p>
+                
+                <div class="setup-top-grid">
+                    <div>
+                        <!-- Jersey Beisbolero -->
+                        <div class="jersey-container">
+                            <svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                <path id="svg-body" fill="#FFFFFF" d="M374.3,69.5L256,18.7L137.7,69.5L34.2,187.3l57.7,50.7l23.5-38.5v293.8h281.3V199.5l23.5,38.5l57.7-50.7 L374.3,69.5z"/>
+                                <path id="svg-trim" fill="#000000" d="M256,92c-28.5,0-52.6-20.3-57.9-47.5L256,18.7l57.9,25.7C308.6,71.7,284.5,92,256,92z M115.4,199.5l-33,54 l-12.7-11.2l39-65.4L115.4,199.5z M396.6,199.5l6.7-22.6l39,65.4l-12.7,11.2L396.6,199.5z"/>
+                                <!-- Botones de Jersey Béisbol -->
+                                <circle cx="256" cy="150" r="5" fill="#000"/><circle cx="256" cy="220" r="5" fill="#000"/><circle cx="256" cy="290" r="5" fill="#000"/><circle cx="256" cy="360" r="5" fill="#000"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="input-group row">
+                            <div><label>Apellido</label><input type="text" id="playerName" value="HEBER"></div>
+                            <div style="flex: 0.4;"><label>Número</label><input type="number" id="playerNum" value="24" min="1" max="99"></div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Nacionalidad</label>
+                            <select id="playerCountry">
+                                <option value="USA">🇺🇸 Estados Unidos</option>
+                                <option value="DOM">🇩🇴 R. Dominicana</option>
+                                <option value="VEN">🇻🇪 Venezuela</option>
+                                <option value="MEX">🇲🇽 México</option>
+                                <option value="PUR">🇵🇷 Puerto Rico</option>
+                                <option value="JPN">🇯🇵 Japón</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Universidad D1 (Origen)</label>
+                            <select id="playerCollege" onchange="updateJerseyColor()">
+                                <option value="Vanderbilt">Vanderbilt Commodores</option>
+                                <option value="LSU">LSU Tigers</option>
+                                <option value="Florida">Florida Gators</option>
+                                <option value="Texas">Texas Longhorns</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display:block; margin-bottom:10px;">Posición en el Diamante</label>
+                        <div class="pitch-container">
+                            <div class="pitch-line-center"></div>
+                            <!-- Bases -->
+                            <div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); width:15px; height:15px; background:#FFF;"></div> <!-- Home -->
+                            <div style="position:absolute; bottom:95px; left:50%; transform:translateX(-50%); width:10px; height:5px; background:#FFF;"></div> <!-- Pitcher -->
+                            <div style="position:absolute; bottom:95px; left:20%; width:15px; height:15px; background:#FFF; transform:rotate(45deg);"></div> <!-- 3B -->
+                            <div style="position:absolute; bottom:95px; right:20%; width:15px; height:15px; background:#FFF; transform:rotate(45deg);"></div> <!-- 1B -->
+                            <div style="position:absolute; top:70px; left:50%; transform:translateX(-50%) rotate(45deg); width:15px; height:15px; background:#FFF;"></div> <!-- 2B -->
+
+                            <div class="pos-dot" style="bottom: 5px; left: 50%;" onclick="selectPos('C', 'BATTER', this)">C</div>
+                            <div class="pos-dot active" style="bottom: 80px; left: 50%;" onclick="selectPos('SP', 'PITCHER', this)">SP</div>
+                            <div class="pos-dot" style="bottom: 120px; right: 25%;" onclick="selectPos('1B', 'BATTER', this)">1B</div>
+                            <div class="pos-dot" style="top: 90px; right: 35%;" onclick="selectPos('2B', 'BATTER', this)">2B</div>
+                            <div class="pos-dot" style="bottom: 120px; left: 25%;" onclick="selectPos('3B', 'BATTER', this)">3B</div>
+                            <div class="pos-dot" style="top: 90px; left: 35%;" onclick="selectPos('SS', 'BATTER', this)">SS</div>
+                            <div class="pos-dot" style="top: 30px; left: 20%;" onclick="selectPos('LF', 'BATTER', this)">LF</div>
+                            <div class="pos-dot" style="top: 15px; left: 50%;" onclick="selectPos('CF', 'BATTER', this)">CF</div>
+                            <div class="pos-dot" style="top: 30px; right: 20%;" onclick="selectPos('RF', 'BATTER', this)">RF</div>
+                        </div>
+                        <input type="hidden" id="playerPos" value="SP">
+                        <input type="hidden" id="playerRole" value="PITCHER">
+                    </div>
+                </div>
+                <button class="btn-main" onclick="startCareer()">Declarar Elegibilidad</button>
+            </div>
+        </div>
+
+        <!-- JUEGO -->
+        <div id="screen-game" class="screen">
+            <div class="game-layout">
+                <div>
+                    <div class="player-card">
+                        <div class="ovr-badge" id="statOvr">55</div>
+                        <div class="player-name">
+                            <span id="infoName">HEBER</span>
+                        </div>
+                        <div class="player-nat" id="infoNat">MEX • #24 • SP</div>
+                        <div class="player-club" id="infoClub">📍 Vanderbilt (NCAA)</div>
+
+                        <!-- STATS GLOBALES -->
+                        <div class="stats-row" style="margin-top: 20px;">
+                            <div class="stat-box"><div class="val" id="statAge">18</div><div class="lbl">Edad</div></div>
+                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
+                            <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl">Premios</div></div>
+                        </div>
+
+                        <!-- STATS ESPECÍFICAS (BATTER O PITCHER) -->
+                        <div class="stats-row" id="statsRowSpecific">
+                            <!-- Se llena por JS dependiendo el rol -->
+                        </div>
+
+                        <!-- PANEL ACCIÓN -->
+                        <div class="action-panel" id="action-panel"></div>
+                    </div>
+                </div>
+
+                <div class="history-card">
+                    <table class="history-table">
+                        <thead id="historyHeader">
+                            <!-- JS llena esto -->
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const collegeColors = {
+            'Vanderbilt': { main: '#000000', trim: '#CFB53B' },
+            'LSU': { main: '#461D7C', trim: '#FDD023' },
+            'Florida': { main: '#0021A5', trim: '#FA4616' },
+            'Texas': { main: '#FFFFFF', trim: '#BF5700' }
+        };
+
+        const mlbTeams = ["Yankees", "Dodgers", "Red Sox", "Astros", "Braves", "Cubs", "Mets", "Padres", "Phillies", "Rangers"];
+
+        function updateJerseyColor() {
+            let col = document.getElementById('playerCollege').value;
+            const colors = collegeColors[col];
+            document.getElementById('svg-body').setAttribute('fill', colors.main);
+            document.getElementById('svg-trim').setAttribute('fill', colors.trim);
+        }
+
+        function selectPos(pos, role, element) {
+            document.querySelectorAll('.pos-dot').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('playerPos').value = pos;
+            document.getElementById('playerRole').value = role;
+        }
+
+        let player = {
+            name: "", country: "", pos: "", role: "", num: 9, age: 18, ovr: 50,
+            G: 0,
+            // Stats Bateador
+            AB: 0, HR: 0, RBI: 0, Hits: 0, 
+            // Stats Pitcher
+            IP: 0, W: 0, L: 0, K: 0, BB: 0, ER: 0,
+            trophies: 0, club: "", isDrafted: false, history: [], trophyList: []
+        };
+
+        function startCareer() {
+            player.name = document.getElementById('playerName').value.toUpperCase();
+            player.num = document.getElementById('playerNum').value;
+            player.country = document.getElementById('playerCountry').value;
+            player.pos = document.getElementById('playerPos').value;
+            player.role = document.getElementById('playerRole').value;
+            player.club = document.getElementById('playerCollege').value + " (NCAA)";
+            
+            player.ovr = 50 + Math.floor(Math.random()*8); 
+            player.age = 18; 
+            player.history = []; player.isDrafted = false;
+
+            // Configurar Tablas según el Rol
+            let thead = document.getElementById('historyHeader');
+            let sr = document.getElementById('statsRowSpecific');
+            
+            if (player.role === 'BATTER') {
+                thead.innerHTML = `<tr><th>Edad</th><th>Equipo</th><th>OVR</th><th>G</th><th>AB</th><th>HR</th><th>RBI</th><th>AVG</th><th>OPS</th></tr>`;
+                sr.innerHTML = `
+                    <div class="stat-box"><div class="val" id="statHR">0</div><div class="lbl">HR</div></div>
+                    <div class="stat-box"><div class="val" id="statAVG">.000</div><div class="lbl">AVG</div></div>
+                    <div class="stat-box"><div class="val" id="statOPS">.000</div><div class="lbl">OPS</div></div>
+                `;
+            } else {
+                thead.innerHTML = `<tr><th>Edad</th><th>Equipo</th><th>OVR</th><th>G</th><th>IP</th><th>W-L</th><th>ERA</th><th>K</th><th>BB</th></tr>`;
+                sr.innerHTML = `
+                    <div class="stat-box"><div class="val" id="statERA">0.00</div><div class="lbl">ERA</div></div>
+                    <div class="stat-box"><div class="val" id="statK">0</div><div class="lbl">K</div></div>
+                    <div class="stat-box"><div class="val" id="statWL">0-0</div><div class="lbl">W-L</div></div>
+                `;
+            }
+
+            let tbody = document.getElementById('historyBody');
+            tbody.innerHTML = '';
+            for(let i=18; i<=38; i++) {
+                let rowClass = i === 18 ? "empty-row current" : "empty-row";
+                tbody.innerHTML += `<tr id="row-${i}" class="${rowClass}"><td>${i}</td><td id="c-${i}">-</td><td id="o-${i}">-</td><td id="d1-${i}">-</td><td id="d2-${i}">-</td><td id="d3-${i}">-</td><td id="d4-${i}">-</td><td id="d5-${i}">-</td><td id="d6-${i}">-</td></tr>`;
+            }
+            document.getElementById(`c-18`).innerText = player.club;
+
+            document.getElementById('screen-setup').classList.remove('active');
+            document.getElementById('screen-game').classList.add('active');
+            
+            updateUI();
+            renderDecisionPanel();
+        }
+
+        function renderDecisionPanel() {
+            const panel = document.getElementById('action-panel');
+            
+            // EVENTO ESPECIAL: EL DRAFT A LOS 20 AÑOS
+            if (player.age === 20 && !player.isDrafted) {
+                panel.innerHTML = `
+                    <h4 style="color:var(--legacy-gold); font-size: 18px;">MLB DRAFT COMBINE</h4>
+                    <p>Tienes 20 años. Los scouts te están observando. ¿Te declaras para el Draft o entras al Portal de Transferencias para jugar otro año en Colegial?</p>
+                    <div class="decisions-grid full">
+                        <button class="dec-btn" style="border-color:var(--legacy-gold);" onclick="processDraftDecision(true)">
+                            <div class="dec-img-container"><img src="assets/decisiones/draft.jpg" class="dec-img" onerror="this.style.display='none'"></div>
+                            <div class="dec-title" style="color:var(--legacy-gold);">Declararse al Draft MLB</div>
+                            <div class="dec-prob"><span style="color:#FFF">Firmarás profesional. Tu OVR dictará en qué ronda te vas.</span></div>
+                        </button>
+                        <button class="dec-btn" onclick="processDraftDecision(false)">
+                            <div class="dec-img-container"><img src="assets/decisiones/college.jpg" class="dec-img" onerror="this.style.display='none'"></div>
+                            <div class="dec-title">Portal de Transferencias (Quedarse en NCAA)</div>
+                            <div class="dec-prob"><span style="color:var(--success)">Ganas +4 OVR seguro para el próximo año.</span></div>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // SIMULACIÓN NORMAL DE TEMPORADA
+            let rnd = Math.random();
+            let title = "Ajuste de Mecánica", desc = "El coach de bateo/pitcheo detectó un fallo en tu mecánica.", btnRisk = "Cambiar swing/agarre", btnSafe = "Ignorar consejo";
+            let riskSuccess = 0.5, riskReward = 3, riskPen = -2, safeReward = 1;
+
+            if(rnd > 0.6) {
+                title = "Gimnasio Intensivo"; desc = "Puedes ganar potencia extra para la recta final de la temporada.";
+                btnRisk = "Levantar Pesado (Riesgo lesión)"; btnSafe = "Mantenimiento"; riskSuccess = 0.6; riskReward = 2; riskPen = -3;
+            }
+
+            panel.innerHTML = `
+                <h4>${title}</h4>
+                <p>${desc}</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="processDecision(this, true, ${riskReward}, ${riskPen}, ${riskSuccess})">
+                        <div class="dec-img-container"><img src="assets/decisiones/riesgo.jpg" class="dec-img" onerror="this.style.display='none'"></div>
+                        <div class="dec-title">${btnRisk}</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+${riskReward} OVR (${riskSuccess*100}%)</span><br><span style="color:var(--danger)">${riskPen} OVR (${100 - riskSuccess*100}%)</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="processDecision(this, false, ${safeReward}, 0, 1)">
+                        <div class="dec-img-container"><img src="assets/decisiones/seguro.jpg" class="dec-img" onerror="this.style.display='none'"></div>
+                        <div class="dec-title">${btnSafe}</div>
+                        <div class="dec-prob"><span style="color:#FFF">Decisión Segura</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
+        function processDraftDecision(declaresDraft) {
+            const panel = document.getElementById('action-panel');
+            if (declaresDraft) {
+                player.isDrafted = true;
+                let mlbTeam = mlbTeams[Math.floor(Math.random() * mlbTeams.length)];
+                
+                // Si su OVR es muy alto, va a AA directo. Si es bajo, a Clase A.
+                let level = player.ovr > 60 ? " (AA)" : " (A)";
+                let newClub = mlbTeam + level;
+                
+                panel.innerHTML = `
+                    <div style="text-align:center; padding:30px;">
+                        <h2 style="color:var(--legacy-gold); font-size:24px; margin-bottom:10px;">¡HAS SIDO DRAFTEADO!</h2>
+                        <p>La franquicia de <b>${mlbTeam}</b> te ha seleccionado.</p>
+                        <p style="color:var(--text-muted); font-size:14px; margin-top:10px;">Te reportarás a su filial: ${newClub}</p>
+                    </div>
+                `;
+                setTimeout(() => {
+                    player.club = newClub;
+                    ejecutarSimulacionMLB(1); // Pequeño boost por ser drafteado
+                }, 3000);
+
+            } else {
+                panel.innerHTML = `
+                    <div style="text-align:center; padding:30px;">
+                        <h2 style="color:#FFF; font-size:20px; margin-bottom:10px;">PORTAL DE TRANSFERENCIAS</h2>
+                        <p>Has decidido madurar un año más en el béisbol colegial.</p>
+                    </div>
+                `;
+                setTimeout(() => {
+                    player.club = "Universidad Transfer (NCAA)";
+                    ejecutarSimulacionMLB(4); // Fuerte boost por quedarse
+                }, 2000);
+            }
+        }
+
+        function processDecision(btn, isRisk, reward, penalty, successRate) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            btn.classList.add('processing');
+            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">SIMULANDO...</div>`;
+
+            setTimeout(() => {
+                btn.classList.remove('processing');
+                let ovrChange = 0;
+                let isSuccess = Math.random() < successRate;
+                
+                if(isRisk) {
+                    if(isSuccess) {
+                        btn.classList.add('success-anim');
+                        btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:16px; text-align:center; width:100%;">¡ÉXITO! +${reward} OVR</div>`;
+                        ovrChange = reward;
+                    } else {
+                        btn.classList.add('fail-anim');
+                        btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:16px; text-align:center; width:100%;">¡FALLO! ${penalty} OVR</div>`;
+                        ovrChange = penalty;
+                    }
+                } else {
+                    btn.classList.add('success-anim');
+                    btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">COMPLETADO</div>`;
+                    ovrChange = reward;
+                }
+                setTimeout(() => { ejecutarSimulacionMLB(ovrChange); }, 1200);
+            }, 1500); 
+        }
+
+        function ejecutarSimulacionMLB(impactoOVR) {
+            player.ovr += impactoOVR;
+
+            // Curva de Edad Béisbol (Duran más)
+            let growth = 0;
+            if (player.age < 24) growth = Math.floor(Math.random() * 4) + 1; 
+            else if (player.age > 33) growth = -(Math.floor(Math.random() * 3) + 1); 
+
+            player.ovr += growth;
+            if (player.ovr > 99) player.ovr = 99;
+            if (player.ovr < 40) player.ovr = 40;
+
+            let form = player.ovr / 100;
+            
+            // ASCENSOS (Ligas Menores a Mayores)
+            if (player.isDrafted) {
+                let baseTeam = player.club.split(" ")[0]; // Ej. Yankees
+                if (player.ovr >= 78) player.club = baseTeam + " (MLB)";
+                else if (player.ovr >= 68) player.club = baseTeam + " (AAA)";
+            }
+
+            // DRAFT FORZADO A LOS 21
+            if (player.age === 21 && !player.isDrafted) {
+                player.isDrafted = true;
+                player.club = mlbTeams[Math.floor(Math.random() * mlbTeams.length)] + (player.ovr > 68 ? " (AAA)" : " (AA)");
+            }
+
+            // SIMULACIÓN DE STATS (SABERMETRÍA)
+            let sG=0, sAB=0, sHR=0, sRBI=0, sH=0, sAVG=0, sOPS=0; // Bateo
+            let sIP=0, sW=0, sL=0, sK=0, sBB=0, sER=0, sERA=0; // Pitcheo
+            
+            let isCollege = player.club.includes("NCAA");
+            let isMajors = player.club.includes("MLB");
+            
+            let maxG = isCollege ? 60 : (isMajors ? 162 : 140);
+
+            if (player.role === 'BATTER') {
+                sG = Math.floor(maxG * (Math.random() * 0.3 + 0.6) * (form + 0.2)); 
+                if(sG > maxG) sG = maxG;
+                sAB = Math.floor(sG * 3.8);
+                sAVG = (0.200 + (form * 0.12) + ((Math.random() * 0.05)-0.025));
+                if (sAVG > 0.360) sAVG = 0.360;
+                sH = Math.floor(sAB * sAVG);
+                sHR = Math.floor((form * 45) * (Math.random() * 0.5 + 0.5));
+                if (isCollege) sHR = Math.floor(sHR * 0.5); // Menos HRs en colegial
+                sRBI = Math.floor(sHR * 2.2 + (Math.random() * 30));
+                sOPS = (sAVG * 2.5 + (sHR/150)).toFixed(3);
+
+                // Acumuladores Globales
+                player.G += sG; player.AB += sAB; player.HR += sHR; player.RBI += sRBI; player.Hits += sH;
+                
+                // Actualizar Fila Historial Bateador
+                document.getElementById(`d1-${player.age}`).innerText = sG;
+                document.getElementById(`d2-${player.age}`).innerText = sAB;
+                document.getElementById(`d3-${player.age}`).innerText = sHR;
+                document.getElementById(`d4-${player.age}`).innerText = sRBI;
+                document.getElementById(`d5-${player.age}`).innerText = sAVG.toFixed(3).replace('0.', '.');
+                document.getElementById(`d6-${player.age}`).innerText = sOPS.replace('0.', '.');
+
+            } else { // PITCHER
+                sG = Math.floor(33 * form * (Math.random() * 0.2 + 0.8)); // Abridores
+                if(isCollege) sG = Math.floor(15 * form);
+                
+                sIP = Math.floor(sG * 6.0); // 6 innings por apertura prom
+                sERA = Math.max(1.80, 6.50 - (form * 4.0) + (Math.random() * 1.5 - 0.75));
+                sER = Math.floor((sERA * sIP) / 9);
+                sK = Math.floor(sIP * form * 1.3);
+                sBB = Math.floor(sIP * 0.3 * (1 - form + 0.5));
+                sW = Math.floor(sG * 0.4 * form * (Math.random() + 0.5));
+                sL = Math.floor(sG * 0.3 * (1 - form + 0.5));
+
+                player.G += sG; player.IP += sIP; player.W += sW; player.L += sL; player.K += sK; player.ER += sER;
+
+                // Actualizar Fila Historial Pitcher
+                document.getElementById(`d1-${player.age}`).innerText = sG;
+                document.getElementById(`d2-${player.age}`).innerText = sIP;
+                document.getElementById(`d3-${player.age}`).innerText = `${sW}-${sL}`;
+                document.getElementById(`d4-${player.age}`).innerText = sERA.toFixed(2);
+                document.getElementById(`d5-${player.age}`).innerText = sK;
+                document.getElementById(`d6-${player.age}`).innerText = sBB;
+            }
+
+            document.getElementById(`o-${player.age}`).innerHTML = `<span style="color:var(--legacy-gold); font-weight:800;">${player.ovr}</span>`;
+            document.getElementById(`row-${player.age}`).classList.remove('empty-row', 'current');
+
+            player.age++;
+
+            if(player.age <= 38) {
+                let nextRow = document.getElementById(`row-${player.age}`);
+                nextRow.classList.add('current');
+                document.getElementById(`c-${player.age}`).innerText = player.club;
+            }
+            
+            updateUI();
+            renderDecisionPanel();
+        }
+
+        function updateUI() {
+            document.getElementById('infoName').innerText = player.name;
+            document.getElementById('infoNat').innerText = `${player.country} • #${player.num} • ${player.pos}`;
+            document.getElementById('infoClub').innerText = `📍 ${player.club}`;
+            document.getElementById('statOvr').innerText = player.ovr;
+            document.getElementById('statAge').innerText = player.age <= 38 ? player.age : 38;
+            
+            document.getElementById('statG').innerText = player.G;
+            document.getElementById('statTrophies').innerText = player.trophies;
+
+            if(player.role === 'BATTER') {
+                document.getElementById('statHR').innerText = player.HR;
+                document.getElementById('statAVG').innerText = player.AB > 0 ? (player.Hits / player.AB).toFixed(3).replace('0.', '.') : ".000";
+                // OPS aprox global
+                document.getElementById('statOPS').innerText = player.AB > 0 ? (((player.Hits / player.AB)*2.5) + (player.HR/1000)).toFixed(3).replace('0.', '.') : ".000";
+            } else {
+                document.getElementById('statERA').innerText = player.IP > 0 ? ((player.ER * 9) / player.IP).toFixed(2) : "0.00";
+                document.getElementById('statK').innerText = player.K;
+                document.getElementById('statWL').innerText = `${player.W}-${player.L}`;
+            }
+
+            const historyCard = document.querySelector('.history-card');
+            if(historyCard && player.age > 20) historyCard.scrollTop += 40; 
+        }
+
+        updateJerseyColor();
+    </script>
+</body>
+</html>
