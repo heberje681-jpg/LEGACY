@@ -13,6 +13,7 @@
             --text-muted: #94A3B8;
             --border-color: #1E293B;
             --legacy-gold: #F59E0B;
+            --legacy-accent: #3B82F6;
             --pitch-green: #064E3B;
             --success: #10B981;
             --danger: #EF4444;
@@ -21,13 +22,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        /* TICKER MLB EN VIVO */
-        .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 10px 20px; display: flex; gap: 40px; overflow-x: auto; white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--text-muted); align-items: center; }
+        .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 8px 20px; display: flex; gap: 30px; overflow-x: auto; white-space: nowrap; font-size: 12px; color: var(--text-muted); font-weight: 600; }
         .live-match b { color: #FFF; }
-        .live-match span { color: var(--legacy-gold); margin-left: 8px; font-size: 11px; text-transform: uppercase; border: 1px solid var(--legacy-gold); padding: 2px 6px; border-radius: 4px; }
-        
+        .live-match span { color: var(--legacy-gold); margin-left: 5px; }
+
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
-        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none; }
         .logo span { color: var(--legacy-gold); }
         .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
 
@@ -35,7 +35,7 @@
         .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
         .screen.active { display: block; }
 
-        /* ================= SETUP ================= */
+        /* SETUP */
         .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; }
         .setup-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
         .jersey-container { width: 150px; height: 150px; margin: 0 auto 15px auto; }
@@ -59,7 +59,7 @@
         .btn-main { background: #FFF; color: #000; border: none; padding: 16px 30px; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-main:hover { background: var(--legacy-gold); transform: translateY(-2px); }
 
-        /* ================= JUEGO ================= */
+        /* JUEGO */
         .game-layout { display: grid; grid-template-columns: 440px 1fr; gap: 30px; align-items: start; }
         .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
         .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
@@ -71,28 +71,28 @@
         .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
         .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
 
-        /* PANEL INTERACTIVO DE FICHAS/DECISIONES */
+        /* PANEL DE DECISIONES FOTORREALISTA */
         .action-panel { margin-top: 25px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
         .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .decisions-grid.full { grid-template-columns: 1fr; }
         
-        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 190px; }
         .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
-        .dec-img-container { height: 90px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 10px; background: #000; }
+        .dec-img-container { height: 90px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; flex-shrink: 0; }
         .dec-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
         .dec-btn:hover .dec-img { opacity: 1; transform: scale(1.05); }
         
         .dec-title { color: #FFF; font-weight: 800; font-size: 13px; margin-bottom: 6px; line-height: 1.3; }
-        .dec-prob { font-size: 12px; font-weight: 600; }
+        .dec-prob { font-size: 12px; font-weight: 600; margin-top: auto; }
         
         .dec-btn.processing { border-color: #FFF; animation: pulse-border 1s infinite alternate; pointer-events: none; justify-content: center; align-items: center; }
         .dec-btn.success-anim { border-color: var(--success); background: rgba(16, 185, 129, 0.15); justify-content: center; align-items: center; }
         .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 100% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.8); } }
 
-        /* HISTORIAL DE CARRERA */
+        /* HISTORIAL */
         .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .history-table th { color: var(--text-muted); text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 11px; text-transform: uppercase; }
@@ -101,7 +101,7 @@
         .history-table tr.current { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--legacy-gold); }
         .history-table tr.current td { color: var(--legacy-gold); }
 
-        /* ================= CINEMÁTICA Y SUMMARY ================= */
+        /* CINEMÁTICA Y SUMMARY */
         .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.90); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
         .cinematic-overlay.show { display: flex; opacity: 1; }
         .trophies-grid { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
@@ -117,18 +117,18 @@
         .club-box h5 { color: #FFF; font-size: 13px; margin-bottom: 10px; font-weight: 800; }
         .trophy-cabinet { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .t-badge { background: rgba(245, 158, 11, 0.1); color: var(--legacy-gold); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 800; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- TICKER REAL MLB API -->
-    <div class="live-ticker" id="live-ticker-container">
-        <div class="live-match">Cargando marcadores en vivo...</div>
+    <div class="live-ticker">
+        <div class="live-match">⚽ <b>ARS</b> 2 - 1 <b>MCI</b> <span>88'</span></div>
+        <div class="live-match">⚽ <b>RMA</b> 0 - 0 <b>BAR</b> <span>HT</span></div>
+        <div class="live-match">⚽ <b>AMX</b> 3 - 1 <b>TIG</b> <span>FT</span></div>
     </div>
 
     <header>
-        <div class="logo">legacy<span>.</span></div>
+        <a href="index.html" class="logo">legacy<span>.</span></a>
         <div class="nav-links">
             <span style="color: #FFF;">Fútbol</span>
             <span>Béisbol (MLB)</span>
@@ -138,11 +138,11 @@
 
     <div class="main-container">
         
-        <!-- PANTALLA SETUP -->
+        <!-- SETUP -->
         <div id="screen-setup" class="screen active">
             <div class="setup-card">
                 <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center;">Define tu Identidad</h1>
-                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 40px; text-align: center;">Tu país y posición dictarán tus primeros pasos en el profesionalismo.</p>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 40px; text-align: center;">Tu origen y posición dictarán tus primeros pasos en el profesionalismo.</p>
                 
                 <div class="setup-top-grid">
                     <div>
@@ -166,18 +166,11 @@
 
                         <div class="input-group">
                             <label>Nacionalidad</label>
-                            <select id="playerCountry" onchange="updateCountryData()">
+                            <select id="playerCountry" onchange="updateJerseyColor()">
                                 <option value="MEX">🇲🇽 México</option>
                                 <option value="ARG">🇦🇷 Argentina</option>
                                 <option value="BRA">🇧🇷 Brasil</option>
                                 <option value="ESP">🇪🇸 España</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Equipo Inicial</label>
-                            <select id="playerClubStart">
-                                <!-- Llenado por JS -->
                             </select>
                         </div>
 
@@ -213,7 +206,7 @@
             </div>
         </div>
 
-        <!-- PANTALLA JUEGO -->
+        <!-- JUEGO -->
         <div id="screen-game" class="screen">
             <div class="game-layout">
                 <div>
@@ -289,47 +282,12 @@
     </div>
 
     <script>
-        // ================= CONEXIÓN API MLB EN VIVO =================
-        async function loadMLBTicker() {
-            const ticker = document.getElementById('live-ticker-container');
-            try {
-                // Fetch de la API Oficial de MLB (Abierta y sin límites)
-                const res = await fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore');
-                const data = await res.json();
-                let html = '';
-                
-                if (data.dates && data.dates.length > 0) {
-                    const games = data.dates[0].games;
-                    games.forEach(g => {
-                        let away = g.teams.away.team.teamName.substring(0,3).toUpperCase(); 
-                        let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
-                        let aScore = g.teams.away.score || 0;
-                        let hScore = g.teams.home.score || 0;
-                        let status = g.status.abstractGameState; 
-                        let inning = g.linescore ? (g.linescore.inningState + " " + g.linescore.currentInning) : status;
-                        
-                        if(status === 'Final') inning = 'FT';
-                        if(status === 'Preview') inning = 'Próximo';
-                        
-                        html += `<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`;
-                    });
-                } else {
-                    html = '<div class="live-match">⚾ Sin juegos programados hoy</div>';
-                }
-                ticker.innerHTML = html;
-            } catch (e) {
-                console.log("Error API MLB", e);
-                ticker.innerHTML = '<div class="live-match">⚾ No se pudieron cargar los marcadores.</div>';
-            }
-        }
-        loadMLBTicker();
-
-        // ================= BASE DE DATOS DE CLUBES =================
-        const countryTeams = {
-            'MEX': ['Club América', 'Chivas', 'Cruz Azul', 'Pumas UNAM', 'Tigres UANL', 'Monterrey', 'Pachuca'],
-            'ARG': ['Boca Juniors', 'River Plate', 'Racing Club', 'Independiente', 'San Lorenzo'],
-            'BRA': ['Flamengo', 'Palmeiras', 'São Paulo', 'Santos', 'Corinthians'],
-            'ESP': ['Real Madrid', 'FC Barcelona', 'Atlético Madrid', 'Sevilla FC', 'Valencia CF']
+        // ================= CONFIGURACIÓN =================
+        const kitColors = {
+            'MEX': { main: '#006847', trim: '#FFFFFF', ac: 'Pachuca Sub-17' }, 
+            'ARG': { main: '#43A1D5', trim: '#FFFFFF', ac: 'Boca Jrs (Reserva)' }, 
+            'BRA': { main: '#FFDC02', trim: '#009B3A', ac: 'Santos FC (Base)' }, 
+            'ESP': { main: '#AA151B', trim: '#F1BF00', ac: 'FC Barcelona B' }
         };
 
         const globalTeamsForTransfers = [
@@ -343,26 +301,40 @@
             {n:"LA Galaxy", min:50}, {n:"Inter Miami", min:50}, {n:"Al Nassr", min:50}
         ];
 
-        const kitColors = {
-            'MEX': { main: '#006847', trim: '#FFFFFF' }, 
-            'ARG': { main: '#43A1D5', trim: '#FFFFFF' }, 
-            'BRA': { main: '#FFDC02', trim: '#009B3A' }, 
-            'ESP': { main: '#AA151B', trim: '#F1BF00' }
-        };
+        const randomEvents = [
+            {
+                title: "Tensión en el Vestuario",
+                desc: "El capitán del equipo te culpa por la mala racha. ¿Lo confrontas o te concentras en entrenar?",
+                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Confrontarlo (Riesgo)", succ: 0.5, rwd: 3, pen: -3 },
+                optSafe: { label: "Ignorar (Seguro)", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Exigencia Física",
+                desc: "Una marca te ofrece entrenadores personales exclusivos, pero te quitará tu tiempo de descanso.",
+                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Aceptar Doble Sesión", succ: 0.65, rwd: 4, pen: -2 },
+                optSafe: { label: "Mantener Rutina", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Cambio Táctico",
+                desc: "El nuevo DT quiere usar un sistema que no te favorece. ¿Te adaptas a la fuerza?",
+                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1431324155629-1a6d0a11f58e?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Modificar tu estilo", succ: 0.6, rwd: 3, pen: -2 },
+                optSafe: { label: "Jugar en tu zona", succ: 1.0, rwd: 1, pen: 0 }
+            }
+        ];
 
-        function updateCountryData() {
+        function updateJerseyColor() {
             let code = document.getElementById('playerCountry').value;
             const colors = kitColors[code];
             document.getElementById('svg-body').setAttribute('fill', colors.main);
             document.getElementById('svg-trim').setAttribute('fill', colors.trim);
             document.getElementById('mini-svg-body').setAttribute('fill', colors.main);
             document.getElementById('mini-svg-trim').setAttribute('fill', colors.trim);
-
-            let clubSelect = document.getElementById('playerClubStart');
-            clubSelect.innerHTML = "";
-            countryTeams[code].forEach(club => {
-                clubSelect.innerHTML += `<option value="${club}">${club}</option>`;
-            });
         }
 
         function selectPos(pos, element) {
@@ -371,9 +343,9 @@
             document.getElementById('playerPos').value = pos;
         }
 
-        // ================= LÓGICA DEL JUEGO =================
+        // ================= MOTOR DEL JUEGO =================
         let player = {
-            name: "", country: "", pos: "", num: 9, mode: "normal", age: 16, ovr: 50, value: 100000,
+            name: "", country: "", pos: "", num: 9, mode: "normal", age: 16, ovr: 50, value: 0,
             apps: 0, goals: 0, ast: 0, trophies: 0, club: "", history: [], trophyList: []
         };
 
@@ -383,9 +355,11 @@
             player.country = document.getElementById('playerCountry').value;
             player.pos = document.getElementById('playerPos').value;
             player.mode = document.getElementById('playerMode').value;
-            player.club = document.getElementById('playerClubStart').value;
             
-            player.ovr = 55; player.age = 16; 
+            player.club = kitColors[player.country].ac;
+            player.ovr = 55; 
+            player.age = 16; 
+            player.value = calculateMarketValue(player.ovr, player.age);
             player.history = []; player.trophyList = [];
 
             if(player.pos === 'CB' || player.pos === 'LB' || player.pos === 'RB' || player.pos === 'GK') {
@@ -418,11 +392,34 @@
             renderDecisionPanel();
         }
 
+        // ================= CÁLCULO DE VALOR DE MERCADO (ESTILO FIFA) =================
+        function calculateMarketValue(ovr, age) {
+            let baseValue = 0;
+            if (ovr <= 50) baseValue = 50000;
+            else if (ovr <= 60) baseValue = 100000 + ((ovr - 50) * 40000); // 500k a 60
+            else if (ovr <= 70) baseValue = 500000 + ((ovr - 60) * 150000); // 2M a 70
+            else if (ovr <= 75) baseValue = 2000000 + ((ovr - 70) * 1000000); // 7M a 75
+            else if (ovr <= 80) baseValue = 7000000 + ((ovr - 75) * 2600000); // 20M a 80
+            else if (ovr <= 85) baseValue = 20000000 + ((ovr - 80) * 5000000); // 45M a 85
+            else if (ovr <= 90) baseValue = 45000000 + ((ovr - 85) * 7000000); // 80M a 90
+            else baseValue = 80000000 + ((ovr - 90) * 10000000); // 130M+ a 95+
+
+            let ageFactor = 1;
+            if (age <= 18) ageFactor = 1.5; // Wonderkid
+            else if (age <= 21) ageFactor = 1.3;
+            else if (age <= 25) ageFactor = 1.1; // Prime
+            else if (age <= 29) ageFactor = 0.9;
+            else if (age <= 32) ageFactor = 0.6; // Declive
+            else if (age <= 35) ageFactor = 0.3;
+            else ageFactor = 0.1; // Retiro
+
+            return Math.max(50000, baseValue * ageFactor);
+        }
+
         function getTransferOffers() {
             let possible = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8);
-            if(player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.n === "LA Galaxy" || c.n === "Inter Miami" || c.n === "Al Nassr"); 
+            if(player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.min === 50); // Ligas de retiro
             
-            // Mezclar
             possible = possible.filter(c => c.n !== player.club);
             possible.sort(() => 0.5 - Math.random());
             
@@ -434,14 +431,13 @@
             const panel = document.getElementById('action-panel');
             if(player.age > 37) { showSummary(); return; }
 
-            // Lógica 60% Fichajes, 40% Evento/Entrenamiento
+            // Lógica: Traspasos son comunes, Eventos son para darle sabor
             let isTransferWindow = (Math.random() < 0.6) || player.age === 16;
             
             if (isTransferWindow) {
                 let offers = getTransferOffers();
-                // AQUÍ LAS FOTOS DE CARPETA
-                let imgA = "assets/decisiones/firma.jpg";
-                let imgStay = "assets/decisiones/estadio.jpg";
+                let imgA = "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?auto=format&fit=crop&q=80&w=400";
+                let imgB = "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=400";
 
                 panel.innerHTML = `
                     <h4>Mercado de Transferencias</h4>
@@ -449,12 +445,12 @@
                     <div class="decisions-grid full">
                         <div style="display:flex; gap:15px;">
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[0].n}')">
-                                <div class="dec-img-container"><img src="${imgA}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?w=400';"></div>
+                                <div class="dec-img-container"><img src="${imgA}" class="dec-img"></div>
                                 <div class="dec-title">Firmar con ${offers[0].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[1].n}')">
-                                <div class="dec-img-container"><img src="${imgA}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400';"></div>
+                                <div class="dec-img-container"><img src="${imgB}" class="dec-img"></div>
                                 <div class="dec-title">Firmar con ${offers[1].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
@@ -466,24 +462,22 @@
                     </div>
                 `;
             } else {
-                // Evento
-                let riskReward = 3; let riskPen = -2; let riskSuccess = 0.6;
-                let imgRisk = "assets/decisiones/entrenar.jpg";
-                let imgSafe = "assets/decisiones/descanso.jpg";
+                // Seleccionar evento al azar de la base de datos
+                let ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
 
                 panel.innerHTML = `
-                    <h4>Situación de Temporada</h4>
-                    <p>El cuerpo técnico exige más de ti. Puedes arriesgar tu físico o jugar seguro.</p>
+                    <h4>${ev.title}</h4>
+                    <p>${ev.desc}</p>
                     <div class="decisions-grid">
-                        <button class="dec-btn" onclick="processDecision(this, true, ${riskReward}, ${riskPen}, ${riskSuccess})">
-                            <div class="dec-img-container"><img src="${imgRisk}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400';"></div>
-                            <div class="dec-title">Forzar la máquina (Riesgo)</div>
-                            <div class="dec-prob"><span style="color:var(--success)">+${riskReward} OVR (${riskSuccess*100}%)</span> | <span style="color:var(--danger)">${riskPen} OVR (${100 - riskSuccess*100}%)</span></div>
+                        <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ})">
+                            <div class="dec-img-container"><img src="${ev.imgRisk}" class="dec-img"></div>
+                            <div class="dec-title">${ev.optRisk.label}</div>
+                            <div class="dec-prob"><span style="color:var(--success)">+${ev.optRisk.rwd} OVR (${ev.optRisk.succ*100}%)</span> | <span style="color:var(--danger)">${ev.optRisk.pen} OVR (${100 - ev.optRisk.succ*100}%)</span></div>
                         </button>
-                        <button class="dec-btn" onclick="processDecision(this, false, 1, 0, 1)">
-                            <div class="dec-img-container"><img src="${imgSafe}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400';"></div>
-                            <div class="dec-title">Jugar Seguro</div>
-                            <div class="dec-prob"><span style="color:#FFF">+1 OVR Garantizado</span></div>
+                        <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ})">
+                            <div class="dec-img-container"><img src="${ev.imgSafe}" class="dec-img"></div>
+                            <div class="dec-title">${ev.optSafe.label}</div>
+                            <div class="dec-prob"><span style="color:#FFF">+${ev.optSafe.rwd} OVR Garantizado</span></div>
                         </button>
                     </div>
                 `;
@@ -548,8 +542,8 @@
             let seasonalPrimary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(35 * formFactor * (Math.random() * 0.6 + 0.4)) : Math.floor(18 * formFactor);
             let seasonalSecondary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(seasonalPrimary * 0.4) : Math.floor(55 * formFactor);
 
-            if (player.age < 30) player.value += (player.ovr * 150000);
-            else player.value -= (player.value * 0.15); 
+            // Actualizar Valor Realista
+            player.value = calculateMarketValue(player.ovr, player.age);
 
             player.apps += seasonalApps;
             player.goals += seasonalPrimary;
@@ -587,9 +581,9 @@
 
         function checkTrophies(primaryStat) {
             let won = [];
-            // FOTOS DE TROFEOS
+            // FOTOS DE TROFEOS REALES
             if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", img: "assets/trofeos/liga.png"}); }
-            if (player.club === "Real Madrid" || player.club === "Liverpool FC" || player.club === "FC Barcelona" || player.club === "Bayern Munich") {
+            if (player.club === "Real Madrid" || player.club === "Liverpool FC" || player.club === "FC Barcelona") {
                 if (Math.random() > 0.7) won.push({name: "Champions League", img: "assets/trofeos/champions.png"});
             }
             if (player.ovr >= 92 && Math.random() > 0.85) { won.push({name: "Balón de Oro", img: "assets/trofeos/balon_oro.png"}); }
