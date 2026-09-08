@@ -7,16 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #07090F;
-            --bg-card: #131A2B;
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --border-color: #1E293B;
-            --legacy-gold: #F59E0B;
-            --legacy-accent: #3B82F6;
-            --pitch-green: #064E3B;
-            --success: #10B981;
-            --danger: #EF4444;
+            --bg-main: #07090F; --bg-card: #131A2B; --text-main: #F8FAFC; --text-muted: #94A3B8;
+            --border-color: #1E293B; --legacy-gold: #F59E0B; --legacy-accent: #3B82F6;
+            --pitch-green: #064E3B; --success: #10B981; --danger: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
@@ -93,7 +86,7 @@
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 100% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.8); } }
 
         /* HISTORIAL */
-        .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; }
+        .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; overflow-y: auto; max-height: 800px; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .history-table th { color: var(--text-muted); text-align: left; padding: 10px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 11px; text-transform: uppercase; }
         .history-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 600; color: #FFF; }
@@ -131,8 +124,8 @@
         <a href="index.html" class="logo">legacy<span>.</span></a>
         <div class="nav-links">
             <span style="color: #FFF;">Fútbol</span>
-            <span>Béisbol (MLB)</span>
-            <span>Básquetbol (NBA)</span>
+            <a href="beisbol.html" style="color: var(--text-muted); text-decoration: none;">Béisbol (MLB)</a>
+            <span style="color: var(--text-muted);">Básquetbol (NBA)</span>
         </div>
     </header>
 
@@ -222,7 +215,7 @@
                             <span id="infoName">HEBER</span>
                         </div>
                         <div class="player-nat" id="infoNat">MEX • #4 • CB</div>
-                        <div class="player-club" id="infoClub">📍 Club Base</div>
+                        <div class="player-club" id="infoClub">📍 Recluta Sin Asignar</div>
 
                         <div class="stats-row" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">16</div><div class="lbl">Edad</div></div>
@@ -284,10 +277,10 @@
     <script>
         // ================= CONFIGURACIÓN =================
         const kitColors = {
-            'MEX': { main: '#006847', trim: '#FFFFFF', ac: 'Pachuca Sub-17' }, 
-            'ARG': { main: '#43A1D5', trim: '#FFFFFF', ac: 'Boca Jrs (Reserva)' }, 
-            'BRA': { main: '#FFDC02', trim: '#009B3A', ac: 'Santos FC (Base)' }, 
-            'ESP': { main: '#AA151B', trim: '#F1BF00', ac: 'FC Barcelona B' }
+            'MEX': { main: '#006847', trim: '#FFFFFF', academies: ['Pachuca Sub-17', 'Atlas Sub-17', 'Pumas Fuerzas Básicas', 'Chivas Sub-17', 'América Sub-17'] }, 
+            'ARG': { main: '#43A1D5', trim: '#FFFFFF', academies: ['Boca Jrs (Reserva)', 'River Plate (Reserva)', 'Vélez (Base)', 'Racing Club (Base)'] }, 
+            'BRA': { main: '#FFDC02', trim: '#009B3A', academies: ['Santos FC (Base)', 'Flamengo Sub-20', 'São Paulo (Base)', 'Palmeiras Sub-20'] }, 
+            'ESP': { main: '#AA151B', trim: '#F1BF00', academies: ['FC Barcelona B', 'Real Madrid Castilla', 'Villarreal B', 'Sevilla Atlético'] }
         };
 
         const globalTeamsForTransfers = [
@@ -305,26 +298,26 @@
             {
                 title: "Tensión en el Vestuario",
                 desc: "El capitán del equipo te culpa por la mala racha. ¿Lo confrontas o te concentras en entrenar?",
-                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400",
+                imgRisk: "https://images.unsplash.com/photo-1518063319789-7217e6706b04?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1511886929837-354d827aae26?auto=format&fit=crop&q=80&w=400",
                 optRisk: { label: "Confrontarlo (Riesgo)", succ: 0.5, rwd: 3, pen: -3 },
                 optSafe: { label: "Ignorar (Seguro)", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
                 title: "Exigencia Física",
                 desc: "Una marca te ofrece entrenadores personales exclusivos, pero te quitará tu tiempo de descanso.",
-                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400",
+                imgRisk: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=400",
                 optRisk: { label: "Aceptar Doble Sesión", succ: 0.65, rwd: 4, pen: -2 },
                 optSafe: { label: "Mantener Rutina", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Cambio Táctico",
-                desc: "El nuevo DT quiere usar un sistema que no te favorece. ¿Te adaptas a la fuerza?",
-                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1431324155629-1a6d0a11f58e?auto=format&fit=crop&q=80&w=400",
-                optRisk: { label: "Modificar tu estilo", succ: 0.6, rwd: 3, pen: -2 },
-                optSafe: { label: "Jugar en tu zona", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Polémica en la Prensa",
+                desc: "Un periodista cuestionó tu rendimiento tras el último partido. ¿Qué declaras?",
+                imgRisk: "https://images.unsplash.com/photo-1588865198380-496696ce7508?auto=format&fit=crop&q=80&w=400",
+                imgSafe: "https://images.unsplash.com/photo-1511886929837-354d827aae26?auto=format&fit=crop&q=80&w=400",
+                optRisk: { label: "Responder con fuerza", succ: 0.6, rwd: 3, pen: -2 },
+                optSafe: { label: "Ignorar a los medios", succ: 1.0, rwd: 1, pen: 0 }
             }
         ];
 
@@ -356,7 +349,7 @@
             player.pos = document.getElementById('playerPos').value;
             player.mode = document.getElementById('playerMode').value;
             
-            player.club = kitColors[player.country].ac;
+            player.club = "Recluta Sin Asignar";
             player.ovr = 55; 
             player.age = 16; 
             player.value = calculateMarketValue(player.ovr, player.age);
@@ -392,33 +385,32 @@
             renderDecisionPanel();
         }
 
-        // ================= CÁLCULO DE VALOR DE MERCADO (ESTILO FIFA) =================
         function calculateMarketValue(ovr, age) {
             let baseValue = 0;
             if (ovr <= 50) baseValue = 50000;
-            else if (ovr <= 60) baseValue = 100000 + ((ovr - 50) * 40000); // 500k a 60
-            else if (ovr <= 70) baseValue = 500000 + ((ovr - 60) * 150000); // 2M a 70
-            else if (ovr <= 75) baseValue = 2000000 + ((ovr - 70) * 1000000); // 7M a 75
-            else if (ovr <= 80) baseValue = 7000000 + ((ovr - 75) * 2600000); // 20M a 80
-            else if (ovr <= 85) baseValue = 20000000 + ((ovr - 80) * 5000000); // 45M a 85
-            else if (ovr <= 90) baseValue = 45000000 + ((ovr - 85) * 7000000); // 80M a 90
-            else baseValue = 80000000 + ((ovr - 90) * 10000000); // 130M+ a 95+
+            else if (ovr <= 60) baseValue = 100000 + ((ovr - 50) * 40000); 
+            else if (ovr <= 70) baseValue = 500000 + ((ovr - 60) * 150000); 
+            else if (ovr <= 75) baseValue = 2000000 + ((ovr - 70) * 1000000); 
+            else if (ovr <= 80) baseValue = 7000000 + ((ovr - 75) * 2600000); 
+            else if (ovr <= 85) baseValue = 20000000 + ((ovr - 80) * 5000000); 
+            else if (ovr <= 90) baseValue = 45000000 + ((ovr - 85) * 7000000); 
+            else baseValue = 80000000 + ((ovr - 90) * 10000000); 
 
             let ageFactor = 1;
-            if (age <= 18) ageFactor = 1.5; // Wonderkid
+            if (age <= 18) ageFactor = 1.5; 
             else if (age <= 21) ageFactor = 1.3;
-            else if (age <= 25) ageFactor = 1.1; // Prime
+            else if (age <= 25) ageFactor = 1.1; 
             else if (age <= 29) ageFactor = 0.9;
-            else if (age <= 32) ageFactor = 0.6; // Declive
+            else if (age <= 32) ageFactor = 0.6; 
             else if (age <= 35) ageFactor = 0.3;
-            else ageFactor = 0.1; // Retiro
+            else ageFactor = 0.1; 
 
             return Math.max(50000, baseValue * ageFactor);
         }
 
         function getTransferOffers() {
             let possible = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8);
-            if(player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.min === 50); // Ligas de retiro
+            if(player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.min === 50); 
             
             possible = possible.filter(c => c.n !== player.club);
             possible.sort(() => 0.5 - Math.random());
@@ -431,13 +423,43 @@
             const panel = document.getElementById('action-panel');
             if(player.age > 37) { showSummary(); return; }
 
-            // Lógica: Traspasos son comunes, Eventos son para darle sabor
-            let isTransferWindow = (Math.random() < 0.6) || player.age === 16;
+            // EL NUEVO FLUJO INICIAL: ELEGIR CANTERA
+            if (player.club === "Recluta Sin Asignar") {
+                let posibles = kitColors[player.country].academies.sort(() => 0.5 - Math.random());
+                let of1 = posibles[0], of2 = posibles[1], of3 = posibles[2];
+                let imgFirma = "assets/decisiones/firma.jpg"; // Pon tus imagenes aqui
+                
+                panel.innerHTML = `
+                    <h4>Ojeadores de Cantera</h4>
+                    <p>Tres clubes te han ofrecido integrarte a sus fuerzas básicas. ¿A dónde irás?</p>
+                    <div class="decisions-grid full">
+                        <div style="display:flex; gap:15px;">
+                            <button class="dec-btn" style="flex:1" onclick="processInitialSigning(this, '${of1}')">
+                                <div class="dec-img-container"><img src="${imgFirma}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400';"></div>
+                                <div class="dec-title">Firmar con ${of1}</div>
+                                <div class="dec-prob"><span style="color:var(--legacy-gold)">Contrato Juvenil</span></div>
+                            </button>
+                            <button class="dec-btn" style="flex:1" onclick="processInitialSigning(this, '${of2}')">
+                                <div class="dec-img-container"><img src="${imgFirma}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400';"></div>
+                                <div class="dec-title">Firmar con ${of2}</div>
+                                <div class="dec-prob"><span style="color:var(--legacy-gold)">Contrato Juvenil</span></div>
+                            </button>
+                        </div>
+                        <button class="dec-btn" style="min-height:auto;" onclick="processInitialSigning(this, '${of3}')">
+                            <div class="dec-title">Firmar con ${of3}</div>
+                            <div class="dec-prob"><span style="color:#FFF">Contrato Juvenil</span></div>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let isTransferWindow = (Math.random() < 0.6);
             
             if (isTransferWindow) {
                 let offers = getTransferOffers();
-                let imgA = "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?auto=format&fit=crop&q=80&w=400";
-                let imgB = "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=400";
+                let imgA = "assets/decisiones/firma.jpg";
+                let imgStay = "assets/decisiones/estadio.jpg";
 
                 panel.innerHTML = `
                     <h4>Mercado de Transferencias</h4>
@@ -445,12 +467,12 @@
                     <div class="decisions-grid full">
                         <div style="display:flex; gap:15px;">
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[0].n}')">
-                                <div class="dec-img-container"><img src="${imgA}" class="dec-img"></div>
+                                <div class="dec-img-container"><img src="${imgA}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400';"></div>
                                 <div class="dec-title">Firmar con ${offers[0].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
                             <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[1].n}')">
-                                <div class="dec-img-container"><img src="${imgB}" class="dec-img"></div>
+                                <div class="dec-img-container"><img src="${imgA}" class="dec-img" onerror="this.src='https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400';"></div>
                                 <div class="dec-title">Firmar con ${offers[1].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
@@ -462,9 +484,7 @@
                     </div>
                 `;
             } else {
-                // Seleccionar evento al azar de la base de datos
                 let ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-
                 panel.innerHTML = `
                     <h4>${ev.title}</h4>
                     <p>${ev.desc}</p>
@@ -484,16 +504,32 @@
             }
         }
 
+        // Nueva función exclusiva para la firma inicial
+        function processInitialSigning(btn, newClub) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            btn.classList.add('processing');
+            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">FIRMANDO CONTRATO...</div>`;
+
+            setTimeout(() => {
+                player.club = newClub;
+                document.getElementById('c-16').innerText = player.club;
+                btn.classList.remove('processing');
+                btn.classList.add('success-anim');
+                btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">¡BIENVENIDO A ${newClub}!</div>`;
+                setTimeout(() => { ejecutarSimulacionAnual(0); }, 1500);
+            }, 2000);
+        }
+
         function processTransfer(btn, newClub) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
             btn.classList.add('processing');
-            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">FIRMANDO CONTRATO...</div>`;
+            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">FIRMANDO CONTRATO...</div>`;
 
             setTimeout(() => {
                 player.club = newClub;
                 btn.classList.remove('processing');
                 btn.classList.add('success-anim');
-                btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">¡TRASPASO COMPLETADO!</div>`;
+                btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">¡TRASPASO COMPLETADO!</div>`;
                 setTimeout(() => { ejecutarSimulacionAnual(0); }, 1500);
             }, 2000);
         }
@@ -509,16 +545,16 @@
                 if(isRisk) {
                     if(Math.random() < successRate) {
                         btn.classList.add('success-anim');
-                        btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:16px; text-align:center; width:100%;">¡ÉXITO! +${reward} OVR</div>`;
+                        btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:16px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">¡ÉXITO! +${reward} OVR</div>`;
                         ovrChange = reward;
                     } else {
                         btn.classList.add('fail-anim');
-                        btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:16px; text-align:center; width:100%;">¡LESIÓN! ${penalty} OVR</div>`;
+                        btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:16px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">¡LESIÓN! ${penalty} OVR</div>`;
                         ovrChange = penalty;
                     }
                 } else {
                     btn.classList.add('success-anim');
-                    btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">TEMPORADA COMPLETADA</div>`;
+                    btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%; display:flex; justify-content:center; align-items:center;">TEMPORADA COMPLETADA</div>`;
                     ovrChange = reward;
                 }
                 setTimeout(() => { ejecutarSimulacionAnual(ovrChange); }, 1500);
@@ -542,7 +578,6 @@
             let seasonalPrimary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(35 * formFactor * (Math.random() * 0.6 + 0.4)) : Math.floor(18 * formFactor);
             let seasonalSecondary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(seasonalPrimary * 0.4) : Math.floor(55 * formFactor);
 
-            // Actualizar Valor Realista
             player.value = calculateMarketValue(player.ovr, player.age);
 
             player.apps += seasonalApps;
@@ -581,7 +616,6 @@
 
         function checkTrophies(primaryStat) {
             let won = [];
-            // FOTOS DE TROFEOS REALES
             if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", img: "assets/trofeos/liga.png"}); }
             if (player.club === "Real Madrid" || player.club === "Liverpool FC" || player.club === "FC Barcelona") {
                 if (Math.random() > 0.7) won.push({name: "Champions League", img: "assets/trofeos/champions.png"});
@@ -675,7 +709,7 @@
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
 
-        updateCountryData();
+        updateJerseyColor();
     </script>
 </body>
 </html>
