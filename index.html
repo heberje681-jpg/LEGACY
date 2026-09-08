@@ -16,7 +16,7 @@
 
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
         .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none;}
-        .logo-img { height: 35px; object-fit: contain; } /* Clase para tu logo en imagen */
+        .logo-img { height: 35px; object-fit: contain; } 
         
         .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
 
@@ -48,13 +48,11 @@
 </head>
 <body>
 
-    <!-- TICKER HÍBRIDO (Fijo + API) -->
     <div class="live-ticker" id="live-ticker-container">
-        <div class="live-match">Cargando marcadores en vivo...</div>
+        <div class="live-match">Buscando juegos en vivo...</div>
     </div>
 
     <header>
-        <!-- AQUI VA TU IMAGEN LOGO. Asegúrate de tener logo.png en tu carpeta -->
         <a href="index.html" class="logo">
             <img src="logo.png" alt="Legacy" class="logo-img" onerror="this.outerHTML='legacy<span>.</span>'">
         </a>
@@ -72,7 +70,6 @@
 
     <div class="games-grid">
         
-        <!-- FÚTBOL -->
         <a href="futbol.html" class="game-card">
            <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="Fútbol">
             <div class="game-overlay">
@@ -82,7 +79,6 @@
             </div>
         </a>
 
-        <!-- BÉISBOL -->
         <a href="beisbol.html" class="game-card">
             <img src="https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="Béisbol">
             <div class="game-overlay">
@@ -92,7 +88,6 @@
             </div>
         </a>
 
-        <!-- BÁSQUETBOL -->
         <a href="nba.html" class="game-card">
             <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="NBA">
             <div class="game-overlay">
@@ -102,7 +97,6 @@
             </div>
         </a>
 
-        <!-- FÚTBOL AMERICANO -->
         <a href="nfl.html" class="game-card">
             <img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=800" class="game-bg" alt="NFL">
             <div class="game-overlay">
@@ -116,7 +110,6 @@
 
     <footer>
         <div class="ft-col">
-            <!-- AQUI VA TU IMAGEN LOGO EN EL FOOTER -->
             <img src="logo.png" alt="Legacy" style="height: 25px; object-fit: contain; margin-bottom: 15px;" onerror="this.outerHTML='<div class=&quot;logo&quot; style=&quot;margin-bottom:15px;&quot;>legacy<span>.</span></div>'">
             <p style="color: var(--text-muted); margin-bottom: 20px; max-width: 250px;">El primer simulador RPG de carrera deportiva. Toma decisiones, asume consecuencias.</p>
         </div>
@@ -129,9 +122,8 @@
         </div>
         <div class="ft-col">
             <h4>Comunidad</h4>
-            <!-- ENLACES DE REDES SOCIALES AQUI -->
-            <a href="#" target="_blank">Instagram</a>
-            <a href="#" target="_blank">TikTok</a>
+            <a href="AQUI_TU_LINK_DE_INSTAGRAM" target="_blank">Instagram</a>
+            <a href="AQUI_TU_LINK_DE_TIKTOK" target="_blank">TikTok</a>
         </div>
         <div class="ft-col">
             <h4>Legal</h4>
@@ -145,18 +137,12 @@
             const ticker = document.getElementById('live-ticker-container');
             let html = '';
             
-            // Juegos Top Estáticos (Para rellenar deportes sin API en vivo por ahora)
-            html += `<div class="live-match">⚽ <b>RMA</b> 2 - 1 <b>BAR</b> <span>FT</span></div>`;
-            html += `<div class="live-match">⚽ <b>AMX</b> 3 - 0 <b>CHV</b> <span>FT</span></div>`;
-            html += `<div class="live-match">🏀 <b>LAL</b> 112 - 108 <b>GSW</b> <span>4Q</span></div>`;
-            html += `<div class="live-match">🏈 <b>KC</b> 24 - 17 <b>SF</b> <span>3Q</span></div>`;
-
             try {
+                // Solo datos 100% reales de la API
                 const res = await fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore');
                 const data = await res.json();
                 if (data.dates && data.dates.length > 0) {
-                    // Limitamos a 4 juegos de MLB para no hacer la barra infinita
-                    data.dates[0].games.slice(0, 4).forEach(g => {
+                    data.dates[0].games.forEach(g => {
                         let away = g.teams.away.team.teamName.substring(0,3).toUpperCase(); 
                         let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
                         let aScore = g.teams.away.score || 0; let hScore = g.teams.home.score || 0;
@@ -165,8 +151,12 @@
                         if(status === 'Final') inning = 'FT'; if(status === 'Preview') inning = 'Próximo';
                         html += `<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`;
                     });
+                } else {
+                    html = `<div class="live-match">⚾ Sin juegos programados hoy en la MLB</div>`;
                 }
-            } catch (e) { console.log("Error cargando API MLB"); }
+            } catch (e) { 
+                html = `<div class="live-match">Error de conexión con la API deportiva</div>`;
+            }
             
             ticker.innerHTML = html;
         }
