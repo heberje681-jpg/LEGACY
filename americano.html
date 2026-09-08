@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy | Americano (NFL)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-main: #07090F; --bg-card: #131A2B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border-color: #1E293B; --legacy-gold: #F59E0B; --danger: #EF4444; --success: #10B981; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 10px 20px; display: flex; gap: 40px; overflow-x: auto; white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--text-muted); align-items: center; }
+        .live-match b { color: #FFF; } .live-match span { color: var(--legacy-gold); margin-left: 8px; font-size: 11px; text-transform: uppercase; border: 1px solid var(--legacy-gold); padding: 2px 6px; border-radius: 4px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none;}
+        .logo span { color: var(--legacy-gold); }
+        .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
+        .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
+        .screen.active { display: block; }
+
+        /* SETUP & SVG */
+        .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; }
+        .setup-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+        .jersey-container { width: 150px; height: 150px; margin: 0 auto 15px auto; }
+        .jersey-svg { width: 100%; height: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
+        
+        /* EL NUEVO EMPARRILLADO DE FÚTBOL AMERICANO */
+        .field-container { position: relative; width: 100%; height: 260px; background: #14532D; border: 1px solid var(--border-color); border-radius: 12px; margin-top: 10px; overflow: hidden; background-image: repeating-linear-gradient(to right, rgba(255,255,255,0.08) 0, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 10%); }
+        .field-endzone { position: absolute; top: 0; width: 8%; height: 100%; background: rgba(245, 158, 11, 0.15); }
+        .field-endzone.left { left: 0; }
+        .field-endzone.right { right: 0; }
+        
+        .pos-dot { position: absolute; width: 34px; height: 34px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; transform: translate(-50%, -50%); z-index: 10; }
+        .pos-dot.active { background: var(--legacy-gold); border-color: #fff; color: #000; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+
+        .input-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+        .input-group.row { flex-direction: row; gap: 15px; }
+        .input-group.row > div { flex: 1; display: flex; flex-direction: column; }
+        label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        input, select { background: var(--bg-main); border: 1px solid var(--border-color); color: #FFF; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; outline: none; }
+        input:focus, select:focus { border-color: var(--legacy-gold); }
+        .btn-main { background: #FFF; color: #000; border: none; padding: 16px 30px; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-main:hover { background: var(--legacy-gold); transform: translateY(-2px); }
+
+        /* JUEGO */
+        .game-layout { display: grid; grid-template-columns: 440px 1fr; gap: 30px; align-items: start; }
+        .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
+        .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; }
+        .player-name { font-size: 24px; font-weight: 900; color: #FFF; margin-bottom: 4px; display: flex; align-items: center; gap: 15px;}
+        .player-nat { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .player-club { font-size: 14px; font-weight: 800; color: var(--legacy-gold); margin-top: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-main); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 10px; }
+        .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
+        .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
+
+        /* ACTION PANEL FOTORREALISTA */
+        .action-panel { margin-top: 25px; }
+        .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+        .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
+        .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .decisions-grid.full { grid-template-columns: 1fr; }
+        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 170px; }
+        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); }
+        .dec-img-container { height: 80px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; flex-shrink: 0; }
+        .dec-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
+        .dec-btn:hover .dec-img { opacity: 1; transform: scale(1.05); }
+        .dec-title { color: #FFF; font-weight: 800; font-size: 13px; margin-bottom: 6px; line-height: 1.3; }
+        .dec-prob { font-size: 12px; font-weight: 600; margin-top: auto; }
+        .dec-btn.processing { border-color: #FFF; animation: pulse-border 1s infinite alternate; pointer-events: none; justify-content: center; align-items: center; }
+        .dec-btn.success-anim { border-color: var(--success); background: rgba(16, 185, 129, 0.15); justify-content: center; align-items: center; }
+        .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 100% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.8); } }
+
+        /* HISTORIAL */
+        .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; overflow-y: auto; max-height: 800px; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .history-table th { color: var(--text-muted); text-align: center; padding: 10px 5px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 10px; text-transform: uppercase; }
+        .history-table th:nth-child(2) { text-align: left; }
+        .history-table td { padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.02); font-weight: 600; color: #FFF; text-align: center; }
+        .history-table td:nth-child(2) { text-align: left; }
+        .history-table tr.empty-row td { color: var(--border-color); }
+        .history-table tr.current { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--legacy-gold); }
+        .history-table tr.current td { color: var(--legacy-gold); }
+
+        /* CINEMÁTICA Y SUMMARY */
+        .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
+        .cinematic-overlay.show { display: flex; opacity: 1; }
+        .trophies-grid { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .cinematic-trophy { display: flex; flex-direction: column; align-items: center; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 0; transform: scale(0.5); }
+        .cinematic-img { height: 160px; object-fit: contain; filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.9)); margin-bottom: 25px; }
+        .cinematic-title { color: #FFF; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        
+        .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center; }
+        .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 30px; }
+        .club-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .club-box h5 { color: #FFF; font-size: 13px; margin-bottom: 10px; font-weight: 800; }
+        .trophy-cabinet { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 30px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .t-badge { background: rgba(245, 158, 11, 0.1); color: var(--legacy-gold); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+
+        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="live-ticker" id="live-ticker-container">
+        <div class="live-match">Cargando NFL API...</div>
+    </div>
+
+    <header>
+        <a href="index.html" class="logo">legacy<span>.</span></a>
+        <div class="nav-links">
+            <a href="futbol.html" style="color:var(--text-muted); text-decoration:none;">Fútbol</a>
+            <a href="beisbol.html" style="color:var(--text-muted); text-decoration:none;">Béisbol (MLB)</a>
+            <a href="basketball.html" style="color:var(--text-muted); text-decoration:none;">Básquetbol (NBA)</a>
+            <span style="color: #FFF;">Americano (NFL)</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- PANTALLA SETUP -->
+        <div id="screen-setup" class="screen active">
+            <div class="setup-card">
+                <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center;">El Emparrillado te Espera</h1>
+                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 40px; text-align: center;">Define tu prospecto de fuerzas básicas. Empiezas a los 18 años.</p>
+                
+                <div class="setup-top-grid">
+                    <div>
+                        <div class="jersey-container">
+                            <svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                <path id="svg-body" fill="#FFFFFF" d="M170,60 L342,60 L360,140 L400,150 L390,220 L350,210 L350,470 L162,470 L162,210 L122,220 L112,150 L152,140 Z"/>
+                                <path id="svg-trim" fill="#7C2D12" d="M170,60 L190,60 L190,470 L170,470 Z M322,60 L342,60 L342,470 L322,470 Z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="input-group row">
+                            <div>
+                                <label>Apellido</label>
+                                <input type="text" id="playerName" value="HEBER">
+                            </div>
+                            <div style="flex: 0.4;">
+                                <label>Número</label>
+                                <input type="number" id="playerNum" value="24" min="1" max="99">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Nacionalidad</label>
+                            <select id="playerCountry">
+                                <option value="USA">🇺🇸 Estados Unidos</option>
+                                <option value="DOM">🇩🇴 República Dominicana</option>
+                                <option value="MEX">🇲🇽 México</option>
+                                <option value="VEN">🇻🇪 Venezuela</option>
+                                <option value="JPN">🇯🇵 Japón</option>
+                            </select>
+                        </div>
+
+                        <!-- OMITIMOS ELEGIR EQUIPO, SE HARÁ POR SCOUTING -->
+                    </div>
+
+                    <div>
+                        <label style="display:block; margin-bottom:10px;">Posición en el Emparrillado</label>
+                        <div class="field-container">
+                            <div class="field-endzone left"></div>
+                            <div class="field-endzone right"></div>
+
+                            <div class="pos-dot active" style="top: 45%; left: 42%;" onclick="selectPos('QB', this)">QB</div>
+                            <div class="pos-dot" style="top: 75%; left: 42%;" onclick="selectPos('RB', this)">RB</div>
+                            <div class="pos-dot" style="top: 20%; left: 20%;" onclick="selectPos('WR', this)">WR</div>
+                            <div class="pos-dot" style="top: 20%; left: 65%;" onclick="selectPos('TE', this)">TE</div>
+                            <div class="pos-dot" style="top: 45%; left: 55%;" onclick="selectPos('OL', this)">OL</div>
+                            <div class="pos-dot" style="top: 15%; left: 85%;" onclick="selectPos('CB', this)">CB</div>
+                            <div class="pos-dot" style="top: 45%; left: 80%;" onclick="selectPos('LB', this)">LB</div>
+                            <div class="pos-dot" style="top: 75%; left: 85%;" onclick="selectPos('S', this)">S</div>
+                            <div class="pos-dot" style="top: 45%; left: 92%;" onclick="selectPos('DL', this)">DL</div>
+                        </div>
+                        <input type="hidden" id="playerPos" value="QB">
+                    </div>
+                </div>
+                <button class="btn-main" onclick="startCareer()">Comenzar en Fuerzas Básicas</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA JUEGO -->
+        <div id="screen-game" class="screen">
+            <div class="game-layout">
+                <div>
+                    <div class="player-card">
+                        <div class="ovr-badge" id="statOvr">55</div>
+                        <div class="player-name">
+                            <div style="width: 40px; height: 40px;">
+                                <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                    <path id="mini-svg-body" fill="#FFFFFF" d="M170,60 L342,60 L360,140 L400,150 L390,220 L350,210 L350,470 L162,470 L162,210 L122,220 L112,150 L152,140 Z"/>
+                                    <path id="mini-svg-trim" fill="#7C2D12" d="M170,60 L190,60 L190,470 L170,470 Z M322,60 L342,60 L342,470 L322,470 Z"/>
+                                </svg>
+                            </div>
+                            <span id="infoName">HEBER</span>
+                        </div>
+                        <div class="player-nat" id="infoNat">#24 • SP</div>
+                        <div class="player-club" id="infoClub" style="display:flex; align-items:center; gap:10px;">📍 Sin Asignar</div>
+
+                        <div class="stats-grid" style="margin-top: 20px;">
+                            <div class="stat-box"><div class="val" id="statAge">18</div><div class="lbl">Edad</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl">Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
+                        </div>
+
+                        <!-- STATS DINÁMICAS SEGÚN GRUPO DE POSICIÓN -->
+                        <div class="stats-grid" id="statsDynamicRow"></div>
+
+                        <div class="action-panel" id="action-panel"></div>
+                    </div>
+                </div>
+
+                <div class="history-card">
+                    <table class="history-table">
+                        <thead><tr id="thDynamicRow"></tr></thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-summary" class="screen">
+            <div class="summary-card">
+                <h1 style="font-size: 38px; font-weight: 900; color: #FFF; margin-bottom: 5px;">Canton Te Espera</h1>
+                <div class="stats-grid" style="margin-top: 30px;" id="sumDynamicRow"></div>
+                <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Franquicias</h3>
+                <div class="clubs-grid" id="clubsGrid"></div>
+                <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Vitrina</h3>
+                <div class="trophy-cabinet" id="trophyCabinet"></div>
+                <button class="btn-main" onclick="location.reload()" style="max-width: 300px; margin: 40px auto 0 auto;">Jugar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cinematic-overlay" class="cinematic-overlay">
+        <div class="cinematic-subtitle">PREMIOS OBTENIDOS</div>
+        <div class="trophies-grid" id="cinematic-trophies-container"></div>
+    </div>
+
+    <script>
+        async function loadNFLTicker() {
+            const ticker = document.getElementById('live-ticker-container');
+            try {
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard');
+                const data = await res.json();
+                let html = '';
+                if (data.events && data.events.length > 0) {
+                    data.events.forEach(ev => {
+                        let comp = ev.competitions[0];
+                        let away = comp.competitors.find(c => c.homeAway === 'away');
+                        let home = comp.competitors.find(c => c.homeAway === 'home');
+                        let status = comp.status.type.shortDetail;
+                        html += `<div class="live-match">🏈 <b>${away.team.abbreviation}</b> ${away.score || 0} - ${home.score || 0} <b>${home.team.abbreviation}</b> <span>${status}</span></div>`;
+                    });
+                } else { html = '<div class="live-match">🏈 Sin juegos programados hoy</div>'; }
+                ticker.innerHTML = html;
+            } catch (e) { ticker.innerHTML = '<div class="live-match">🏈 Cargando NFL API...</div>'; }
+        }
+        loadNFLTicker();
+
+        const collegeTeams = ["Alabama Crimson Tide", "Ohio State Buckeyes", "Georgia Bulldogs", "Texas Longhorns", "Michigan Wolverines", "USC Trojans"];
+        const nflTeams = ["Kansas City Chiefs", "San Francisco 49ers", "Dallas Cowboys", "Philadelphia Eagles", "Buffalo Bills", "Baltimore Ravens", "Detroit Lions"];
+
+        // Colores reales de cada programa/franquicia (dato público, no logo).
+        const teamColors = {
+            "Alabama Crimson Tide": "#9E1B32", "Ohio State Buckeyes": "#BB0000", "Georgia Bulldogs": "#BA0C2F",
+            "Texas Longhorns": "#BF5700", "Michigan Wolverines": "#00274C", "USC Trojans": "#990000",
+            "Kansas City Chiefs": "#E31837", "San Francisco 49ers": "#AA0000", "Dallas Cowboys": "#041E42",
+            "Philadelphia Eagles": "#004C54", "Buffalo Bills": "#00338D", "Baltimore Ravens": "#241773",
+            "Detroit Lions": "#0076B6"
+        };
+
+        function teamInitials(name) {
+            let words = name.trim().split(' ');
+            if (words[0] === words[0].toUpperCase() && words[0].length <= 4 && words.length > 1) return words[0];
+            if (words.length === 1) return words[0].substring(0, 3).toUpperCase();
+            return (words[0][0] + words[1][0]).toUpperCase();
+        }
+
+        function crestHTML(name, size) {
+            size = size || 60;
+            let color = teamColors[name] || "#334155";
+            return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size*0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
+        }
+
+        function posGroup(pos) {
+            if (pos === 'QB') return 'QB';
+            if (pos === 'RB' || pos === 'WR' || pos === 'TE') return 'SKILL';
+            if (pos === 'OL') return 'OL';
+            return 'DEF';
+        }
+
+        function selectPos(pos, element) {
+            document.querySelectorAll('.pos-dot').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('playerPos').value = pos;
+        }
+
+        let player = {
+            name: "", pos: "", num: 23, age: 18, ovr: 56, value: 0,
+            club: "Recluta Sin Asignar", history: [], trophyList: [],
+            G: 0, YDS: 0, TD: 0, INT: 0, REC: 0, TKL: 0, SACK: 0, STARTS: 0, PANCAKES: 0
+        };
+
+        function startCareer() {
+            player.name = document.getElementById('playerName').value.toUpperCase() || "JUGADOR";
+            player.num = document.getElementById('playerNum').value || 24;
+            player.pos = document.getElementById('playerPos').value;
+            player.age = 18; player.ovr = 56;
+
+            setupStatHeaders();
+
+            let tbody = document.getElementById('historyBody');
+            tbody.innerHTML = '';
+            let g = posGroup(player.pos);
+            for(let i=18; i<=38; i++) {
+                let rowClass = i === 18 ? "empty-row current" : "empty-row";
+                let ageCol = i === 18 ? `<b>${i}</b>` : i;
+                if (g === 'QB') {
+                    tbody.innerHTML += `<tr id="row-${i}" class="${rowClass}"><td>${ageCol}</td><td id="c-${i}">-</td><td id="o-${i}">-</td><td id="g-${i}">-</td><td id="yds-${i}">-</td><td id="td-${i}">-</td><td id="int-${i}">-</td></tr>`;
+                } else if (g === 'SKILL') {
+                    tbody.innerHTML += `<tr id="row-${i}" class="${rowClass}"><td>${ageCol}</td><td id="c-${i}">-</td><td id="o-${i}">-</td><td id="g-${i}">-</td><td id="yds-${i}">-</td><td id="td-${i}">-</td><td id="rec-${i}">-</td></tr>`;
+                } else if (g === 'OL') {
+                    tbody.innerHTML += `<tr id="row-${i}" class="${rowClass}"><td>${ageCol}</td><td id="c-${i}">-</td><td id="o-${i}">-</td><td id="g-${i}">-</td><td id="starts-${i}">-</td><td id="pancakes-${i}">-</td></tr>`;
+                } else {
+                    tbody.innerHTML += `<tr id="row-${i}" class="${rowClass}"><td>${ageCol}</td><td id="c-${i}">-</td><td id="o-${i}">-</td><td id="g-${i}">-</td><td id="tkl-${i}">-</td><td id="sack-${i}">-</td><td id="int-${i}">-</td></tr>`;
+                }
+            }
+            document.getElementById(`c-18`).innerText = player.club;
+
+            document.getElementById('screen-setup').classList.remove('active');
+            document.getElementById('screen-game').classList.add('active');
+
+            updateUI();
+            renderDecisionPanel();
+        }
+
+        function setupStatHeaders() {
+            const dRow = document.getElementById('statsDynamicRow');
+            const tRow = document.getElementById('thDynamicRow');
+            let g = posGroup(player.pos);
+            if (g === 'QB') {
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">Yardas Pase</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">TD</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">INT</div></div>`;
+                tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>YDS</th><th>TD</th><th>INT</th>`;
+            } else if (g === 'SKILL') {
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">Yardas</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">TD</div></div><div class="stat-box"><div class="val" id="statREC">0</div><div class="lbl">Recep.</div></div>`;
+                tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>YDS</th><th>TD</th><th>REC</th>`;
+            } else if (g === 'OL') {
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statSTARTS">0</div><div class="lbl">Titular.</div></div><div class="stat-box"><div class="val" id="statPANCAKES">0</div><div class="lbl">Pancakes</div></div><div class="stat-box"><div class="val" id="statG2">0</div><div class="lbl">Juegos</div></div>`;
+                tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>Titular</th><th>Pancakes</th>`;
+            } else {
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statTKL">0</div><div class="lbl">Tacleadas</div></div><div class="stat-box"><div class="val" id="statSACK">0</div><div class="lbl">Sacks</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">INT</div></div>`;
+                tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>TKL</th><th>SACK</th><th>INT</th>`;
+            }
+        }
+
+        // ====== FLUJO DE RECLUTAMIENTO Y DRAFT ======
+        function renderDecisionPanel() {
+            const panel = document.getElementById('action-panel');
+            if(player.age > 38) { showSummary(); return; }
+
+            if (player.club === "Recluta Sin Asignar") {
+                let shuffled = collegeTeams.sort(() => 0.5 - Math.random());
+                let offer1 = shuffled[0]; let offer2 = shuffled[1]; let offer3 = shuffled[2];
+
+                panel.innerHTML = `
+                    <h4>Día de Firmas Nacional (NCAA)</h4>
+                    <p>Tres programas de primer nivel te ofrecen una beca completa. ¿Con quién jugarás?</p>
+                    <div class="decisions-grid full">
+                        <div style="display:flex; gap:15px;">
+                            <button class="dec-btn" style="flex:1; align-items:center;" onclick="processDraftEvent('${offer1}')">
+                                <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(offer1, 56)}</div>
+                                <div class="dec-title">${offer1}</div><div class="dec-prob"><span style="color:var(--legacy-gold)">Beca D1</span></div>
+                            </button>
+                            <button class="dec-btn" style="flex:1; align-items:center;" onclick="processDraftEvent('${offer2}')">
+                                <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(offer2, 56)}</div>
+                                <div class="dec-title">${offer2}</div><div class="dec-prob"><span style="color:var(--legacy-gold)">Beca D1</span></div>
+                            </button>
+                        </div>
+                        <button class="dec-btn" onclick="processDraftEvent('${offer3}')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(offer3, 44)}
+                            <div><div class="dec-title">${offer3}</div><div class="dec-prob"><span style="color:#FFF">Programa Histórico</span></div></div>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Combine + Draft de la NFL a los 21
+            if (player.age === 21 && !nflTeams.includes(player.club)) {
+                panel.innerHTML = `
+                    <h4>NFL Scouting Combine</h4>
+                    <p>Terminaste tu etapa universitaria. Es hora del Combine y del Draft de la NFL.</p>
+                    <div class="decisions-grid full">
+                        <button class="dec-btn" onclick="executeNFLDraft()" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            <div style="width:56px;height:56px;border-radius:50%;background:var(--bg-card);border:2px dashed var(--legacy-gold);display:flex;align-items:center;justify-content:center;font-size:22px;">🎙️</div>
+                            <div><div class="dec-title">Asistir al Draft</div>
+                            <div class="dec-prob"><span style="color:var(--success)">Firma de Novato</span></div></div>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let imgTrain = "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&q=80&w=400";
+            panel.innerHTML = `
+                <h4>Preparación de Temporada</h4>
+                <p>Un régimen intenso en el gimnasio puede traer grandes resultados o dejarte lesionado.</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="processDecision(this, true, 3, -2, 0.6)">
+                        <div class="dec-img-container"><img src="${imgTrain}" class="dec-img"></div>
+                        <div class="dec-title">Entrenamiento Intenso (Riesgo)</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+3 OVR (60%)</span> | <span style="color:var(--danger)">-2 OVR (40%)</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="processDecision(this, false, 1, 0, 1)">
+                        <div class="dec-title">Rutina Segura</div>
+                        <div class="dec-prob"><span style="color:#FFF">+1 OVR Garantizado</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
+        function processDraftEvent(college) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            player.club = college;
+            document.getElementById(`c-18`).innerText = player.club;
+            updateUI();
+            setTimeout(() => { ejecutarSimulacionAnual(0); }, 1000);
+        }
+
+        function executeNFLDraft() {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            let randomTeam = nflTeams[Math.floor(Math.random() * nflTeams.length)];
+            player.club = randomTeam;
+            player.value = 1200000;
+
+            const panel = document.getElementById('action-panel');
+            panel.innerHTML = `<h4 style="color:var(--legacy-gold); font-size:20px; text-align:center;">¡Seleccionado por ${randomTeam}!</h4>`;
+            setTimeout(() => { ejecutarSimulacionAnual(2); }, 2000);
+        }
+
+        function processDecision(btn, isRisk, reward, penalty, successRate) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            btn.classList.add('processing'); btn.innerHTML = `SIMULANDO TEMPORADA...`;
+
+            setTimeout(() => {
+                btn.classList.remove('processing');
+                let ovrChange = 0;
+                if(isRisk) {
+                    if(Math.random() < successRate) {
+                        btn.classList.add('success-anim'); btn.innerHTML = `¡ÉXITO! +${reward} OVR`; ovrChange = reward;
+                    } else {
+                        btn.classList.add('fail-anim'); btn.innerHTML = `¡LESIÓN! ${penalty} OVR`; ovrChange = penalty;
+                    }
+                } else {
+                    btn.classList.add('success-anim'); btn.innerHTML = `TEMPORADA COMPLETADA`; ovrChange = reward;
+                }
+                setTimeout(() => { ejecutarSimulacionAnual(ovrChange); }, 1500);
+            }, 2000);
+        }
+
+        function ejecutarSimulacionAnual(impactoOVR) {
+            player.ovr += impactoOVR;
+
+            let growth = 0;
+            if (player.age < 26) growth = Math.floor(Math.random() * 4) + 1;
+            else if (player.age > 31) growth = -(Math.floor(Math.random() * 5) + 1);
+
+            player.ovr += growth;
+            if (player.ovr > 99) player.ovr = 99;
+            if (player.ovr < 40) player.ovr = 40;
+
+            let formFactor = player.ovr / 100;
+            let isCollege = player.age < 21;
+            let g = posGroup(player.pos);
+
+            let sG = isCollege ? Math.floor(10 + (Math.random()*3)) : Math.floor(13 + Math.random()*4);
+            let seasonData = { age: player.age, club: player.club, ovr: player.ovr, G: sG };
+
+            if (g === 'QB') {
+                let ydsBase = (1800 + formFactor * 3200) * (isCollege ? 0.8 : 1);
+                let sYDS = Math.floor(ydsBase * (0.85 + Math.random()*0.3));
+                let sTD = Math.floor(sYDS / 220 * (0.8 + Math.random()*0.5));
+                let sINT = Math.floor((1 - formFactor) * 18 * Math.random());
+                player.YDS += sYDS; player.TD += sTD; player.INT += sINT;
+                Object.assign(seasonData, {YDS: sYDS, TD: sTD, INT: sINT});
+            } else if (g === 'SKILL') {
+                let ydsBase = (400 + formFactor * 1400) * (isCollege ? 0.7 : 1);
+                let sYDS = Math.floor(ydsBase * (0.8 + Math.random()*0.4));
+                let sTD = Math.floor(sYDS / 130 * (0.8 + Math.random()*0.5));
+                let sREC = player.pos === 'RB' ? Math.floor(sYDS / 45) : Math.floor(sYDS / 13);
+                player.YDS += sYDS; player.TD += sTD; player.REC += sREC;
+                Object.assign(seasonData, {YDS: sYDS, TD: sTD, REC: sREC});
+            } else if (g === 'OL') {
+                let sSTARTS = Math.floor(sG * formFactor);
+                let sPAN = Math.floor(sSTARTS * (8 + formFactor*10));
+                player.STARTS += sSTARTS; player.PANCAKES += sPAN;
+                Object.assign(seasonData, {STARTS: sSTARTS, PANCAKES: sPAN});
+            } else {
+                let sTKL = Math.floor(sG * (3 + formFactor*7));
+                let sSACK = (player.pos === 'DL' || player.pos === 'LB') ? +(Math.random() * formFactor * 12).toFixed(1) : +(Math.random() * formFactor * 2).toFixed(1);
+                let sINT = (player.pos === 'CB' || player.pos === 'S') ? Math.floor(Math.random() * formFactor * 6) : Math.floor(Math.random() * formFactor * 1.5);
+                player.TKL += sTKL; player.SACK += sSACK; player.INT += sINT;
+                Object.assign(seasonData, {TKL: sTKL, SACK: sSACK, INT: sINT});
+            }
+            player.G += sG;
+
+            if (!isCollege) player.value = Math.floor(player.ovr * (player.ovr > 88 ? 600000 : 200000));
+            if (player.age > 30) player.value -= (player.value * 0.30);
+
+            player.history.push(seasonData);
+
+            document.getElementById(`o-${player.age}`).innerHTML = `<span style="color:var(--legacy-gold); font-weight:800;">${player.ovr}</span>`;
+            document.getElementById(`g-${player.age}`).innerText = sG;
+            if (g === 'QB') {
+                document.getElementById(`yds-${player.age}`).innerText = seasonData.YDS;
+                document.getElementById(`td-${player.age}`).innerText = seasonData.TD;
+                document.getElementById(`int-${player.age}`).innerText = seasonData.INT;
+            } else if (g === 'SKILL') {
+                document.getElementById(`yds-${player.age}`).innerText = seasonData.YDS;
+                document.getElementById(`td-${player.age}`).innerText = seasonData.TD;
+                document.getElementById(`rec-${player.age}`).innerText = seasonData.REC;
+            } else if (g === 'OL') {
+                document.getElementById(`starts-${player.age}`).innerText = seasonData.STARTS;
+                document.getElementById(`pancakes-${player.age}`).innerText = seasonData.PANCAKES;
+            } else {
+                document.getElementById(`tkl-${player.age}`).innerText = seasonData.TKL;
+                document.getElementById(`sack-${player.age}`).innerText = seasonData.SACK;
+                document.getElementById(`int-${player.age}`).innerText = seasonData.INT;
+            }
+
+            document.getElementById(`row-${player.age}`).classList.remove('empty-row', 'current');
+
+            let wonTrophies = checkTrophies(seasonData, isCollege, g);
+            player.age++;
+
+            if(player.age <= 38) {
+                let nextRow = document.getElementById(`row-${player.age}`);
+                nextRow.classList.add('current');
+                nextRow.querySelector('td:first-child').innerHTML = `<b>${player.age}</b>`;
+                document.getElementById(`c-${player.age}`).innerText = player.club;
+            }
+
+            updateUI();
+
+            if (wonTrophies.length > 0) showTrophyCinematic(wonTrophies);
+            else renderDecisionPanel();
+        }
+
+        function checkTrophies(sData, isCollege, g) {
+            let won = [];
+            if(isCollege) return won;
+
+            if (player.ovr >= 90 && Math.random() > 0.87) { won.push({name: "Super Bowl", img: "assets/trofeos/lombardi.png"}); }
+            if (player.ovr >= 93 && Math.random() > 0.87) { won.push({name: "MVP de la NFL", img: "assets/trofeos/mvp.png"}); }
+            if (g === 'DEF' && player.ovr >= 92 && Math.random() > 0.8) { won.push({name: "Jugador Defensivo del Año", img: "assets/trofeos/dpoy.png"}); }
+            if (player.ovr >= 85 && Math.random() > 0.55) { won.push({name: "Pro Bowl", img: "assets/trofeos/probowl.png"}); }
+            if (player.ovr >= 94 && Math.random() > 0.7) { won.push({name: "All-Pro", img: "assets/trofeos/allpro.png"}); }
+
+            if(won.length > 0) {
+                player.trophies = (player.trophies || 0) + won.length;
+                player.trophyList.push(...won.map(t => t.name));
+            }
+            return won;
+        }
+
+        function showTrophyCinematic(trophiesArr) {
+            const overlay = document.getElementById('cinematic-overlay');
+            const container = document.getElementById('cinematic-trophies-container');
+            container.innerHTML = "";
+
+            trophiesArr.forEach((t, i) => {
+                container.innerHTML += `
+                    <div class="cinematic-trophy" style="animation-delay: ${i*0.2}s">
+                        <img src="${t.img}" class="cinematic-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3112/3112946.png';">
+                        <div class="cinematic-title">${t.name}</div>
+                    </div>`;
+            });
+            overlay.classList.add('show');
+            setTimeout(() => { overlay.classList.remove('show'); setTimeout(() => { renderDecisionPanel(); }, 500); }, 3500);
+        }
+
+        function updateUI() {
+            document.getElementById('infoName').innerText = player.name;
+            document.getElementById('infoNat').innerText = `#${player.num} • ${player.pos}`;
+            document.getElementById('infoClub').innerHTML = `${crestHTML(player.club, 22)}<span>${player.club}</span>`;
+            document.getElementById('statOvr').innerText = player.ovr;
+            document.getElementById('statAge').innerText = player.age <= 38 ? player.age : 38;
+            document.getElementById('statValue').innerText = "$" + (player.value / 1000000).toFixed(1) + "M";
+            document.getElementById('statG').innerText = player.G;
+
+            let g = posGroup(player.pos);
+            if (g === 'QB' || g === 'SKILL') {
+                document.getElementById('statYDS').innerText = player.YDS;
+                document.getElementById('statTD').innerText = player.TD;
+                if (g === 'QB') document.getElementById('statINT').innerText = player.INT;
+                else document.getElementById('statREC').innerText = player.REC;
+            } else if (g === 'OL') {
+                document.getElementById('statSTARTS').innerText = player.STARTS;
+                document.getElementById('statPANCAKES').innerText = player.PANCAKES;
+                document.getElementById('statG2').innerText = player.G;
+            } else {
+                document.getElementById('statTKL').innerText = player.TKL;
+                document.getElementById('statSACK').innerText = player.SACK.toFixed ? player.SACK.toFixed(1) : player.SACK;
+                document.getElementById('statINT').innerText = player.INT;
+            }
+
+            const historyCard = document.querySelector('.history-card');
+            if(historyCard && player.age > 20) historyCard.scrollTop += 40;
+        }
+
+        function showSummary() {
+            document.getElementById('screen-game').classList.remove('active');
+            document.getElementById('screen-summary').classList.add('active');
+            let g = posGroup(player.pos);
+            let dynHtml = `<div class="stat-box"><div class="val" style="color:var(--legacy-gold); font-size:24px;">${player.ovr}</div><div class="lbl">OVR Final</div></div>`;
+            if (g === 'QB') dynHtml += `<div class="stat-box"><div class="val" style="font-size:24px;">${player.YDS}</div><div class="lbl">Yardas de Pase</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.TD}</div><div class="lbl">Touchdowns</div></div>`;
+            else if (g === 'SKILL') dynHtml += `<div class="stat-box"><div class="val" style="font-size:24px;">${player.YDS}</div><div class="lbl">Yardas Totales</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.TD}</div><div class="lbl">Touchdowns</div></div>`;
+            else if (g === 'OL') dynHtml += `<div class="stat-box"><div class="val" style="font-size:24px;">${player.STARTS}</div><div class="lbl">Juegos Titular</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.PANCAKES}</div><div class="lbl">Pancakes</div></div>`;
+            else dynHtml += `<div class="stat-box"><div class="val" style="font-size:24px;">${player.TKL}</div><div class="lbl">Tacleadas</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.SACK}</div><div class="lbl">Sacks</div></div>`;
+            document.getElementById('sumDynamicRow').innerHTML = dynHtml;
+
+            let clubsMap = {};
+            player.history.forEach(s => { if(!clubsMap[s.club]) clubsMap[s.club]=0; clubsMap[s.club] += s.G; });
+            let clubsHtml = "";
+            for (let c in clubsMap) clubsHtml += `<div class="club-box">${crestHTML(c, 40)}<h5 style="margin-top:10px;">${c}</h5><p>${clubsMap[c]} Juegos</p></div>`;
+            document.getElementById('clubsGrid').innerHTML = clubsHtml;
+
+            let trophiesHtml = "";
+            if (player.trophyList.length === 0) trophiesHtml = `<span style="color:var(--text-muted); font-size:14px;">Carrera sin premios mayores.</span>`;
+            else player.trophyList.forEach(t => { trophiesHtml += `<div class="t-badge">🏆 ${t}</div>`; });
+            document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
+        }
+    </script>
+</body>
+</html>
