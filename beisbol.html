@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legacy | Béisbol (MLB)</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root { --bg-main: #07090F; --bg-card: #131A2B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border-color: #1E293B; --legacy-gold: #F59E0B; --danger: #EF4444; --success: #10B981; }
@@ -14,9 +15,13 @@
         .live-match b { color: #FFF; } .live-match span { color: var(--legacy-gold); margin-left: 8px; font-size: 11px; text-transform: uppercase; border: 1px solid var(--legacy-gold); padding: 2px 6px; border-radius: 4px; }
 
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        .logo-container { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-icon { height: 32px; width: auto; object-fit: contain; }
         .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none;}
         .logo span { color: var(--legacy-gold); }
         .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+        .nav-links a { color: var(--text-muted); text-decoration: none; transition: 0.2s; }
+        .nav-links a:hover { color: var(--legacy-gold); }
 
         .main-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
         .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
@@ -28,7 +33,7 @@
         .jersey-container { width: 150px; height: 150px; margin: 0 auto 15px auto; }
         .jersey-svg { width: 100%; height: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
         
-        /* EL NUEVO DIAMANTE DE BÉISBOL */
+        /* DIAMANTE DE BÉISBOL */
         .diamond-container { position: relative; width: 100%; height: 260px; background: #064E3B; border: 1px solid var(--border-color); border-radius: 12px; margin-top: 10px; overflow: hidden; }
         .dirt-infield { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 180px; height: 180px; background: #A0522D; border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); }
         .grass-infield { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 110px; height: 110px; background: #064E3B; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
@@ -57,7 +62,7 @@
         .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; }
         .player-name { font-size: 24px; font-weight: 900; color: #FFF; margin-bottom: 4px; display: flex; align-items: center; gap: 15px;}
         .player-nat { font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-        .player-club { font-size: 14px; font-weight: 800; color: var(--legacy-gold); margin-top: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .player-club { font-size: 14px; font-weight: 800; color: var(--legacy-gold); margin-top: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between;}
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: var(--bg-main); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 10px; }
         .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
@@ -67,15 +72,16 @@
         .action-panel { margin-top: 25px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
-        .decisions-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .decisions-grid.full { grid-template-columns: 1fr; }
-        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 170px; }
-        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); }
-        .dec-img-container { height: 80px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; flex-shrink: 0; }
+        .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 180px; }
+        .dec-btn:hover { border-color: #FFF; transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.4); }
+        .dec-img-container { height: 90px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #000; flex-shrink: 0; }
         .dec-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
         .dec-btn:hover .dec-img { opacity: 1; transform: scale(1.05); }
         .dec-title { color: #FFF; font-weight: 800; font-size: 13px; margin-bottom: 6px; line-height: 1.3; }
-        .dec-prob { font-size: 12px; font-weight: 600; margin-top: auto; }
+        .dec-prob { font-size: 11px; font-weight: 600; margin-top: auto; }
+        
         .dec-btn.processing { border-color: #FFF; animation: pulse-border 1s infinite alternate; pointer-events: none; justify-content: center; align-items: center; }
         .dec-btn.success-anim { border-color: var(--success); background: rgba(16, 185, 129, 0.15); justify-content: center; align-items: center; }
         .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
@@ -92,7 +98,7 @@
         .history-table tr.current { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--legacy-gold); }
         .history-table tr.current td { color: var(--legacy-gold); }
 
-        /* CINEMÁTICA Y SUMMARY */
+        /* SUMMARY */
         .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
         .cinematic-overlay.show { display: flex; opacity: 1; }
         .trophies-grid { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
@@ -118,7 +124,10 @@
     </div>
 
     <header>
-        <a href="index.html" class="logo">legacy<span>.</span></a>
+        <a href="index.html" class="logo-container">
+            <img src="logo.png" alt="Icono" class="logo-icon" onerror="this.outerHTML=''">
+            <div class="logo">legacy<span>.</span></div>
+        </a>
         <div class="nav-links">
             <a href="futbol.html" style="color:var(--text-muted); text-decoration:none;">Fútbol</a>
             <span style="color: #FFF;">Béisbol (MLB)</span>
@@ -165,8 +174,6 @@
                                 <option value="JPN">🇯🇵 Japón</option>
                             </select>
                         </div>
-
-                        <!-- OMITIMOS ELEGIR EQUIPO, SE HARÁ POR SCOUTING -->
                     </div>
 
                     <div>
@@ -211,11 +218,14 @@
                             <span id="infoName">HEBER</span>
                         </div>
                         <div class="player-nat" id="infoNat">#24 • SP</div>
-                        <div class="player-club" id="infoClub" style="display:flex; align-items:center; gap:10px;">📍 Sin Asignar</div>
+                        <div class="player-club">
+                            <span id="infoClub" style="display:flex; align-items:center; gap:10px;">📍 Sin Asignar</span>
+                            <span id="infoContract" style="color:#FFF; font-size:12px; background:rgba(255,255,255,0.1); padding:4px 8px; border-radius:4px; margin-top:8px; display:inline-block;">NCAA</span>
+                        </div>
 
                         <div class="stats-grid" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">18</div><div class="lbl">Edad</div></div>
-                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl">Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl">Sueldo / Año</div></div>
                             <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
                         </div>
 
@@ -238,7 +248,14 @@
         <div id="screen-summary" class="screen">
             <div class="summary-card">
                 <h1 style="font-size: 38px; font-weight: 900; color: #FFF; margin-bottom: 5px;">Cooperstown Llama</h1>
-                <div class="stats-grid" style="margin-top: 30px;" id="sumDynamicRow"></div>
+                
+                <!-- GANANCIAS TOTALES EN EL SUMMARY -->
+                <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); border-radius: 12px; padding: 15px; margin-top: 20px;">
+                    <div style="font-size: 12px; color: var(--success); font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">Ganancias de Carrera</div>
+                    <div style="font-size: 32px; font-weight: 900; color: #FFF;" id="sumEarnings">$0</div>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 20px;" id="sumDynamicRow"></div>
                 <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Franquicias</h3>
                 <div class="clubs-grid" id="clubsGrid"></div>
                 <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Vitrina</h3>
@@ -277,10 +294,12 @@
         loadMLBTicker();
 
         const collegeTeams = ["Vanderbilt", "LSU Tigers", "Florida Gators", "Texas Longhorns", "UCLA Bruins", "Stanford Cardinal"];
-        const mlbTeams = ["San Diego Padres", "New York Yankees", "Los Angeles Dodgers", "Boston Red Sox", "Houston Astros", "Atlanta Braves", "Texas Rangers"];
+        const mlbTeams = [
+            {n:"Dodgers", elite:true}, {n:"Yankees", elite:true}, {n:"Braves", elite:true}, {n:"Astros", elite:true}, {n:"Phillies", elite:true},
+            {n:"Padres", elite:false}, {n:"Red Sox", elite:false}, {n:"Cubs", elite:false}, {n:"Mariners", elite:false}, {n:"Blue Jays", elite:false},
+            {n:"Athletics", elite:false}, {n:"White Sox", elite:false}, {n:"Rockies", elite:false}, {n:"Marlins", elite:false}
+        ];
 
-        // Colores reales de cada programa/franquicia (dato público, no logo). Sirve como
-        // "escudo" seguro a nivel de derechos mientras no tengamos assets oficiales licenciados.
         const teamColors = {
             "Vanderbilt": "#000000", "LSU Tigers": "#461D7C", "Florida Gators": "#0021A5",
             "Texas Longhorns": "#BF5700", "UCLA Bruins": "#2D68C4", "Stanford Cardinal": "#8C1515",
@@ -302,46 +321,71 @@
             return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size*0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
         }
 
-        function eventIconHTML(emoji, tone) {
-            let bg = tone === 'risk' ? 'linear-gradient(135deg, rgba(239,68,68,0.18), rgba(239,68,68,0.05))' : 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(16,185,129,0.05))';
-            return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;background:${bg};">${emoji}</div>`;
-        }
-
-        const randomEvents = [
+        // CATÁLOGO DE EVENTOS (Reemplazado con tus 8 ideas y fotos reales)
+        const mlbEvents = [
             {
-                title: "Bronca en el Dugout",
-                desc: "Un veterano te grita frente a todo el equipo por un error defensivo. ¿Le respondes o te tragas el orgullo?",
-                iconRisk: "🥊", iconSafe: "🤐",
-                optRisk: { label: "Responderle Frente al Equipo", succ: 0.5, rwd: 3, pen: -3 },
-                optSafe: { label: "Guardar Silencio y Enfocarte", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Fiesta tras Derrota",
+                desc: "El equipo perdió feo hoy, pero hay una fiesta exclusiva en la ciudad. Si te ven, te suspenderán.",
+                imgRisk: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400", 
+                optRisk: { label: "Ir Escondido", succ: 0.6, rwd: 2, pen: -3 },
+                optSafe: { label: "Ir a Dormir", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Entrevista Polémica",
-                desc: "Un periodista te presiona en rueda de prensa sobre la mala racha del equipo. ¿Sueltas la verdad o das una respuesta de manual?",
-                iconRisk: "🎙️", iconSafe: "😐",
-                optRisk: { label: "Criticar Abiertamente al Manager", succ: 0.45, rwd: 4, pen: -3 },
-                optSafe: { label: "Respuesta Diplomática de Cajón", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Cambio de Dieta",
+                desc: "Un gurú te ofrece una dieta radical para ganar masa muscular rápido. Podría caerte mal.",
+                imgRisk: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
+                optRisk: { label: "Probar la Dieta", succ: 0.5, rwd: 2, pen: -2 },
+                optSafe: { label: "Nutrición del Club", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Patrocinio Oscuro",
-                desc: "Una marca de suplementos sin regular te ofrece un contrato jugoso a cambio de tu imagen. ¿Firmas?",
-                iconRisk: "💰", iconSafe: "🚫",
-                optRisk: { label: "Firmar el Contrato", succ: 0.55, rwd: 4, pen: -4 },
-                optSafe: { label: "Rechazar la Oferta", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Gimnasio Pesado",
+                desc: "Sientes que te falta potencia. Quieres cambiar a una rutina de fuerza máxima.",
+                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
+                optRisk: { label: "Entrenamiento al Fallo", succ: 0.5, rwd: 3, pen: -3 },
+                optSafe: { label: "Rutina de Mantenimiento", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Rumores de Trade",
-                desc: "Tu nombre suena fuerte en rumores de cambio de equipo. ¿Presionas a la gerencia para que decida o te concentras en el terreno?",
-                iconRisk: "📣", iconSafe: "🧘",
-                optRisk: { label: "Exigir una Respuesta a la Gerencia", succ: 0.6, rwd: 3, pen: -2 },
-                optSafe: { label: "Dejarlo en Manos del Front Office", succ: 1.0, rwd: 1, pen: 0 }
+                title: "El Manager te Borra",
+                desc: "El manager te llama a su oficina y te dice que no cuenta contigo esta temporada.",
+                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", 
+                optRisk: { label: "Pelear el Puesto", succ: 0.4, rwd: 3, pen: -4 },
+                optSafe: { label: "Pedir Traspaso", succ: 1.0, rwd: 0, pen: 0, action: "trade" }
             },
             {
-                title: "Mala Racha al Bate",
-                desc: "Llevas dos semanas sin conectar. La prensa empieza a especular. ¿Cambias tu stance por completo o confías en el proceso?",
-                iconRisk: "🔧", iconSafe: "📈",
-                optRisk: { label: "Cambiar tu Stance de Bateo", succ: 0.5, rwd: 4, pen: -3 },
-                optSafe: { label: "Confiar en el Proceso", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Cambio de Posición",
+                desc: "El equipo fichó a una estrella en tu posición. Te piden jugar en otro lado del diamante.",
+                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?w=400", 
+                optRisk: { label: "Aceptar el Reto", succ: 0.6, rwd: 2, pen: -3 },
+                optSafe: { label: "Rechazar y Salir", succ: 1.0, rwd: 0, pen: -1, action: "trade" }
+            },
+            {
+                title: "Tensión en el Dugout",
+                desc: "Un compañero veterano te grita frente a todos por no correr a primera base.",
+                imgRisk: "https://images.unsplash.com/photo-1588865198380-496696ce7508?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1511886929837-354d827aae26?w=400", 
+                optRisk: { label: "Gritarle de Vuelta", succ: 0.5, rwd: 3, pen: -2 },
+                optSafe: { label: "Aceptar la Culpa", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Rumores de Cambio",
+                desc: "Tu nombre suena fuerte en la fecha límite de cambios. La prensa te acorrala.",
+                imgRisk: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
+                optRisk: { label: "Exigir salir a un contendiente", succ: 0.5, rwd: 2, pen: -2, action: "trade" },
+                optSafe: { label: "Declarar Lealtad", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Patrocinador Oscuro",
+                desc: "Una marca de suplementos sin regulación te ofrece millones por usar su logo.",
+                imgRisk: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400", 
+                imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
+                optRisk: { label: "Firmar el Contrato", succ: 0.4, rwd: 3, pen: -5 },
+                optSafe: { label: "Rechazar por Ética", succ: 1.0, rwd: 1, pen: 0 }
             }
         ];
 
@@ -352,16 +396,12 @@
         }
 
         let player = {
-            name: "", pos: "", num: 23, age: 18, ovr: 48, value: 0,
+            name: "", pos: "", num: 24, age: 18, ovr: 48, salary: 0, contractYears: 0, totalEarnings: 0,
             club: "Recluta Sin Asignar", history: [], trophyList: [], trophies: 0,
             G: 0, AB: 0, HR: 0, RBI: 0, H: 0, IP: 0, W: 0, L: 0, K: 0, ER: 0,
             peakOvr: 48, declineTarget: null, proDebutDone: false, contract: null
         };
 
-        // Curva de aging aplicada cada temporada: sube/estabiliza con ageGrowthDelta
-        // hasta los 32, y de los 33 en adelante declina hacia un piso calculado a
-        // partir del pico de OVR alcanzado (para que un jugador que llegó a 80 de
-        // media máxima termine su carrera alrededor de 55-60, no en 40).
         function applyAging() {
             if (player.age <= 32) {
                 player.ovr += ageGrowthDelta(player.age);
@@ -380,7 +420,7 @@
 
         function signContract(team, years, value) {
             player.club = team;
-            player.value = value;
+            player.salary = value;
             player.contract = { team: team, yearsTotal: years, yearsLeft: years, yearsElapsed: 0, checkpointYear: Math.max(1, Math.ceil(years / 2)) };
         }
 
@@ -390,19 +430,17 @@
             let ageFactor = age < 28 ? 1.2 : age < 32 ? 1.0 : age < 35 ? 0.65 : 0.35;
             let years = Math.max(1, Math.min(10, Math.round(yearsBase * ageFactor + (Math.random() * 2 - 1))));
             let annual = Math.floor(ovr * ovr * 700 * ageFactor * (0.85 + Math.random() * 0.3));
-            return { team: teamName, years: years, value: annual * years };
+            return { team: teamName, years: years, value: annual };
         }
 
-        // Curva de envejecimiento en forma de campana: sube rápido de joven,
-        // se estabiliza en el prime (27-30) y declina cada vez más rápido después.
         function ageGrowthDelta(age) {
-            if (age <= 20) return Math.floor(Math.random() * 3) + 3;   // +3 a +5
-            if (age <= 24) return Math.floor(Math.random() * 3) + 1;   // +1 a +3
-            if (age <= 27) return Math.floor(Math.random() * 3) - 1;   // -1 a +1
-            if (age <= 30) return Math.floor(Math.random() * 3) - 1;   // -1 a +1 (meseta de prime)
-            if (age <= 33) return -(Math.floor(Math.random() * 2) + 1); // -1 a -2
-            if (age <= 36) return -(Math.floor(Math.random() * 3) + 2); // -2 a -4
-            return -(Math.floor(Math.random() * 3) + 4);                // -4 a -6
+            if (age <= 20) return Math.floor(Math.random() * 3) + 3;  
+            if (age <= 24) return Math.floor(Math.random() * 3) + 1;  
+            if (age <= 27) return Math.floor(Math.random() * 3) - 1;   
+            if (age <= 30) return Math.floor(Math.random() * 3) - 1;   
+            if (age <= 33) return -(Math.floor(Math.random() * 2) + 1); 
+            if (age <= 36) return -(Math.floor(Math.random() * 3) + 2); 
+            return -(Math.floor(Math.random() * 3) + 4);                
         }
 
         function startCareer() {
@@ -411,12 +449,13 @@
             player.pos = document.getElementById('playerPos').value;
             player.age = 18; player.ovr = 58; 
             player.peakOvr = 58; player.declineTarget = null; player.proDebutDone = false; player.contract = null;
+            player.totalEarnings = 0;
 
             setupStatHeaders();
 
             let tbody = document.getElementById('historyBody');
             tbody.innerHTML = '';
-            for(let i=18; i<=38; i++) {
+            for(let i=18; i<=40; i++) {
                 let rowClass = i === 18 ? "empty-row current" : "empty-row";
                 let ageCol = i === 18 ? `<b>${i}</b>` : i;
                 if(player.pos === 'SP' || player.pos === 'RP') {
@@ -446,12 +485,10 @@
             }
         }
 
-        // ====== EL NUEVO FLUJO DE SCOUTING INICIAL ======
         function renderDecisionPanel() {
             const panel = document.getElementById('action-panel');
-            if(player.age > 38) { showSummary(); return; }
+            if(player.age > 40) { showSummary(); return; }
 
-            // Si no tiene equipo (Arranca el juego)
             if (player.club === "Recluta Sin Asignar") {
                 let shuffled = collegeTeams.sort(() => 0.5 - Math.random());
                 let offer1 = shuffled[0]; let offer2 = shuffled[1]; let offer3 = shuffled[2];
@@ -479,37 +516,39 @@
                 return;
             }
 
-            // Draft MLB a los 21
             if (player.age === 21 && !player.proDebutDone) {
+                let imgDraft = "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=400";
                 panel.innerHTML = `
                     <h4>Draft de la MLB</h4>
                     <p>Terminaste tu etapa colegial. Te has declarado elegible para el Draft de las Mayores.</p>
                     <div class="decisions-grid full">
-                        <button class="dec-btn" onclick="executeMLBDraft()" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
-                            <div style="width:56px;height:56px;border-radius:50%;background:var(--bg-card);border:2px dashed var(--legacy-gold);display:flex;align-items:center;justify-content:center;font-size:22px;">🎙️</div>
-                            <div><div class="dec-title">Asistir al Draft</div>
-                            <div class="dec-prob"><span style="color:var(--success)">Firma de Novato (6 años de control)</span></div></div>
+                        <button class="dec-btn" onclick="executeMLBDraft()">
+                            <div class="dec-img-container"><img src="${imgDraft}" class="dec-img"></div>
+                            <div class="dec-title">Asistir al Draft</div>
+                            <div class="dec-prob"><span style="color:var(--success)">Firma de Novato (6 años de control)</span></div>
                         </button>
                     </div>
                 `;
                 return;
             }
 
-            // Evento Normal: elegir situación al azar del banco de eventos
-            let ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+            let ev = mlbEvents[Math.floor(Math.random() * mlbEvents.length)];
             let riskPct = Math.round(ev.optRisk.succ * 100);
             let failPct = 100 - riskPct;
+            let actionRisk = ev.optRisk.action ? `'${ev.optRisk.action}'` : 'null';
+            let actionSafe = ev.optSafe.action ? `'${ev.optSafe.action}'` : 'null';
+
             panel.innerHTML = `
                 <h4>${ev.title}</h4>
                 <p>${ev.desc}</p>
                 <div class="decisions-grid">
-                    <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ})">
-                        <div class="dec-img-container">${eventIconHTML(ev.iconRisk, 'risk')}</div>
+                    <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ}, ${actionRisk})">
+                        <div class="dec-img-container"><img src="${ev.imgRisk}" class="dec-img"></div>
                         <div class="dec-title">${ev.optRisk.label}</div>
                         <div class="dec-prob"><span style="color:var(--success)">+${ev.optRisk.rwd} OVR (${riskPct}%)</span> | <span style="color:var(--danger)">${ev.optRisk.pen} OVR (${failPct}%)</span></div>
                     </button>
-                    <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ})">
-                        <div class="dec-img-container">${eventIconHTML(ev.iconSafe, 'safe')}</div>
+                    <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ}, ${actionSafe})">
+                        <div class="dec-img-container"><img src="${ev.imgSafe}" class="dec-img"></div>
                         <div class="dec-title">${ev.optSafe.label}</div>
                         <div class="dec-prob"><span style="color:#FFF">+${ev.optSafe.rwd} OVR Garantizado</span></div>
                     </button>
@@ -527,7 +566,7 @@
 
         function executeMLBDraft() {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
-            let randomTeam = mlbTeams[Math.floor(Math.random() * mlbTeams.length)];
+            let randomTeam = mlbTeams[Math.floor(Math.random() * mlbTeams.length)].n;
             player.proDebutDone = true;
             signContract(randomTeam, 6, Math.floor(300000 + Math.random() * 400000));
             
@@ -537,129 +576,65 @@
             setTimeout(() => { ejecutarSimulacionAnual(2); }, 2000);
         }
 
-        function processDecision(btn, isRisk, reward, penalty, successRate) {
+        function processDecision(btn, isRisk, reward, penalty, successRate, actionType) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
             btn.classList.add('processing'); btn.innerHTML = `SIMULANDO TEMPORADA...`;
 
             setTimeout(() => {
                 btn.classList.remove('processing');
                 let ovrChange = 0;
+                let isSuccess = Math.random() < successRate;
+                
                 if(isRisk) {
-                    if(Math.random() < successRate) {
+                    if(isSuccess) {
                         btn.classList.add('success-anim'); btn.innerHTML = `¡ÉXITO! +${reward} OVR`; ovrChange = reward;
                     } else {
-                        btn.classList.add('fail-anim'); btn.innerHTML = `¡LESIÓN! ${penalty} OVR`; ovrChange = penalty;
+                        btn.classList.add('fail-anim'); btn.innerHTML = `¡LESIÓN/FALLO! ${penalty} OVR`; ovrChange = penalty;
                     }
                 } else {
                     btn.classList.add('success-anim'); btn.innerHTML = `TEMPORADA COMPLETADA`; ovrChange = reward;
                 }
+
+                if(actionType === 'trade' && isSuccess && player.proDebutDone) {
+                    let others = mlbTeams.filter(t => t.n !== player.club);
+                    let newTeam = others[Math.floor(Math.random() * others.length)].n;
+                    player.club = newTeam;
+                    if(player.contract) player.contract.team = newTeam;
+                    btn.innerHTML = `¡TRASPASADO A ${newTeam.toUpperCase()}!`;
+                }
+
                 setTimeout(() => { ejecutarSimulacionAnual(ovrChange); }, 1500);
             }, 2000); 
         }
 
-        // ====== FLUJO DE CONTRATOS (post-Draft) ======
         function advanceFlow() {
-            if (player.age > 38) { showSummary(); return; }
+            if (player.age > 40) { showSummary(); return; }
             if (!player.proDebutDone) { renderDecisionPanel(); return; }
             if (!player.contract) { renderFreeAgency(); return; }
-            let c = player.contract;
-            if (c.yearsElapsed === c.checkpointYear - 1) { renderContractCheckpoint(); return; }
-            renderAutoContractYear();
-        }
-
-        function renderAutoContractYear() {
-            const panel = document.getElementById('action-panel');
-            let c = player.contract;
-            panel.innerHTML = `
-                <h4>Temporada ${c.yearsElapsed + 1} de ${c.yearsTotal}</h4>
-                <p>Sigues bajo contrato con ${player.club}. La temporada se desarrolla...</p>
-                <div style="display:flex; align-items:center; gap:15px; padding:20px; background:var(--bg-main); border-radius:12px;">
-                    ${crestHTML(player.club, 44)}
-                    <div style="font-size:13px; color:var(--text-muted); font-weight:700;">Simulando temporada regular...</div>
-                </div>
-            `;
-            setTimeout(() => { ejecutarSimulacionAnual(0); }, 1400);
-        }
-
-        function renderContractCheckpoint() {
-            const panel = document.getElementById('action-panel');
-            let h = player.history;
-            let trendDown = h.length >= 2 && h[h.length - 1].ovr < h[h.length - 2].ovr;
-
-            if (trendDown && player.ovr < 72) {
-                panel.innerHTML = `
-                    <h4>Bajo Rendimiento</h4>
-                    <p>Tu nivel ha bajado y la organización empieza a dudar de ti. ¿Cómo respondes a mitad de contrato?</p>
-                    <div class="decisions-grid">
-                        <button class="dec-btn" onclick="resolveCheckpoint('aaa')">
-                            <div class="dec-img-container">${eventIconHTML('📉', 'risk')}</div>
-                            <div class="dec-title">Aceptar Envío a AAA</div>
-                            <div class="dec-prob"><span style="color:var(--danger)">Pierdes ritmo esta temporada</span></div>
-                        </button>
-                        <button class="dec-btn" onclick="resolveCheckpoint('fight')">
-                            <div class="dec-img-container">${eventIconHTML('💪', 'safe')}</div>
-                            <div class="dec-title">Pelear por tu Puesto</div>
-                            <div class="dec-prob"><span style="color:#FFF">Arriesgado, pero sigues en Mayores</span></div>
-                        </button>
-                    </div>
-                `;
-            } else {
-                panel.innerHTML = `
-                    <h4>Rumores de Trade</h4>
-                    <p>Tu nivel atrae el interés de otros equipos en la fecha límite de cambios. ¿Aceptas ir a un contendiente o te quedas?</p>
-                    <div class="decisions-grid">
-                        <button class="dec-btn" onclick="resolveCheckpoint('trade')">
-                            <div class="dec-img-container">${eventIconHTML('🔁', 'risk')}</div>
-                            <div class="dec-title">Aceptar el Trade</div>
-                            <div class="dec-prob"><span style="color:var(--success)">Nuevo equipo, nueva presión</span></div>
-                        </button>
-                        <button class="dec-btn" onclick="resolveCheckpoint('stay')">
-                            <div class="dec-img-container">${eventIconHTML('🏠', 'safe')}</div>
-                            <div class="dec-title">Quedarte y Ser Líder</div>
-                            <div class="dec-prob"><span style="color:#FFF">Lealtad con tu Franquicia</span></div>
-                        </button>
-                    </div>
-                `;
-            }
-        }
-
-        function resolveCheckpoint(choice) {
-            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
-            let impact = 0;
-            if (choice === 'aaa') { impact = -2; }
-            if (choice === 'fight') { impact = Math.random() > 0.5 ? 3 : -4; }
-            if (choice === 'trade') {
-                let others = mlbTeams.filter(t => t !== player.club);
-                let newTeam = others[Math.floor(Math.random() * others.length)];
-                player.club = newTeam;
-                player.contract.team = newTeam;
-                impact = 1;
-            }
-            if (choice === 'stay') { impact = 2; }
-            setTimeout(() => { ejecutarSimulacionAnual(impact); }, 1200);
+            
+            // Si tiene contrato, renderiza evento normal
+            renderDecisionPanel(); 
         }
 
         function renderFreeAgency() {
             const panel = document.getElementById('action-panel');
-            let others = mlbTeams.filter(t => t !== player.club);
+            let others = mlbTeams.filter(t => t.n !== player.club);
             let shuffled = others.sort(() => 0.5 - Math.random());
             let offers = [
-                { label: `Firmar con ${shuffled[0]}`, o: generateContractOffer(shuffled[0]) },
-                { label: `Firmar con ${shuffled[1]}`, o: generateContractOffer(shuffled[1]) },
+                { label: `Firmar con ${shuffled[0].n}`, o: generateContractOffer(shuffled[0].n) },
+                { label: `Firmar con ${shuffled[1].n}`, o: generateContractOffer(shuffled[1].n) },
                 { label: `Renovar con ${player.club}`, o: generateContractOffer(player.club) }
             ];
-            if (player.ovr >= 92 && player.age <= 29 && Math.random() > 0.5) {
-                let megaTeam = shuffled[2] || shuffled[0];
-                offers.push({ label: `¡Oferta Histórica de ${megaTeam}!`, o: { team: megaTeam, years: 10, value: 500000000 }, mega: true });
-            }
+            
+            let imgFirma = "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=400";
             panel.innerHTML = `
                 <h4>Agencia Libre</h4>
-                <p>Tu contrato con ${player.club} terminó. Estas son las ofertas sobre la mesa.</p>
+                <p>Tu contrato con ${player.club} expiró. Estas son las ofertas en la mesa.</p>
                 <div class="decisions-grid full">
                     ${offers.map(of => `
                         <button class="dec-btn" onclick="executeFreeAgencySigning('${of.o.team}', ${of.o.years}, ${of.o.value})" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
-                            ${crestHTML(of.o.team, 48)}
-                            <div><div class="dec-title">${of.label}</div><div class="dec-prob"><span style="color:${of.mega ? 'var(--legacy-gold)' : '#FFF'}">${of.o.years} años • $${(of.o.value / 1000000).toFixed(0)}M</span></div></div>
+                            <div class="dec-img-container" style="width:60px; height:60px; margin-bottom:0;"><img src="${imgFirma}" class="dec-img"></div>
+                            <div><div class="dec-title">${of.label}</div><div class="dec-prob"><span style="color:#FFF">${of.o.years} años • $${(of.o.value / 1000000).toFixed(1)}M / Año</span></div></div>
                         </button>
                     `).join('')}
                 </div>
@@ -670,57 +645,27 @@
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
             signContract(team, years, value);
             updateUI();
-            setTimeout(() => { advanceFlow(); }, 1200);
-        }
-
-        function showInjuryNarrative(injury) {
+            
             const panel = document.getElementById('action-panel');
-            panel.innerHTML = `
-                <div style="text-align:center; padding:15px 10px;">
-                    <div style="font-size:40px; margin-bottom:10px;">${injury.icon}</div>
-                    <h4 style="color:var(--danger);">${injury.label}</h4>
-                    <p>Una lesión te costó gran parte de la temporada y ${injury.penalty} puntos de OVR de forma permanente. Toca recuperarse.</p>
-                </div>
-            `;
-            setTimeout(() => { advanceFlow(); }, 2500);
+            panel.innerHTML = `<h4 style="color:var(--success); font-size:20px; text-align:center;">¡Firma Oficial con ${team}!</h4>`;
+            setTimeout(() => { advanceFlow(); }, 1500);
         }
 
         function ejecutarSimulacionAnual(impactoOVR) {
             player.ovr += impactoOVR;
-
-            // Lesión aleatoria: solo en la etapa profesional, no elegible por el jugador.
-            let seasonInjury = null;
-            if (player.age >= 21 && Math.random() < 0.06) {
-                if (player.pos === 'SP' || player.pos === 'RP') {
-                    seasonInjury = { label: "Cirugía Tommy John", icon: "🩹", penalty: 6 };
-                } else {
-                    seasonInjury = { label: "Ruptura de Ligamento (LCA)", icon: "🦵", penalty: 5 };
-                }
-                player.ovr -= seasonInjury.penalty;
-            }
 
             applyAging();
             if (player.ovr > 99) player.ovr = 99;
             if (player.ovr < 40) player.ovr = 40;
 
             let formFactor = player.ovr / 100;
-            let isCollege = player.age <= 20;
+            let isCollege = collegeTeams.includes(player.club);
             
             let sG=0, sAB=0, sH=0, sHR=0, sRBI=0, sIP=0, sW=0, sL=0, sK=0, sER=0;
 
-            if (seasonInjury) {
-                // Temporada perdida por lesión: pocos juegos antes de la baja.
-                sG = Math.floor(Math.random() * 20);
-                if (player.pos === 'SP' || player.pos === 'RP') {
-                    sIP = sG * 2; sK = Math.floor(sIP * 0.8); sER = Math.floor(sIP * 0.5); sL = Math.floor(Math.random() * 2);
-                    player.IP += sIP; player.K += sK; player.ER += sER; player.W += sW; player.L += sL; player.G += sG;
-                } else {
-                    sAB = sG * 3; sH = Math.floor(sAB * 0.2); sHR = Math.floor(sH * 0.1); sRBI = sHR * 2;
-                    player.G += sG; player.AB += sAB; player.H += sH; player.HR += sHR; player.RBI += sRBI;
-                }
-            } else if(player.pos === 'SP' || player.pos === 'RP') {
+            if(player.pos === 'SP' || player.pos === 'RP') {
                 sG = isCollege ? Math.floor(12 + (Math.random()*4)) : Math.floor(30 + formFactor*5);
-                sIP = Math.floor(sG * (5 + Math.random()*2));
+                sIP = Math.floor(sG * (player.pos === 'SP' ? 6 : 1.2));
                 sK = Math.floor(sIP * (formFactor * 1.3));
                 sER = Math.floor(sIP * ((6.5 - (formFactor*4)) / 9)); 
                 if(sER < 0) sER = 10;
@@ -740,8 +685,12 @@
                 player.G += sG; player.AB += sAB; player.H += sH; player.HR += sHR; player.RBI += sRBI;
             }
 
-            if (!isCollege && !player.contract) player.value = Math.floor(player.ovr * (player.ovr > 85 ? 500000 : 150000));
-            if (player.age > 32 && !player.contract) player.value -= (player.value * 0.30); 
+            if (!isCollege && player.contract) {
+                player.totalEarnings += player.salary;
+                player.contract.yearsElapsed++;
+                player.contract.yearsLeft--;
+                if (player.contract.yearsLeft <= 0) player.contract = null;
+            }
 
             let seasonData = {
                 age: player.age, club: player.club, ovr: player.ovr, G: sG,
@@ -766,17 +715,11 @@
             }
             
             document.getElementById(`row-${player.age}`).classList.remove('empty-row', 'current');
-            let wonTrophies = seasonInjury ? [] : checkTrophies(seasonData, isCollege);
-
-            if (player.contract) {
-                player.contract.yearsElapsed++;
-                player.contract.yearsLeft--;
-                if (player.contract.yearsLeft <= 0) player.contract = null;
-            }
-
+            
+            let wonTrophies = checkTrophies(seasonData, isCollege);
             player.age++;
 
-            if(player.age <= 38) {
+            if(player.age <= 40) {
                 let nextRow = document.getElementById(`row-${player.age}`);
                 nextRow.classList.add('current');
                 nextRow.querySelector('td:first-child').innerHTML = `<b>${player.age}</b>`;
@@ -785,8 +728,7 @@
             
             updateUI();
 
-            if (seasonInjury) showInjuryNarrative(seasonInjury);
-            else if (wonTrophies.length > 0) showTrophyCinematic(wonTrophies);
+            if (wonTrophies.length > 0) showTrophyCinematic(wonTrophies);
             else advanceFlow();
         }
 
@@ -794,7 +736,9 @@
             let won = [];
             if(isCollege) return won; 
 
-            if (player.ovr >= 90 && Math.random() > 0.85) { won.push({name: "World Series", img: "assets/trofeos/ws.png"}); }
+            let isEliteTeam = mlbTeams.find(t => t.n === sData.club)?.elite || false;
+
+            if (player.ovr >= 85 && isEliteTeam && Math.random() > 0.75) { won.push({name: "World Series", img: "assets/trofeos/ws.png"}); }
             if (player.ovr >= 82 && Math.random() > 0.5) { won.push({name: "All-Star", img: "assets/trofeos/allstar.png"}); }
 
             if (player.pos === 'SP' || player.pos === 'RP') {
@@ -805,7 +749,6 @@
                 if (sData.HR > 35) { won.push({name: "Silver Slugger", img: "assets/trofeos/silver_slugger.png"}); }
             }
 
-            // Guante de Oro: premio defensivo, independiente del bateo. Solo posiciones de campo.
             if (player.pos !== 'SP' && player.pos !== 'RP' && player.ovr >= 78 && Math.random() > 0.75) {
                 won.push({name: "Guante de Oro", img: "assets/trofeos/gold_glove.png"});
             }
@@ -844,8 +787,13 @@
             document.getElementById('infoNat').innerText = `#${player.num} • ${player.pos}`;
             document.getElementById('infoClub').innerHTML = `${crestHTML(player.club, 22)}<span>${player.club}</span>`;
             document.getElementById('statOvr').innerText = player.ovr;
-            document.getElementById('statAge').innerText = player.age <= 38 ? player.age : 38;
-            document.getElementById('statValue').innerText = "$" + (player.value / 1000000).toFixed(1) + "M";
+            document.getElementById('statAge').innerText = player.age <= 40 ? player.age : 40;
+            
+            let statusContrato = player.contractYears > 0 ? `$${(player.salary/1000000).toFixed(1)}M / ${player.contractYears}A` : "Agencia Libre";
+            if(collegeTeams.includes(player.club)) statusContrato = "Beca (NCAA)";
+            
+            document.getElementById('infoContract').innerText = statusContrato;
+            document.getElementById('statValue').innerText = player.salary > 0 ? `$${(player.salary/1000000).toFixed(1)}M` : "$0M";
             document.getElementById('statG').innerText = player.G;
             updateJerseyForClub();
 
@@ -866,6 +814,9 @@
         function showSummary() {
             document.getElementById('screen-game').classList.remove('active');
             document.getElementById('screen-summary').classList.add('active');
+            
+            document.getElementById('sumEarnings').innerText = "$" + (player.totalEarnings / 1000000).toFixed(1) + "M";
+
             document.getElementById('sumDynamicRow').innerHTML = (player.pos === 'SP' || player.pos === 'RP') ? 
                 `<div class="stat-box"><div class="val" style="color:var(--legacy-gold); font-size:24px;">${player.ovr}</div><div class="lbl">Media Final</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.W}</div><div class="lbl">Victorias</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.K}</div><div class="lbl">Ponches</div></div>` : 
                 `<div class="stat-box"><div class="val" style="color:var(--legacy-gold); font-size:24px;">${player.ovr}</div><div class="lbl">Media Final</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.HR}</div><div class="lbl">Home Runs</div></div><div class="stat-box"><div class="val" style="font-size:24px;">${player.H}</div><div class="lbl">Hits</div></div>`;
