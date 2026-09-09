@@ -27,13 +27,11 @@
         .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
         .screen.active { display: block; }
 
-        /* SETUP & SVG */
         .setup-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; }
         .setup-top-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
         .jersey-container { width: 150px; height: 150px; margin: 0 auto 15px auto; }
         .jersey-svg { width: 100%; height: 100%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); transition: 0.3s; }
         
-        /* DIAMANTE DE BÉISBOL */
         .diamond-container { position: relative; width: 100%; height: 260px; background: #064E3B; border: 1px solid var(--border-color); border-radius: 12px; margin-top: 10px; overflow: hidden; }
         .dirt-infield { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 180px; height: 180px; background: #A0522D; border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); }
         .grass-infield { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%) rotate(45deg); width: 110px; height: 110px; background: #064E3B; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
@@ -56,7 +54,6 @@
         .btn-main { background: #FFF; color: #000; border: none; padding: 16px 30px; font-weight: 900; font-size: 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-main:hover { background: var(--legacy-gold); transform: translateY(-2px); }
 
-        /* JUEGO */
         .game-layout { display: grid; grid-template-columns: 440px 1fr; gap: 30px; align-items: start; }
         .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
         .ovr-badge { position: absolute; top: 25px; right: 25px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; }
@@ -68,7 +65,6 @@
         .stat-box .val { font-size: 18px; font-weight: 900; color: #FFF; }
         .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
 
-        /* ACTION PANEL FOTORREALISTA */
         .action-panel { margin-top: 25px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
@@ -87,7 +83,6 @@
         .dec-btn.fail-anim { border-color: var(--danger); background: rgba(239, 68, 68, 0.15); justify-content: center; align-items: center; }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 100% { box-shadow: 0 0 15px 2px rgba(255,255,255,0.8); } }
 
-        /* HISTORIAL */
         .history-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; height: 100%; overflow-y: auto; max-height: 800px; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .history-table th { color: var(--text-muted); text-align: center; padding: 10px 5px; border-bottom: 1px solid var(--border-color); font-weight: 800; font-size: 10px; text-transform: uppercase; }
@@ -98,7 +93,6 @@
         .history-table tr.current { background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--legacy-gold); }
         .history-table tr.current td { color: var(--legacy-gold); }
 
-        /* SUMMARY */
         .cinematic-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(15px); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
         .cinematic-overlay.show { display: flex; opacity: 1; }
         .trophies-grid { display: flex; gap: 50px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
@@ -137,8 +131,6 @@
     </header>
 
     <div class="main-container">
-        
-        <!-- PANTALLA SETUP -->
         <div id="screen-setup" class="screen active">
             <div class="setup-card">
                 <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center;">El Diamante te Espera</h1>
@@ -154,14 +146,8 @@
                         </div>
                         
                         <div class="input-group row">
-                            <div>
-                                <label>Apellido</label>
-                                <input type="text" id="playerName" value="HEBER">
-                            </div>
-                            <div style="flex: 0.4;">
-                                <label>Número</label>
-                                <input type="number" id="playerNum" value="24" min="1" max="99">
-                            </div>
+                            <div><label>Apellido</label><input type="text" id="playerName" value="HEBER"></div>
+                            <div style="flex: 0.4;"><label>Número</label><input type="number" id="playerNum" value="24" min="1" max="99"></div>
                         </div>
 
                         <div class="input-group">
@@ -179,18 +165,14 @@
                     <div>
                         <label style="display:block; margin-bottom:10px;">Posición en el Diamante</label>
                         <div class="diamond-container">
-                            <div class="dirt-infield"></div>
-                            <div class="grass-infield"></div>
-                            <div class="pitcher-mound"></div>
+                            <div class="dirt-infield"></div><div class="grass-infield"></div><div class="pitcher-mound"></div>
                             <div class="base home"></div><div class="base first"></div><div class="base second"></div><div class="base third"></div>
-                            
                             <div class="pos-dot" style="bottom: 10px; left: 50%;" onclick="selectPos('C', this)">C</div>
                             <div class="pos-dot active" style="bottom: 90px; left: 50%;" onclick="selectPos('SP', this)">P</div>
                             <div class="pos-dot" style="bottom: 95px; left: 25%;" onclick="selectPos('3B', this)">3B</div>
                             <div class="pos-dot" style="bottom: 145px; left: 35%;" onclick="selectPos('SS', this)">SS</div>
                             <div class="pos-dot" style="bottom: 145px; left: 65%;" onclick="selectPos('2B', this)">2B</div>
                             <div class="pos-dot" style="bottom: 95px; left: 75%;" onclick="selectPos('1B', this)">1B</div>
-                            
                             <div class="pos-dot" style="top: 35px; left: 20%;" onclick="selectPos('LF', this)">LF</div>
                             <div class="pos-dot" style="top: 15px; left: 50%;" onclick="selectPos('CF', this)">CF</div>
                             <div class="pos-dot" style="top: 35px; left: 80%;" onclick="selectPos('RF', this)">RF</div>
@@ -202,7 +184,6 @@
             </div>
         </div>
 
-        <!-- PANTALLA JUEGO -->
         <div id="screen-game" class="screen">
             <div class="game-layout">
                 <div>
@@ -229,9 +210,7 @@
                             <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
                         </div>
 
-                        <!-- STATS DINÁMICAS (Bateador o Pitcher) -->
                         <div class="stats-grid" id="statsDynamicRow"></div>
-
                         <div class="action-panel" id="action-panel"></div>
                     </div>
                 </div>
@@ -249,7 +228,6 @@
             <div class="summary-card">
                 <h1 style="font-size: 38px; font-weight: 900; color: #FFF; margin-bottom: 5px;">Cooperstown Llama</h1>
                 
-                <!-- GANANCIAS TOTALES EN EL SUMMARY -->
                 <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid var(--success); border-radius: 12px; padding: 15px; margin-top: 20px;">
                     <div style="font-size: 12px; color: var(--success); font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">Ganancias de Carrera</div>
                     <div style="font-size: 32px; font-weight: 900; color: #FFF;" id="sumEarnings">$0</div>
@@ -321,71 +299,46 @@
             return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size*0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
         }
 
-        // CATÁLOGO DE EVENTOS (Reemplazado con tus 8 ideas y fotos reales)
         const mlbEvents = [
             {
-                title: "Fiesta tras Derrota",
-                desc: "El equipo perdió feo hoy, pero hay una fiesta exclusiva en la ciudad. Si te ven, te suspenderán.",
-                imgRisk: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400", 
-                optRisk: { label: "Ir Escondido", succ: 0.6, rwd: 2, pen: -3 },
-                optSafe: { label: "Ir a Dormir", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Fiesta tras Derrota", desc: "El equipo perdió feo hoy, pero hay una fiesta exclusiva en la ciudad. Si te ven, te suspenderán.",
+                imgRisk: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400", imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400", 
+                optRisk: { label: "Ir Escondido", succ: 0.6, rwd: 2, pen: -3 }, optSafe: { label: "Ir a Dormir", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Cambio de Dieta",
-                desc: "Un gurú te ofrece una dieta radical para ganar masa muscular rápido. Podría caerte mal.",
-                imgRisk: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
-                optRisk: { label: "Probar la Dieta", succ: 0.5, rwd: 2, pen: -2 },
-                optSafe: { label: "Nutrición del Club", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Cambio de Dieta", desc: "Un gurú te ofrece una dieta radical para ganar masa muscular rápido. Podría caerte mal.",
+                imgRisk: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400", imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
+                optRisk: { label: "Probar la Dieta", succ: 0.5, rwd: 2, pen: -2 }, optSafe: { label: "Nutrición del Club", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Gimnasio Pesado",
-                desc: "Sientes que te falta potencia. Quieres cambiar a una rutina de fuerza máxima.",
-                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
-                optRisk: { label: "Entrenamiento al Fallo", succ: 0.5, rwd: 3, pen: -3 },
-                optSafe: { label: "Rutina de Mantenimiento", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Gimnasio Pesado", desc: "Sientes que te falta potencia. Quieres cambiar a una rutina de fuerza máxima.",
+                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400", imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
+                optRisk: { label: "Entrenamiento al Fallo", succ: 0.5, rwd: 3, pen: -3 }, optSafe: { label: "Rutina de Mantenimiento", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "El Manager te Borra",
-                desc: "El manager te llama a su oficina y te dice que no cuenta contigo esta temporada.",
-                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", 
-                optRisk: { label: "Pelear el Puesto", succ: 0.4, rwd: 3, pen: -4 },
-                optSafe: { label: "Pedir Traspaso", succ: 1.0, rwd: 0, pen: 0, action: "trade" }
+                title: "El Manager te Borra", desc: "El manager te llama a su oficina y te dice que no cuenta contigo esta temporada.",
+                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?w=400", imgSafe: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", 
+                optRisk: { label: "Pelear el Puesto", succ: 0.4, rwd: 3, pen: -4 }, optSafe: { label: "Pedir Traspaso", succ: 1.0, rwd: 0, pen: 0, action: "trade" }
             },
             {
-                title: "Cambio de Posición",
-                desc: "El equipo fichó a una estrella en tu posición. Te piden jugar en otro lado del diamante.",
-                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?w=400", 
-                optRisk: { label: "Aceptar el Reto", succ: 0.6, rwd: 2, pen: -3 },
-                optSafe: { label: "Rechazar y Salir", succ: 1.0, rwd: 0, pen: -1, action: "trade" }
+                title: "Cambio de Posición", desc: "El equipo fichó a una estrella en tu posición. Te piden jugar en otro lado del diamante.",
+                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?w=400", imgSafe: "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?w=400", 
+                optRisk: { label: "Aceptar el Reto", succ: 0.6, rwd: 2, pen: -3 }, optSafe: { label: "Rechazar y Salir", succ: 1.0, rwd: 0, pen: -1, action: "trade" }
             },
             {
-                title: "Tensión en el Dugout",
-                desc: "Un compañero veterano te grita frente a todos por no correr a primera base.",
-                imgRisk: "https://images.unsplash.com/photo-1588865198380-496696ce7508?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1511886929837-354d827aae26?w=400", 
-                optRisk: { label: "Gritarle de Vuelta", succ: 0.5, rwd: 3, pen: -2 },
-                optSafe: { label: "Aceptar la Culpa", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Tensión en el Dugout", desc: "Un compañero veterano te grita frente a todos por no correr a primera base.",
+                imgRisk: "https://images.unsplash.com/photo-1588865198380-496696ce7508?w=400", imgSafe: "https://images.unsplash.com/photo-1511886929837-354d827aae26?w=400", 
+                optRisk: { label: "Gritarle de Vuelta", succ: 0.5, rwd: 3, pen: -2 }, optSafe: { label: "Aceptar la Culpa", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Rumores de Cambio",
-                desc: "Tu nombre suena fuerte en la fecha límite de cambios. La prensa te acorrala.",
-                imgRisk: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
-                optRisk: { label: "Exigir salir a un contendiente", succ: 0.5, rwd: 2, pen: -2, action: "trade" },
-                optSafe: { label: "Declarar Lealtad", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Rumores de Cambio", desc: "Tu nombre suena fuerte en la fecha límite de cambios. La prensa te acorrala.",
+                imgRisk: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=400", imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400", 
+                optRisk: { label: "Exigir salir a un contendiente", succ: 0.5, rwd: 2, pen: -2, action: "trade" }, optSafe: { label: "Declarar Lealtad", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Patrocinador Oscuro",
-                desc: "Una marca de suplementos sin regulación te ofrece millones por usar su logo.",
-                imgRisk: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400", 
-                imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
-                optRisk: { label: "Firmar el Contrato", succ: 0.4, rwd: 3, pen: -5 },
-                optSafe: { label: "Rechazar por Ética", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Patrocinador Oscuro", desc: "Una marca de suplementos sin regulación te ofrece millones por usar su logo.",
+                imgRisk: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400", imgSafe: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=400", 
+                optRisk: { label: "Firmar el Contrato", succ: 0.4, rwd: 3, pen: -5 }, optSafe: { label: "Rechazar por Ética", succ: 1.0, rwd: 1, pen: 0 }
             }
         ];
 
@@ -399,7 +352,7 @@
             name: "", pos: "", num: 24, age: 18, ovr: 48, salary: 0, contractYears: 0, totalEarnings: 0,
             club: "Recluta Sin Asignar", history: [], trophyList: [], trophies: 0,
             G: 0, AB: 0, HR: 0, RBI: 0, H: 0, IP: 0, W: 0, L: 0, K: 0, ER: 0,
-            peakOvr: 48, declineTarget: null, proDebutDone: false, contract: null
+            peakOvr: 48, declineTarget: null, proDebutDone: false, contract: null, lastEvent: ""
         };
 
         function applyAging() {
@@ -449,7 +402,7 @@
             player.pos = document.getElementById('playerPos').value;
             player.age = 18; player.ovr = 58; 
             player.peakOvr = 58; player.declineTarget = null; player.proDebutDone = false; player.contract = null;
-            player.totalEarnings = 0;
+            player.totalEarnings = 0; player.lastEvent = "";
 
             setupStatHeaders();
 
@@ -532,7 +485,10 @@
                 return;
             }
 
-            let ev = mlbEvents[Math.floor(Math.random() * mlbEvents.length)];
+            let availableEvents = mlbEvents.filter(e => e.title !== player.lastEvent);
+            let ev = availableEvents[Math.floor(Math.random() * availableEvents.length)];
+            player.lastEvent = ev.title; 
+
             let riskPct = Math.round(ev.optRisk.succ * 100);
             let failPct = 100 - riskPct;
             let actionRisk = ev.optRisk.action ? `'${ev.optRisk.action}'` : 'null';
@@ -595,12 +551,19 @@
                     btn.classList.add('success-anim'); btn.innerHTML = `TEMPORADA COMPLETADA`; ovrChange = reward;
                 }
 
-                if(actionType === 'trade' && isSuccess && player.proDebutDone) {
-                    let others = mlbTeams.filter(t => t.n !== player.club);
-                    let newTeam = others[Math.floor(Math.random() * others.length)].n;
-                    player.club = newTeam;
-                    if(player.contract) player.contract.team = newTeam;
-                    btn.innerHTML = `¡TRASPASADO A ${newTeam.toUpperCase()}!`;
+                if(actionType === 'trade' && isSuccess) {
+                    if (player.proDebutDone) {
+                        let others = mlbTeams.filter(t => t.n !== player.club);
+                        let newTeam = others[Math.floor(Math.random() * others.length)].n;
+                        player.club = newTeam;
+                        if(player.contract) player.contract.team = newTeam;
+                        btn.innerHTML = `¡TRASPASADO A ${newTeam.toUpperCase()}!`;
+                    } else {
+                        let others = collegeTeams.filter(t => t !== player.club);
+                        let newTeam = others[Math.floor(Math.random() * others.length)];
+                        player.club = newTeam;
+                        btn.innerHTML = `¡TRANSFERIDO A ${newTeam.toUpperCase()}!`;
+                    }
                 }
 
                 setTimeout(() => { ejecutarSimulacionAnual(ovrChange); }, 1500);
@@ -612,7 +575,6 @@
             if (!player.proDebutDone) { renderDecisionPanel(); return; }
             if (!player.contract) { renderFreeAgency(); return; }
             
-            // Si tiene contrato, renderiza evento normal
             renderDecisionPanel(); 
         }
 
