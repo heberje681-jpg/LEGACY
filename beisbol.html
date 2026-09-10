@@ -344,10 +344,25 @@
             return (words[0][0] + words[1][0]).toUpperCase();
         }
 
+        // Convierte "New York Yankees" -> "new-york-yankees" para armar el nombre de archivo esperado.
+        function teamSlug(name) {
+            return name.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+        }
+
+        // Si algún día subes tus propias imágenes a /assets/logos/<slug>.png, se usan automáticamente.
+        // Si el archivo no existe (404), cae de vuelta al escudo de color + iniciales sin romper nada.
+        function handleCrestError(imgEl, name, color, size) {
+            imgEl.outerHTML = `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size * 0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
+        }
+
         function crestHTML(name, size) {
             size = size || 60;
             let color = teamColors[name] || "#334155";
-            return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size*0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
+            let safeName = name.replace(/'/g, "\\'");
+            return `<img src="assets/logos/${teamSlug(name)}.png" alt="${name}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:50%;background:${color};flex-shrink:0;" onerror="handleCrestError(this,'${safeName}','${color}',${size})">`;
         }
 
         function svgIconPath(name) {
