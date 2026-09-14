@@ -75,7 +75,7 @@
         .action-panel { margin-top: 25px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
-        .decisions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .decisions-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .decisions-grid.full { grid-template-columns: 1fr; }
         
         .dec-btn { background: var(--bg-main); border: 2px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; text-align: left; transition: all 0.3s ease; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 190px; }
@@ -113,7 +113,7 @@
 
         .summary-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center; }
         .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 30px; }
-        .club-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; }
+        .club-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .club-box h5 { color: #FFF; font-size: 13px; margin-bottom: 10px; font-weight: 800; }
         .trophy-cabinet { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .t-badge { background: rgba(245, 158, 11, 0.1); color: var(--legacy-gold); border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 800; }
@@ -121,10 +121,8 @@
 </head>
 <body>
 
-    <div class="live-ticker">
-        <div class="live-match">⚽ <b>ARS</b> 2 - 1 <b>MCI</b> <span>88'</span></div>
-        <div class="live-match">⚽ <b>RMA</b> 0 - 0 <b>BAR</b> <span>HT</span></div>
-        <div class="live-match">⚽ <b>AMX</b> 3 - 1 <b>TIG</b> <span>FT</span></div>
+    <div class="live-ticker" id="live-ticker-container">
+        <div class="live-match">⚽ Cargando marcadores en vivo...</div>
     </div>
 
     <header>
@@ -132,8 +130,8 @@
         <div class="nav-links">
             <span style="color: #FFF;">Fútbol</span>
             <a href="beisbol.html" style="color:var(--text-muted); text-decoration:none;">Béisbol (MLB)</a>
-            <a href="basketball.html" style="color:var(--text-muted); text-decoration:none;">Básquetbol (NBA)</a>
-            <a href="americano.html" style="color:var(--text-muted); text-decoration:none;">Americano (NFL)</a>
+            <a href="nba.html" style="color:var(--text-muted); text-decoration:none;">Básquetbol (NBA)</a>
+            <a href="nfl.html" style="color:var(--text-muted); text-decoration:none;">Americano (NFL)</a>
         </div>
     </header>
 
@@ -157,29 +155,68 @@
                         <div class="input-group row">
                             <div>
                                 <label>Apellido en Jersey</label>
-                                <input type="text" id="playerName" value="HEBER">
+                                <input type="text" id="playerName" value="" placeholder="TU APELLIDO">
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="4" min="1" max="99">
+                                <input type="number" id="playerNum" value="" placeholder="9" min="1" max="99">
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label>Nacionalidad</label>
                             <select id="playerCountry" onchange="updateJerseyColor()">
+                                <option value="" disabled selected>Selecciona tu país</option>
                                 <option value="MEX">🇲🇽 México</option>
-                                <option value="ARG">🇦🇷 Argentina</option>
+                                <option value="USA">🇺🇸 Estados Unidos</option>
+                                <option value="DOM">🇩🇴 República Dominicana</option>
+                                <option value="VEN">🇻🇪 Venezuela</option>
+                                <option value="JPN">🇯🇵 Japón</option>
+                                <option value="CUB">🇨🇺 Cuba</option>
+                                <option value="PUR">🇵🇷 Puerto Rico</option>
+                                <option value="COL">🇨🇴 Colombia</option>
+                                <option value="PAN">🇵🇦 Panamá</option>
+                                <option value="NIC">🇳🇮 Nicaragua</option>
+                                <option value="CUW">🇨🇼 Curazao</option>
+                                <option value="KOR">🇰🇷 Corea del Sur</option>
+                                <option value="TPE">🇹🇼 Taiwán</option>
+                                <option value="NED">🇳🇱 Países Bajos</option>
+                                <option value="CAN">🇨🇦 Canadá</option>
+                                <option value="AUS">🇦🇺 Australia</option>
                                 <option value="BRA">🇧🇷 Brasil</option>
+                                <option value="ARG">🇦🇷 Argentina</option>
                                 <option value="ESP">🇪🇸 España</option>
-                            </select>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Dificultad de Carrera</label>
-                            <select id="playerMode">
-                                <option value="normal">Normal (Progresión Balanceada)</option>
-                                <option value="intense">Intensa (Más Decisiones de Riesgo)</option>
+                                <option value="GBR">🇬🇧 Reino Unido</option>
+                                <option value="FRA">🇫🇷 Francia</option>
+                                <option value="GER">🇩🇪 Alemania</option>
+                                <option value="ITA">🇮🇹 Italia</option>
+                                <option value="POR">🇵🇹 Portugal</option>
+                                <option value="CHN">🇨🇳 China</option>
+                                <option value="IND">🇮🇳 India</option>
+                                <option value="NGA">🇳🇬 Nigeria</option>
+                                <option value="EGY">🇪🇬 Egipto</option>
+                                <option value="RUS">🇷🇺 Rusia</option>
+                                <option value="GHA">🇬🇭 Ghana</option>
+                                <option value="RSA">🇿🇦 Sudáfrica</option>
+                                <option value="CHI">🇨🇱 Chile</option>
+                                <option value="PER">🇵🇪 Perú</option>
+                                <option value="ECU">🇪🇨 Ecuador</option>
+                                <option value="URU">🇺🇾 Uruguay</option>
+                                <option value="PAR">🇵🇾 Paraguay</option>
+                                <option value="CRC">🇨🇷 Costa Rica</option>
+                                <option value="HON">🇭🇳 Honduras</option>
+                                <option value="GUA">🇬🇹 Guatemala</option>
+                                <option value="ESA">🇸🇻 El Salvador</option>
+                                <option value="BEL">🇧🇪 Bélgica</option>
+                                <option value="SWE">🇸🇪 Suecia</option>
+                                <option value="NOR">🇳🇴 Noruega</option>
+                                <option value="DEN">🇩🇰 Dinamarca</option>
+                                <option value="POL">🇵🇱 Polonia</option>
+                                <option value="TUR">🇹🇷 Turquía</option>
+                                <option value="GRE">🇬🇷 Grecia</option>
+                                <option value="CRO">🇭🇷 Croacia</option>
+                                <option value="SRB">🇷🇸 Serbia</option>
+                                <option value="MAR">🇲🇦 Marruecos</option>
                             </select>
                         </div>
                     </div>
@@ -195,14 +232,15 @@
                             <div class="pos-dot" style="top: 50%; left: 60%;" onclick="selectPos('CM', this)">MC</div>
                             <div class="pos-dot" style="top: 45%; left: 80%;" onclick="selectPos('RM', this)">MD</div>
                             <div class="pos-dot" style="top: 70%; left: 15%;" onclick="selectPos('LB', this)">LI</div>
-                            <div class="pos-dot active" style="top: 75%; left: 35%;" onclick="selectPos('CB', this)">DFC</div>
+                            <div class="pos-dot" style="top: 75%; left: 35%;" onclick="selectPos('CB', this)">DFC</div>
                             <div class="pos-dot" style="top: 75%; left: 65%;" onclick="selectPos('CB', this)">DFC</div>
                             <div class="pos-dot" style="top: 70%; left: 85%;" onclick="selectPos('RB', this)">LD</div>
                             <div class="pos-dot" style="top: 90%; left: 50%;" onclick="selectPos('GK', this)">PO</div>
                         </div>
-                        <input type="hidden" id="playerPos" value="CB">
+                        <input type="hidden" id="playerPos" value="">
                     </div>
                 </div>
+                <div id="setupError" style="color:var(--danger); font-size:13px; font-weight:700; text-align:center; margin-top:10px; display:none;">Completa tu nombre, número, posición y nacionalidad para continuar.</div>
                 <button class="btn-main" onclick="startCareer()">Comenzar Leyenda</button>
             </div>
         </div>
@@ -223,7 +261,8 @@
                             <span id="infoName">HEBER</span>
                         </div>
                         <div class="player-nat" id="infoNat">MEX • #4 • CB</div>
-                        <div class="player-club" id="infoClub">📍 Club Base</div>
+                        <div class="player-club" id="infoClub" style="display:flex; align-items:center;">Club Base</div>
+                        <div id="natIndicator" style="font-size:12px; font-weight:800; color:var(--legacy-accent); margin-top:6px; display:none;"></div>
 
                         <div class="stats-row" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">16</div><div class="lbl">Edad</div></div>
@@ -268,6 +307,9 @@
                 <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Clubes Representados</h3>
                 <div class="clubs-grid" id="clubsGrid"></div>
 
+                <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Selección Nacional</h3>
+                <div class="stats-row" id="natSummaryRow" style="margin-top: 15px;"></div>
+
                 <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Vitrina de Trofeos</h3>
                 <div class="trophy-cabinet" id="trophyCabinet"></div>
 
@@ -283,59 +325,333 @@
     </div>
 
     <script>
+        async function loadFutbolTicker() {
+            const ticker = document.getElementById('live-ticker-container');
+            try {
+                const leagues = ['esp.1', 'eng.1', 'ita.1', 'mex.1'];
+                let allEvents = [];
+                for (const lg of leagues) {
+                    try {
+                        const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg}/scoreboard`);
+                        const data = await res.json();
+                        if (data.events) allEvents.push(...data.events);
+                    } catch (e) { /* si una liga falla, seguimos con las demás */ }
+                }
+                let html = '';
+                if (allEvents.length > 0) {
+                    allEvents.slice(0, 10).forEach(ev => {
+                        let comp = ev.competitions[0];
+                        let home = comp.competitors.find(c => c.homeAway === 'home');
+                        let away = comp.competitors.find(c => c.homeAway === 'away');
+                        let status = comp.status.type.shortDetail;
+                        html += `<div class="live-match">⚽ <b>${away.team.abbreviation}</b> ${away.score || 0} - ${home.score || 0} <b>${home.team.abbreviation}</b> <span>${status}</span></div>`;
+                    });
+                } else {
+                    html = '<div class="live-match">⚽ Sin partidos programados hoy</div>';
+                }
+                ticker.innerHTML = html;
+            } catch (e) {
+                ticker.innerHTML = '<div class="live-match">⚽ Cargando marcadores...</div>';
+            }
+        }
+        loadFutbolTicker();
+
         // ================= CONFIGURACIÓN =================
-        const kitColors = {
-            'MEX': { main: '#006847', trim: '#FFFFFF', ac: 'Pachuca Sub-17' }, 
-            'ARG': { main: '#43A1D5', trim: '#FFFFFF', ac: 'Boca Jrs (Reserva)' }, 
-            'BRA': { main: '#FFDC02', trim: '#009B3A', ac: 'Santos FC (Base)' }, 
-            'ESP': { main: '#AA151B', trim: '#F1BF00', ac: 'FC Barcelona B' }
+        // Base de datos de 50 países: colores reales de camiseta de selección (dato público),
+        // confederación, torneo continental, y nivel (afecta probabilidad de ganar títulos con la selección).
+        const countryData = {
+            USA: { name: "Estados Unidos", main: "#0A3161", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "mid" },
+            DOM: { name: "República Dominicana", main: "#002D62", trim: "#CE1126", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            MEX: { name: "México", main: "#006847", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "mid" },
+            VEN: { name: "Venezuela", main: "#7B1E3A", trim: "#FFFFFF", confed: "CONMEBOL", cup: "Copa América", tier: "low" },
+            JPN: { name: "Japón", main: "#002B7F", trim: "#FFFFFF", confed: "AFC", cup: "Copa Asiática", tier: "mid" },
+            CUB: { name: "Cuba", main: "#002A8F", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            PUR: { name: "Puerto Rico", main: "#CC0000", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            COL: { name: "Colombia", main: "#FFCD00", trim: "#002B7F", confed: "CONMEBOL", cup: "Copa América", tier: "mid" },
+            PAN: { name: "Panamá", main: "#D52B1E", trim: "#002868", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            NIC: { name: "Nicaragua", main: "#0067C6", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            CUW: { name: "Curazao", main: "#002B7F", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            KOR: { name: "Corea del Sur", main: "#C60C30", trim: "#FFFFFF", confed: "AFC", cup: "Copa Asiática", tier: "mid" },
+            TPE: { name: "Taiwán", main: "#FE0000", trim: "#FFFFFF", confed: "AFC", cup: "Copa Asiática", tier: "low" },
+            NED: { name: "Países Bajos", main: "#FF6B00", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            CAN: { name: "Canadá", main: "#FF0000", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            AUS: { name: "Australia", main: "#FFCD00", trim: "#00843D", confed: "AFC", cup: "Copa Asiática", tier: "low" },
+            BRA: { name: "Brasil", main: "#FFDF00", trim: "#009739", confed: "CONMEBOL", cup: "Copa América", tier: "top" },
+            ARG: { name: "Argentina", main: "#75AADB", trim: "#FFFFFF", confed: "CONMEBOL", cup: "Copa América", tier: "top" },
+            ESP: { name: "España", main: "#AA151B", trim: "#F1BF00", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            GBR: { name: "Inglaterra", main: "#FFFFFF", trim: "#CE1124", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            FRA: { name: "Francia", main: "#002395", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            GER: { name: "Alemania", main: "#FFFFFF", trim: "#000000", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            ITA: { name: "Italia", main: "#0066CC", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            POR: { name: "Portugal", main: "#CE1126", trim: "#006600", confed: "UEFA", cup: "Eurocopa", tier: "top" },
+            CHN: { name: "China", main: "#DE2910", trim: "#FFDE00", confed: "AFC", cup: "Copa Asiática", tier: "low" },
+            IND: { name: "India", main: "#1D4E9B", trim: "#FFFFFF", confed: "AFC", cup: "Copa Asiática", tier: "low" },
+            NGA: { name: "Nigeria", main: "#00A651", trim: "#FFFFFF", confed: "CAF", cup: "Copa Africana de Naciones", tier: "mid" },
+            EGY: { name: "Egipto", main: "#CE1126", trim: "#000000", confed: "CAF", cup: "Copa Africana de Naciones", tier: "mid" },
+            RUS: { name: "Rusia", main: "#0039A6", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "low" },
+            GHA: { name: "Ghana", main: "#000000", trim: "#FFD100", confed: "CAF", cup: "Copa Africana de Naciones", tier: "mid" },
+            RSA: { name: "Sudáfrica", main: "#FFB81C", trim: "#007A4D", confed: "CAF", cup: "Copa Africana de Naciones", tier: "low" },
+            CHI: { name: "Chile", main: "#D52B1E", trim: "#FFFFFF", confed: "CONMEBOL", cup: "Copa América", tier: "mid" },
+            PER: { name: "Perú", main: "#FFFFFF", trim: "#D91023", confed: "CONMEBOL", cup: "Copa América", tier: "mid" },
+            ECU: { name: "Ecuador", main: "#FFD100", trim: "#034EA2", confed: "CONMEBOL", cup: "Copa América", tier: "mid" },
+            URU: { name: "Uruguay", main: "#7B96D4", trim: "#FFFFFF", confed: "CONMEBOL", cup: "Copa América", tier: "top" },
+            PAR: { name: "Paraguay", main: "#D52B1E", trim: "#FFFFFF", confed: "CONMEBOL", cup: "Copa América", tier: "mid" },
+            CRC: { name: "Costa Rica", main: "#CE1126", trim: "#002B7F", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            HON: { name: "Honduras", main: "#0073CF", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            GUA: { name: "Guatemala", main: "#4997D0", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            ESA: { name: "El Salvador", main: "#0047AB", trim: "#FFFFFF", confed: "CONCACAF", cup: "Copa Oro", tier: "low" },
+            BEL: { name: "Bélgica", main: "#ED2939", trim: "#000000", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            SWE: { name: "Suecia", main: "#FFCC00", trim: "#006AA7", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            NOR: { name: "Noruega", main: "#EF2B2D", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "low" },
+            DEN: { name: "Dinamarca", main: "#C8102E", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            POL: { name: "Polonia", main: "#FFFFFF", trim: "#DC143C", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            TUR: { name: "Turquía", main: "#E30A17", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "low" },
+            GRE: { name: "Grecia", main: "#0D5EAF", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "low" },
+            CRO: { name: "Croacia", main: "#FF0000", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            SRB: { name: "Serbia", main: "#C6363C", trim: "#FFFFFF", confed: "UEFA", cup: "Eurocopa", tier: "mid" },
+            MAR: { name: "Marruecos", main: "#C1272D", trim: "#006233", confed: "CAF", cup: "Copa Africana de Naciones", tier: "mid" }
         };
 
+        // Clubes de cantera / segunda división, agrupados por confederación (para las primeras ofertas,
+        // acordes al continente del jugador). Clubes ficticios genéricos para no usar marcas reales de ligas menores.
+        const feederClubsByConfed = {
+            CONCACAF: ["Atlético Nacional Sub-20", "Real Fuerza FC", "Deportivo Continental", "Unión Centroamericana"],
+            CONMEBOL: ["Club Andino FC", "Deportivo del Sur", "Atlético Rioplatense", "Sporting Cono Sur"],
+            UEFA: ["FC Segunda Región", "Athletic Continental", "Unión Europea B", "Deportivo Norte FC"],
+            CAF: ["Real Sahel FC", "Unión Africana Sub-20", "Deportivo Continental África", "Atlético del Norte"],
+            AFC: ["FC Oriente Sub-20", "Unión Asiática Deportiva", "Deportivo Pacífico", "Atlético Continental Este"]
+        };
+
+        // Clubes de élite mundial reales, para cuando el OVR ya es alto (mercado de fichajes global).
         const globalTeamsForTransfers = [
-            // Bajo (OVR 60-72)
             {n:"Necaxa", min:60}, {n:"Puebla", min:60}, {n:"Mazatlán", min:60}, {n:"Cádiz", min:68},
-            // Medio (OVR 73-82)
             {n:"América", min:73}, {n:"Cruz Azul", min:73}, {n:"Boca Juniors", min:74}, {n:"Sevilla FC", min:78}, {n:"Aston Villa", min:80},
-            // Élite (OVR 83+)
             {n:"Borussia Dortmund", min:83}, {n:"Liverpool FC", min:85}, {n:"FC Barcelona", min:86}, {n:"Real Madrid", min:88},
-            // Retiro
             {n:"LA Galaxy", min:50}, {n:"Inter Miami", min:50}, {n:"Al Nassr", min:50}
         ];
+
+        function svgIconPath(name) {
+            const icons = {
+                confront: '<circle cx="12" cy="12" r="9"/><line x1="12" y1="7" x2="12" y2="13"/><circle cx="12" cy="16.3" r="0.6" fill="currentColor"/>',
+                calm: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5-5"/>',
+                mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>',
+                mute: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/><line x1="3" y1="3" x2="21" y2="21"/>',
+                cash: '<circle cx="12" cy="12" r="9"/><path d="M9 15.3c0 1.1 1.3 2 3 2s3-.9 3-2-1.3-1.5-3-1.9-3-.8-3-1.9 1.3-2 3-2 3 .9 3 2"/><line x1="12" y1="6.5" x2="12" y2="17.3"/>',
+                ban: '<circle cx="12" cy="12" r="9"/><line x1="6" y1="18" x2="18" y2="6"/>',
+                whistle: '<circle cx="9" cy="15" r="5"/><path d="M14 12h6v3a2 2 0 0 1-2 2h-2"/><line x1="9" y1="10" x2="9" y2="7"/>',
+                shield: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/>',
+                party: '<path d="M4 20l3-9 9-3 4 4-3 9-9 3-4-4Z"/><circle cx="9.5" cy="14.5" r="1" fill="currentColor" stroke="none"/><circle cx="13.5" cy="10.5" r="1" fill="currentColor" stroke="none"/>',
+                moon: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/>',
+                apple: '<path d="M12 7c-3 0-5.5 2.7-5.5 6.5S9 21 12 21s5.5-3.7 5.5-7.5S15 7 12 7Z"/><path d="M12 7c0-2 1-3.5 2.5-4"/>',
+                pulse: '<circle cx="12" cy="12" r="9"/><polyline points="7,12 10,12 11,9 13,15 14,12 17,12"/>',
+                dumbbell: '<rect x="1.5" y="9" width="3" height="6" rx="1"/><rect x="19.5" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/>',
+                flag: '<line x1="5" y1="21" x2="5" y2="4"/><path d="M5 4h13l-3 4 3 4H5"/>',
+                swap: '<polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+                bandage: '<rect x="4" y="9" width="16" height="6" rx="3" transform="rotate(-25 12 12)"/><circle cx="9" cy="10" r="0.7" fill="currentColor" stroke="none"/><circle cx="15" cy="14" r="0.7" fill="currentColor" stroke="none"/>',
+                leg: '<path d="M10 3h5v6l-2 3 1 9h-3l-1-8-3 4-2-2 4-5V6a3 3 0 0 1 1-3Z"/>',
+                trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/>',
+                boot: '<path d="M6 3v9l-4 4v3h18v-4c0-2-2-3-4-3h-3l-4-4V3Z"/>',
+                medal: '<circle cx="12" cy="15" r="6"/><path d="M9 3l3 8 3-8"/>'
+            };
+            return icons[name] || icons.calm;
+        }
+
+        function eventIconHTML(iconName, tone) {
+            let bg = tone === 'risk' ? 'linear-gradient(135deg, rgba(239,68,68,0.18), rgba(239,68,68,0.05))' : 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(16,185,129,0.05))';
+            let color = tone === 'risk' ? '#EF4444' : '#10B981';
+            return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${bg};color:${color};"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svgIconPath(iconName)}</svg></div>`;
+        }
+
+        function trophyIconMeta(name) {
+            const map = {
+                "Liga Nacional": { icon: "shield", color: "#F59E0B" },
+                "Champions League": { icon: "trophy", color: "#F59E0B" },
+                "Balón de Oro": { icon: "medal", color: "#F59E0B" },
+                "Bota de Oro": { icon: "boot", color: "#F59E0B" },
+                "Copa del Mundo": { icon: "trophy", color: "#F59E0B" }
+            };
+            // Copas continentales de selección varían de nombre según el país (Copa Oro, Copa América,
+            // Eurocopa, Copa Africana de Naciones, Copa Asiática) — todas comparten el ícono de escudo.
+            return map[name] || { icon: "shield", color: "#F59E0B" };
+        }
+
+        function trophyIconSmall(name, size) {
+            size = size || 14;
+            let meta = trophyIconMeta(name);
+            return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${meta.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;">${svgIconPath(meta.icon)}</svg>`;
+        }
+
+        function handleTrophyImgError(imgEl, name, size) {
+            let meta = trophyIconMeta(name);
+            imgEl.outerHTML = `<div style="width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;color:${meta.color};filter:drop-shadow(0 0 20px ${meta.color}80);"><svg viewBox="0 0 24 24" width="70%" height="70%" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgIconPath(meta.icon)}</svg></div>`;
+        }
 
         const randomEvents = [
             {
                 title: "Tensión en el Vestuario",
                 desc: "El capitán del equipo te culpa por la mala racha. ¿Lo confrontas o te concentras en entrenar?",
-                imgRisk: "https://images.unsplash.com/photo-1574629810360-7efbb19255cb?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400",
-                optRisk: { label: "Confrontarlo (Riesgo)", succ: 0.5, rwd: 3, pen: -3 },
-                optSafe: { label: "Ignorar (Seguro)", succ: 1.0, rwd: 1, pen: 0 }
+                iconRisk: "confront", iconSafe: "calm",
+                optRisk: { label: "Confrontarlo Frente al Equipo", succ: 0.5, rwd: 3, pen: -3 },
+                optSafe: { label: "Ignorar y Enfocarte", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
-                title: "Exigencia Física",
-                desc: "Una marca te ofrece entrenadores personales exclusivos, pero te quitará tu tiempo de descanso.",
-                imgRisk: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=400",
-                optRisk: { label: "Aceptar Doble Sesión", succ: 0.65, rwd: 4, pen: -2 },
-                optSafe: { label: "Mantener Rutina", succ: 1.0, rwd: 1, pen: 0 }
+                title: "Entrevista Polémica",
+                desc: "Un periodista te presiona sobre si el DT está tomando las decisiones correctas. ¿Qué respondes?",
+                iconRisk: "mic", iconSafe: "mute",
+                optRisk: { label: "Criticar Abiertamente al DT", succ: 0.45, rwd: 4, pen: -3 },
+                optSafe: { label: "Respuesta Diplomática", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Patrocinio Oscuro",
+                desc: "Una casa de apuestas deportivas te ofrece ser imagen de su marca. ¿Aceptas el dinero?",
+                iconRisk: "cash", iconSafe: "ban",
+                optRisk: { label: "Firmar el Patrocinio", succ: 0.55, rwd: 4, pen: -4 },
+                optSafe: { label: "Rechazar la Oferta", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
                 title: "Cambio Táctico",
-                desc: "El nuevo DT quiere usar un sistema que no te favorece. ¿Te adaptas a la fuerza?",
-                imgRisk: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&q=80&w=400",
-                imgSafe: "https://images.unsplash.com/photo-1431324155629-1a6d0a11f58e?auto=format&fit=crop&q=80&w=400",
-                optRisk: { label: "Modificar tu estilo", succ: 0.6, rwd: 3, pen: -2 },
-                optSafe: { label: "Jugar en tu zona", succ: 1.0, rwd: 1, pen: 0 }
+                desc: "El nuevo DT quiere usar un sistema que no te favorece. ¿Te adaptas a la fuerza o exiges tu posición natural?",
+                iconRisk: "swap", iconSafe: "shield",
+                optRisk: { label: "Modificar tu Estilo de Juego", succ: 0.6, rwd: 3, pen: -2 },
+                optSafe: { label: "Jugar en tu Zona de Confort", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                title: "Fiesta Después de la Derrota",
+                desc: "El equipo perdió y unos compañeros te invitan a salir esa misma noche. ¿Vas a la fiesta o te quedas a descansar?",
+                iconRisk: "party", iconSafe: "moon",
+                optRisk: { label: "Ir a la Fiesta", succ: 0.6, rwd: 2, pen: -4 },
+                optSafe: { label: "Quedarte a Descansar", succ: 1.0, rwd: 0, pen: 0 }
+            },
+            {
+                title: "Cambio de Dieta",
+                desc: "Un nutricionista te propone un plan de alimentación radicalmente distinto. ¿Lo pruebas o te quedas con lo que ya conoces?",
+                iconRisk: "apple", iconSafe: "pulse",
+                optRisk: { label: "Cambiar tu Dieta", succ: 0.65, rwd: 2, pen: -3 },
+                optSafe: { label: "Mantener tu Dieta Actual", succ: 1.0, rwd: 0, pen: 0 }
+            },
+            {
+                title: "Nueva Rutina de Gimnasio",
+                desc: "El preparador físico te ofrece una rutina más intensa para ganar potencia. ¿Te arriesgas o sigues con lo tuyo?",
+                iconRisk: "dumbbell", iconSafe: "calm",
+                optRisk: { label: "Cambiar Rutina de Gimnasio", succ: 0.6, rwd: 3, pen: -4 },
+                optSafe: { label: "Mantener tu Rutina Actual", succ: 1.0, rwd: 0, pen: 0 }
             }
         ];
 
+        let usedEventTitles = [];
+        function pickStandardEvent() {
+            let available = randomEvents.filter(e => !usedEventTitles.includes(e.title));
+            if (available.length === 0) { usedEventTitles = []; available = randomEvents; }
+            let ev = available[Math.floor(Math.random() * available.length)];
+            usedEventTitles.push(ev.title);
+            return ev;
+        }
+
+        function renderStandardEventPanel() {
+            const panel = document.getElementById('action-panel');
+            let ev = pickStandardEvent();
+            let riskPct = Math.round(ev.optRisk.succ * 100);
+            let failPct = 100 - riskPct;
+            panel.innerHTML = `
+                <h4>${ev.title}</h4>
+                <p>${ev.desc}</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ})">
+                        <div class="dec-img-container">${eventIconHTML(ev.iconRisk, 'risk')}</div>
+                        <div class="dec-title">${ev.optRisk.label}</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+${ev.optRisk.rwd} OVR (${riskPct}%)</span> | <span style="color:var(--danger)">${ev.optRisk.pen} OVR (${failPct}%)</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ})">
+                        <div class="dec-img-container">${eventIconHTML(ev.iconSafe, 'safe')}</div>
+                        <div class="dec-title">${ev.optSafe.label}</div>
+                        <div class="dec-prob"><span style="color:#FFF">+${ev.optSafe.rwd} OVR Garantizado</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
+        function maybeRenderSpecialEvent() {
+            let specials = ['coach_bench'];
+            let available = specials.filter(s => !usedEventTitles.includes(s));
+            if (available.length > 0 && Math.random() < 0.2) {
+                usedEventTitles.push('coach_bench');
+                renderCoachBenchEvent();
+                return true;
+            }
+            return false;
+        }
+
+        function renderCoachBenchEvent() {
+            const panel = document.getElementById('action-panel');
+            let confed = countryData[player.country].confed;
+            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c !== player.club);
+            let lesserTeam = feeders[Math.floor(Math.random() * feeders.length)];
+            panel.innerHTML = `
+                <h4>El DT No Cuenta Contigo</h4>
+                <p>El entrenador decidió que ya no eres pieza clave del once titular. ¿Qué haces?</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="processDecision(this, true, 2, -3, 0.5)">
+                        <div class="dec-img-container">${eventIconHTML('flag', 'risk')}</div>
+                        <div class="dec-title">Quedarte a Pelear el Puesto</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+2 OVR (50%)</span> | <span style="color:var(--danger)">-3 OVR (50%)</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="processTransfer(this, '${lesserTeam}')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                        ${crestHTML(lesserTeam, 44)}
+                        <div><div class="dec-title">${lesserTeam}</div><div class="dec-prob"><span style="color:#FFF">Salida en Préstamo</span></div></div>
+                    </button>
+                </div>
+            `;
+        }
+
         function updateJerseyColor() {
             let code = document.getElementById('playerCountry').value;
-            const colors = kitColors[code];
+            if (!code) return;
+            const colors = countryData[code];
             document.getElementById('svg-body').setAttribute('fill', colors.main);
             document.getElementById('svg-trim').setAttribute('fill', colors.trim);
             document.getElementById('mini-svg-body').setAttribute('fill', colors.main);
             document.getElementById('mini-svg-trim').setAttribute('fill', colors.trim);
+        }
+
+        // Colores reales de los clubes de élite (dato público). Los clubes ficticios de cantera
+        // reciben un color derivado de su propio nombre, para que no todos se vean grises e iguales.
+        const teamColors = {
+            "Real Madrid": "#FEBE10", "FC Barcelona": "#A50044", "Liverpool FC": "#C8102E",
+            "Borussia Dortmund": "#FDE100", "Sevilla FC": "#D8232A", "Aston Villa": "#670E36",
+            "Boca Juniors": "#003C7D", "Necaxa": "#8B1538", "Puebla": "#0057A8", "Mazatlán": "#7A1FA2",
+            "Cádiz": "#FFE000", "América": "#FFCC00", "Cruz Azul": "#0033A0",
+            "LA Galaxy": "#00245D", "Inter Miami": "#F7B5CD", "Al Nassr": "#FFE500"
+        };
+
+        function hashColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return `hsl(${Math.abs(hash) % 360}, 50%, 38%)`;
+        }
+
+        function teamInitials(name) {
+            let words = name.trim().split(' ');
+            if (words[0] === words[0].toUpperCase() && words[0].length <= 4 && words.length > 1) return words[0];
+            if (words.length === 1) return words[0].substring(0, 3).toUpperCase();
+            return (words[0][0] + words[1][0]).toUpperCase();
+        }
+
+        function teamSlug(name) {
+            return name.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+        }
+
+        function handleCrestError(imgEl, name, color, size) {
+            imgEl.outerHTML = `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:${Math.floor(size * 0.32)}px;border:2px solid rgba(255,255,255,0.25); flex-shrink:0;">${teamInitials(name)}</div>`;
+        }
+
+        function crestHTML(name, size) {
+            size = size || 60;
+            let color = teamColors[name] || hashColor(name);
+            let safeName = name.replace(/'/g, "\\'");
+            return `<img src="assets/logos/${teamSlug(name)}.png" alt="${name}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:50%;background:${color};flex-shrink:0;" onerror="handleCrestError(this,'${safeName}','${color}',${size})">`;
         }
 
         function selectPos(pos, element) {
@@ -344,24 +660,65 @@
             document.getElementById('playerPos').value = pos;
         }
 
+        // Curva de edad en campana: sube rápido de joven, prime entre 23-29, declina
+        // hacia un piso calculado desde el pico de OVR alcanzado (igual que en los otros motores).
+        function ageGrowthDelta(age) {
+            if (age <= 18) return Math.floor(Math.random() * 3) + 3;
+            if (age <= 22) return Math.floor(Math.random() * 3) + 1;
+            if (age <= 25) return Math.floor(Math.random() * 3) - 1;
+            if (age <= 29) return Math.floor(Math.random() * 3) - 1;
+            if (age <= 31) return -(Math.floor(Math.random() * 2) + 1);
+            if (age <= 34) return -(Math.floor(Math.random() * 3) + 2);
+            return -(Math.floor(Math.random() * 3) + 4);
+        }
+
+        function applyAging() {
+            if (player.age <= 29) {
+                player.ovr += ageGrowthDelta(player.age);
+            } else {
+                if (player.declineTarget == null) {
+                    player.declineTarget = Math.max(48, player.peakOvr - 22 - Math.floor(Math.random() * 8));
+                }
+                let yearsLeftToDecline = Math.max(1, 38 - player.age);
+                let diff = player.ovr - player.declineTarget;
+                let step = Math.max(1, Math.ceil(diff / yearsLeftToDecline));
+                let variance = Math.floor(Math.random() * 3) - 1;
+                player.ovr -= (step + variance);
+            }
+            if (player.ovr > player.peakOvr) player.peakOvr = player.ovr;
+        }
+
         // ================= MOTOR DEL JUEGO =================
         let player = {
-            name: "", country: "", pos: "", num: 9, mode: "normal", age: 16, ovr: 50, value: 0,
-            apps: 0, goals: 0, ast: 0, trophies: 0, club: "", history: [], trophyList: []
+            name: "", country: "", pos: "", num: 9, age: 16, ovr: 50, value: 0,
+            apps: 0, goals: 0, ast: 0, trophies: 0, club: "", history: [], trophyList: [],
+            peakOvr: 50, declineTarget: null, natCaps: 0, natGoals: 0, calledUp: false
         };
 
         function startCareer() {
-            player.name = document.getElementById('playerName').value.toUpperCase() || "JUGADOR";
-            player.num = document.getElementById('playerNum').value || 9;
-            player.country = document.getElementById('playerCountry').value;
-            player.pos = document.getElementById('playerPos').value;
-            player.mode = document.getElementById('playerMode').value;
-            
-            player.club = kitColors[player.country].ac;
-            player.ovr = 55; 
-            player.age = 16; 
+            let nameInput = document.getElementById('playerName').value.trim();
+            let numInput = document.getElementById('playerNum').value;
+            let posInput = document.getElementById('playerPos').value;
+            let countryInput = document.getElementById('playerCountry').value;
+
+            if (!nameInput || !numInput || !posInput || !countryInput) {
+                document.getElementById('setupError').style.display = 'block';
+                return;
+            }
+            document.getElementById('setupError').style.display = 'none';
+
+            player.name = nameInput.toUpperCase();
+            player.num = numInput;
+            player.country = countryInput;
+            player.pos = posInput;
+
+            player.club = "Cantera " + countryData[player.country].name;
+            player.ovr = 55; player.peakOvr = 55; player.declineTarget = null;
+            player.age = 16;
             player.value = calculateMarketValue(player.ovr, player.age);
             player.history = []; player.trophyList = [];
+            player.natCaps = 0; player.natGoals = 0; player.calledUp = false;
+            usedEventTitles = [];
 
             if(player.pos === 'CB' || player.pos === 'LB' || player.pos === 'RB' || player.pos === 'GK') {
                 document.getElementById('lblGoles').innerText = "V. Invictas";
@@ -386,6 +743,7 @@
             }
             document.getElementById(`c-16`).innerText = player.club;
 
+            updateJerseyColor();
             document.getElementById('screen-setup').classList.remove('active');
             document.getElementById('screen-game').classList.add('active');
             
@@ -418,13 +776,23 @@
         }
 
         function getTransferOffers() {
+            let confed = countryData[player.country].confed;
+            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c !== player.club);
+
+            // Mientras el nivel es bajo (etapa de cantera), las ofertas son de clubes de segunda
+            // división / ligas del propio continente, no de clubes de élite mundial todavía.
+            if (player.ovr < 65) {
+                let pool = [...feeders].sort(() => 0.5 - Math.random());
+                return [{n: pool[0]}, {n: pool[1]}];
+            }
+
             let possible = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8);
-            if(player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.min === 50); // Ligas de retiro
-            
+            if (player.age >= 33) possible = globalTeamsForTransfers.filter(c => c.min === 50);
+
             possible = possible.filter(c => c.n !== player.club);
             possible.sort(() => 0.5 - Math.random());
-            
-            if(possible.length < 2) return [{n:"Oferta Árabe"}, {n:"Equipo Asiático"}];
+
+            if (possible.length < 2) return [{n: feeders[0] || "Oferta Árabe"}, {n: feeders[1] || "Equipo Asiático"}];
             return [possible[0], possible[1]];
         }
 
@@ -432,57 +800,38 @@
             const panel = document.getElementById('action-panel');
             if(player.age > 37) { showSummary(); return; }
 
-            // Lógica: Traspasos son comunes, Eventos son para darle sabor
-            let isTransferWindow = (Math.random() < 0.6) || player.age === 16;
-            
+            // Casi cada año es mercado de fichajes; de vez en cuando hay un evento narrativo o especial.
+            let isTransferWindow = (Math.random() < 0.75) || player.age === 16;
+
             if (isTransferWindow) {
                 let offers = getTransferOffers();
-                let imgA = "https://images.unsplash.com/photo-1551280857-2b9bbe5260fc?auto=format&fit=crop&q=80&w=400";
-                let imgB = "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&q=80&w=400";
-
                 panel.innerHTML = `
                     <h4>Mercado de Transferencias</h4>
                     <p>Han llegado ofertas por ti. ¿Decides renovar contrato o empacar las maletas?</p>
                     <div class="decisions-grid full">
                         <div style="display:flex; gap:15px;">
-                            <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[0].n}')">
-                                <div class="dec-img-container"><img src="${imgA}" class="dec-img"></div>
+                            <button class="dec-btn" style="flex:1; align-items:center;" onclick="processTransfer(this, '${offers[0].n}')">
+                                <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(offers[0].n, 56)}</div>
                                 <div class="dec-title">Firmar con ${offers[0].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
-                            <button class="dec-btn" style="flex:1" onclick="processTransfer(this, '${offers[1].n}')">
-                                <div class="dec-img-container"><img src="${imgB}" class="dec-img"></div>
+                            <button class="dec-btn" style="flex:1; align-items:center;" onclick="processTransfer(this, '${offers[1].n}')">
+                                <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(offers[1].n, 56)}</div>
                                 <div class="dec-title">Firmar con ${offers[1].n}</div>
                                 <div class="dec-prob"><span style="color:var(--success)">Nuevo Reto</span></div>
                             </button>
                         </div>
-                        <button class="dec-btn" onclick="processTransfer(this, '${player.club}')" style="min-height:auto;">
-                            <div class="dec-title">Renovar con ${player.club}</div>
-                            <div class="dec-prob"><span style="color:#FFF">Lealtad y Continuidad</span></div>
+                        <button class="dec-btn" onclick="processTransfer(this, '${player.club}')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(player.club, 44)}
+                            <div><div class="dec-title">Renovar con ${player.club}</div><div class="dec-prob"><span style="color:#FFF">Lealtad y Continuidad</span></div></div>
                         </button>
                     </div>
                 `;
-            } else {
-                // Seleccionar evento al azar de la base de datos
-                let ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-
-                panel.innerHTML = `
-                    <h4>${ev.title}</h4>
-                    <p>${ev.desc}</p>
-                    <div class="decisions-grid">
-                        <button class="dec-btn" onclick="processDecision(this, true, ${ev.optRisk.rwd}, ${ev.optRisk.pen}, ${ev.optRisk.succ})">
-                            <div class="dec-img-container"><img src="${ev.imgRisk}" class="dec-img"></div>
-                            <div class="dec-title">${ev.optRisk.label}</div>
-                            <div class="dec-prob"><span style="color:var(--success)">+${ev.optRisk.rwd} OVR (${ev.optRisk.succ*100}%)</span> | <span style="color:var(--danger)">${ev.optRisk.pen} OVR (${100 - ev.optRisk.succ*100}%)</span></div>
-                        </button>
-                        <button class="dec-btn" onclick="processDecision(this, false, ${ev.optSafe.rwd}, ${ev.optSafe.pen}, ${ev.optSafe.succ})">
-                            <div class="dec-img-container"><img src="${ev.imgSafe}" class="dec-img"></div>
-                            <div class="dec-title">${ev.optSafe.label}</div>
-                            <div class="dec-prob"><span style="color:#FFF">+${ev.optSafe.rwd} OVR Garantizado</span></div>
-                        </button>
-                    </div>
-                `;
+                return;
             }
+
+            if (maybeRenderSpecialEvent()) return;
+            renderStandardEventPanel();
         }
 
         function processTransfer(btn, newClub) {
@@ -526,29 +875,60 @@
             }, 2500); 
         }
 
+        function checkNationalCallUp() {
+            let tier = countryData[player.country].tier;
+            let threshold = tier === 'top' ? 80 : tier === 'mid' ? 74 : 68;
+            if (!player.calledUp && player.ovr >= threshold) player.calledUp = true;
+            if (player.calledUp && player.ovr < threshold - 10) player.calledUp = false;
+        }
+
         function ejecutarSimulacionAnual(impactoOVR) {
             player.ovr += impactoOVR;
 
-            let growth = 0;
-            if (player.age < 23) growth = Math.floor(Math.random() * 4) + 1; 
-            else if (player.age > 31) growth = -(Math.floor(Math.random() * 3) + 1); 
+            // Lesión aleatoria: no es una decisión, simplemente puede ocurrir.
+            let seasonInjury = null;
+            if (player.age >= 18 && Math.random() < 0.06) {
+                let injuryPool = [
+                    { label: "Rotura de Ligamento Cruzado (LCA)", icon: "leg", penalty: 6 },
+                    { label: "Lesión Muscular (Isquiotibiales)", icon: "leg", penalty: 3 },
+                    { label: "Fractura de Tobillo", icon: "bandage", penalty: 4 }
+                ];
+                seasonInjury = injuryPool[Math.floor(Math.random() * injuryPool.length)];
+                player.ovr -= seasonInjury.penalty;
+            }
 
-            player.ovr += growth;
+            applyAging();
             if (player.ovr > 99) player.ovr = 99;
             if (player.ovr < 40) player.ovr = 40;
 
             let formFactor = player.ovr / 100;
-            let seasonalApps = Math.floor(40 * formFactor * (Math.random() * 0.4 + 0.6)); 
-            
-            let seasonalPrimary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(35 * formFactor * (Math.random() * 0.6 + 0.4)) : Math.floor(18 * formFactor);
-            let seasonalSecondary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(seasonalPrimary * 0.4) : Math.floor(55 * formFactor);
+            let seasonalApps, seasonalPrimary, seasonalSecondary;
 
-            // Actualizar Valor Realista
+            if (seasonInjury) {
+                seasonalApps = Math.floor(Math.random() * 12);
+                seasonalPrimary = Math.floor(seasonalApps * formFactor * 0.3);
+                seasonalSecondary = Math.floor(seasonalApps * formFactor * 0.3);
+            } else {
+                seasonalApps = Math.floor(40 * formFactor * (Math.random() * 0.4 + 0.6));
+                seasonalPrimary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(35 * formFactor * (Math.random() * 0.6 + 0.4)) : Math.floor(18 * formFactor);
+                seasonalSecondary = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(seasonalPrimary * 0.4) : Math.floor(55 * formFactor);
+            }
+
             player.value = calculateMarketValue(player.ovr, player.age);
 
             player.apps += seasonalApps;
             player.goals += seasonalPrimary;
             player.ast += seasonalSecondary;
+
+            // Selección nacional: si el nivel alcanza para ser convocado, suma stats aparte del club.
+            checkNationalCallUp();
+            let natCapsSeason = 0, natGoalsSeason = 0;
+            if (player.calledUp && !seasonInjury) {
+                natCapsSeason = Math.floor(4 + formFactor * 8 + Math.random() * 3);
+                natGoalsSeason = (player.pos === 'ST' || player.pos === 'CAM') ? Math.floor(natCapsSeason * formFactor * 0.5) : Math.floor(natCapsSeason * formFactor * 0.15);
+                player.natCaps += natCapsSeason;
+                player.natGoals += natGoalsSeason;
+            }
 
             player.history.push({
                 age: player.age, club: player.club, ovr: player.ovr,
@@ -561,7 +941,7 @@
             document.getElementById(`a-${player.age}`).innerText = seasonalSecondary;
             document.getElementById(`row-${player.age}`).classList.remove('empty-row', 'current');
 
-            let wonTrophies = checkTrophies(seasonalPrimary);
+            let wonTrophies = seasonInjury ? [] : checkTrophies(seasonalPrimary);
             player.age++;
 
             if(player.age <= 37) {
@@ -573,26 +953,50 @@
             
             updateUI();
 
-            if (wonTrophies.length > 0) {
+            if (seasonInjury) {
+                showInjuryNarrative(seasonInjury);
+            } else if (wonTrophies.length > 0) {
                 showTrophyCinematic(wonTrophies);
             } else {
                 renderDecisionPanel();
             }
         }
 
+        function showInjuryNarrative(injury) {
+            const panel = document.getElementById('action-panel');
+            panel.innerHTML = `
+                <div style="text-align:center; padding:15px 10px;">
+                    <div style="width:64px; height:64px; border-radius:50%; background:rgba(239,68,68,0.15); color:var(--danger); display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto;">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svgIconPath(injury.icon)}</svg>
+                    </div>
+                    <h4 style="color:var(--danger);">${injury.label}</h4>
+                    <p>Una lesión te costó gran parte de la temporada y ${injury.penalty} puntos de OVR de forma permanente. Toca recuperarse.</p>
+                </div>
+            `;
+            setTimeout(() => { renderDecisionPanel(); }, 2500);
+        }
+
         function checkTrophies(primaryStat) {
             let won = [];
-            // FOTOS DE TROFEOS REALES
-            if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", img: "assets/trofeos/liga.png"}); }
+            let cd = countryData[player.country];
+
+            if (player.ovr >= 85 && Math.random() > 0.85) { won.push({name: "Liga Nacional", img: "assets/trofeos/liga.png", scope: "club"}); }
             if (player.club === "Real Madrid" || player.club === "Liverpool FC" || player.club === "FC Barcelona") {
-                if (Math.random() > 0.7) won.push({name: "Champions League", img: "assets/trofeos/champions.png"});
+                if (Math.random() > 0.7) won.push({name: "Champions League", img: "assets/trofeos/champions.png", scope: "club"});
             }
-            if (player.ovr >= 92 && Math.random() > 0.85) { won.push({name: "Balón de Oro", img: "assets/trofeos/balon_oro.png"}); }
-            if ((player.pos === 'ST' || player.pos === 'CAM') && primaryStat > 28) { won.push({name: "Bota de Oro", img: "assets/trofeos/bota_oro.png"}); }
+            if (player.ovr >= 92 && Math.random() > 0.85) { won.push({name: "Balón de Oro", img: "assets/trofeos/balon_oro.png", scope: "club"}); }
+            if ((player.pos === 'ST' || player.pos === 'CAM') && primaryStat > 28) { won.push({name: "Bota de Oro", img: "assets/trofeos/bota_oro.png", scope: "club"}); }
+
+            // Trofeos con la selección: dependen del nivel del país (tier) y de estar convocado.
+            if (player.calledUp) {
+                let contWinChance = cd.tier === 'top' ? 0.10 : cd.tier === 'mid' ? 0.06 : 0.015;
+                if (Math.random() < contWinChance) { won.push({name: cd.cup, img: "assets/trofeos/copa_continental.png", scope: "nation"}); }
+                if (cd.tier === 'top' && Math.random() < 0.035) { won.push({name: "Copa del Mundo", img: "assets/trofeos/mundial.png", scope: "nation"}); }
+            }
 
             if(won.length > 0) {
                 player.trophies += won.length;
-                player.trophyList.push(...won.map(t => t.name));
+                player.trophyList.push(...won.map(t => ({ name: t.name, club: t.scope === "nation" ? cd.name : player.club })));
             }
             return won;
         }
@@ -606,7 +1010,7 @@
                 let delay = index * 0.2;
                 container.innerHTML += `
                     <div class="cinematic-trophy" style="animation-delay: ${delay}s">
-                        <img src="${t.img}" class="cinematic-img" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cpath%20fill%3D%22%23F59E0B%22%20d%3D%22M30%2010h40v8c12%200%2018%208%2018%2018%200%2014-10%2022-22%2024-3%2010-10%2016-16%2018v10h14v8H36v-8h14V78c-6-2-13-8-16-18-12-2-22-10-22-24%200-10%206-18%2018-18v-8zm-8%2016c-6%200-10%204-10%2010%200%208%206%2013%2013%2015-2-8-3-16-3-25zm56%200c0%209-1%2017-3%2025%207-2%2013-7%2013-15%200-6-4-10-10-10z%22/%3E%3C/svg%3E';">
+                        <img src="${t.img}" class="cinematic-img" onerror="handleTrophyImgError(this, '${t.name.replace(/'/g, "\\'")}', 160)">
                         <div class="cinematic-title">${t.name}</div>
                     </div>
                 `;
@@ -622,7 +1026,9 @@
         function updateUI() {
             document.getElementById('infoName').innerText = player.name;
             document.getElementById('infoNat').innerText = `${player.country} • #${player.num} • ${player.pos}`;
-            document.getElementById('infoClub').innerText = `📍 ${player.club}`;
+            document.getElementById('infoClub').innerHTML = `${crestHTML(player.club, 22)}<span style="margin-left:8px;">${player.club}</span>`;
+            document.getElementById('natIndicator').style.display = player.calledUp ? 'block' : 'none';
+            document.getElementById('natIndicator').innerText = player.calledUp ? `Convocado a la Selección de ${countryData[player.country].name}` : '';
             document.getElementById('statOvr').innerText = player.ovr;
             document.getElementById('statAge').innerText = player.age <= 37 ? player.age : 37;
             document.getElementById('statValue').innerText = formatMoney(player.value);
@@ -655,28 +1061,39 @@
                 clubsMap[s.club].goals += s.pStat;
             });
 
+            let clubTrophies = {};
+            player.trophyList.forEach(t => { if (!clubTrophies[t.club]) clubTrophies[t.club] = []; clubTrophies[t.club].push(t.name); });
+
             let clubsHtml = "";
             for (let c in clubsMap) {
-                clubsHtml += `<div class="club-box"><h5>${c}</h5><p>${clubsMap[c].apps} Partidos</p><p>${clubsMap[c].goals} G / VI</p></div>`;
+                let badges = (clubTrophies[c] || []).map(name => `<span title="${name}">${trophyIconSmall(name, 14)}</span>`).join(' ');
+                clubsHtml += `<div class="club-box">${crestHTML(c, 40)}<h5 style="margin-top:10px;">${c}</h5><p>${clubsMap[c].apps} Partidos</p><p>${clubsMap[c].goals} G / VI</p>${badges ? `<div style="margin-top:6px;">${badges}</div>` : ''}</div>`;
             }
             document.getElementById('clubsGrid').innerHTML = clubsHtml;
+
+            // Sección Nacional: solo se muestra si el jugador llegó a ser convocado alguna vez.
+            let natName = countryData[player.country].name;
+            let natTrophies = clubTrophies[natName] || [];
+            if (player.natCaps > 0) {
+                let natBadges = natTrophies.map(name => `<span title="${name}">${trophyIconSmall(name, 16)}</span>`).join(' ');
+                document.getElementById('natSummaryRow').innerHTML = `
+                    <div class="stat-box"><div class="val" style="font-size:22px;">${player.natCaps}</div><div class="lbl">Partidos</div></div>
+                    <div class="stat-box"><div class="val" style="font-size:22px;">${player.natGoals}</div><div class="lbl">Goles / VI</div></div>
+                    <div class="stat-box"><div class="val" style="font-size:22px;">${natTrophies.length}</div><div class="lbl">Títulos</div>${natBadges ? `<div style="margin-top:6px;">${natBadges}</div>` : ''}</div>`;
+            } else {
+                document.getElementById('natSummaryRow').innerHTML = `<span style="color:var(--text-muted); font-size:14px; grid-column: 1/-1;">Nunca fuiste convocado a la Selección de ${natName}.</span>`;
+            }
 
             let trophiesHtml = "";
             if (player.trophyList.length === 0) {
                 trophiesHtml = `<span style="color:var(--text-muted); font-size:14px;">Carrera sin títulos internacionales.</span>`;
             } else {
                 player.trophyList.forEach(t => {
-                    let icon = "🏆";
-                    if(t === "Balón de Oro") icon = "🥇";
-                    if(t === "Bota de Oro") icon = "👟";
-                    if(t === "Liga Nacional") icon = "🛡️";
-                    trophiesHtml += `<div class="t-badge">${icon} ${t}</div>`;
+                    trophiesHtml += `<div class="t-badge">${trophyIconSmall(t.name, 14)} ${t.name} <span style="color:var(--text-muted); font-weight:500;">(${t.club})</span></div>`;
                 });
             }
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
-
-        updateCountryData();
     </script>
 </body>
 </html>
