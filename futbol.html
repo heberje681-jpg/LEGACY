@@ -276,6 +276,11 @@
                             <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl">Trofeos</div></div>
                         </div>
 
+                        <div class="stats-row" id="natStatsRow" style="display:none; grid-template-columns: repeat(2, 1fr);">
+                            <div class="stat-box"><div class="val" id="statNatCaps">0</div><div class="lbl">Part. Selección</div></div>
+                            <div class="stat-box"><div class="val" id="statNatGoals">0</div><div class="lbl">Goles Selección</div></div>
+                        </div>
+
                         <!-- PANEL ACCIÓN DINÁMICO -->
                         <div class="action-panel" id="action-panel"></div>
                     </div>
@@ -457,12 +462,30 @@
         }
 
         // Clubes de élite mundial reales, para cuando el OVR ya es alto (mercado de fichajes global).
+        // Etiquetados con confederación para poder mandar a préstamo/cesión dentro del mismo continente.
         const globalTeamsForTransfers = [
-            {n:"Necaxa", min:60}, {n:"Puebla", min:60}, {n:"Mazatlán", min:60}, {n:"Cádiz", min:68},
-            {n:"América", min:73}, {n:"Cruz Azul", min:73}, {n:"Boca Juniors", min:74}, {n:"Sevilla FC", min:78}, {n:"Aston Villa", min:80},
-            {n:"Borussia Dortmund", min:83}, {n:"Liverpool FC", min:85}, {n:"FC Barcelona", min:86}, {n:"Real Madrid", min:88},
-            {n:"LA Galaxy", min:50}, {n:"Inter Miami", min:50}, {n:"Al Nassr", min:50}
+            {n:"Necaxa", min:60, confed:"CONCACAF"}, {n:"Puebla", min:60, confed:"CONCACAF"}, {n:"Mazatlán", min:60, confed:"CONCACAF"},
+            {n:"Cádiz", min:68, confed:"UEFA"},
+            {n:"América", min:73, confed:"CONCACAF"}, {n:"Cruz Azul", min:73, confed:"CONCACAF"},
+            {n:"Boca Juniors", min:74, confed:"CONMEBOL"},
+            {n:"Sevilla FC", min:78, confed:"UEFA"}, {n:"Aston Villa", min:80, confed:"UEFA"},
+            {n:"Borussia Dortmund", min:83, confed:"UEFA"}, {n:"Liverpool FC", min:85, confed:"UEFA"},
+            {n:"FC Barcelona", min:86, confed:"UEFA"}, {n:"Real Madrid", min:88, confed:"UEFA"},
+            {n:"LA Galaxy", min:50, confed:"CONCACAF"}, {n:"Inter Miami", min:50, confed:"CONCACAF"}, {n:"Al Nassr", min:50, confed:"AFC"}
         ];
+
+        // Si te fichan por un club muy por encima de tu nivel actual, no vas a jugar ahí directo:
+        // te manda cedido. Primero a un real de segunda; si ya mejoraste, a uno de baja tabla de Primera.
+        function pickLoanDestination(confed, ovr, exclude) {
+            if (ovr < 68) {
+                let pool = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c.n !== exclude);
+                return pool[Math.floor(Math.random() * pool.length)].n;
+            }
+            let stepUp = globalTeamsForTransfers.filter(c => c.confed === confed && c.min <= 70 && c.n !== exclude);
+            if (stepUp.length > 0) return stepUp[Math.floor(Math.random() * stepUp.length)].n;
+            let pool = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c.n !== exclude);
+            return pool[Math.floor(Math.random() * pool.length)].n;
+        }
 
         function svgIconPath(name) {
             const icons = {
@@ -726,7 +749,8 @@
         let player = {
             name: "", country: "", pos: "", num: 9, age: 16, ovr: 50, value: 0,
             apps: 0, goals: 0, ast: 0, trophies: 0, club: "", history: [], trophyList: [],
-            peakOvr: 50, declineTarget: null, natCaps: 0, natGoals: 0, calledUp: false
+            peakOvr: 50, declineTarget: null, natCaps: 0, natGoals: 0, calledUp: false,
+            parentClub: null, onLoan: false
         };
 
         function startCareer() {
@@ -745,9 +769,22 @@
             player.num = numInput;
             player.country = countryInput;
             player.pos = posInput;
-
-            player.club = getStartingClub();
             player.ovr = 55; player.peakOvr = 55; player.declineTarget = null;
+
+            // Pequeña chance de arrancar en la cantera de un club grande — pero a los 16 no vas a jugar
+            // ahí, así que sales cedido de inmediato a un club real de menor nivel.
+            let confedStart = countryData[player.country].confed;
+            let bigOptions = globalTeamsForTransfers.filter(c => c.confed === confedStart && c.min >= 78);
+            if (bigOptions.length > 0 && Math.random() < 0.12) {
+                let bigClub = bigOptions[Math.floor(Math.random() * bigOptions.length)];
+                player.parentClub = bigClub.n;
+                player.onLoan = true;
+                player.club = pickLoanDestination(confedStart, player.ovr, bigClub.n);
+            } else {
+                player.parentClub = null;
+                player.onLoan = false;
+                player.club = getStartingClub();
+            }
             player.age = 16;
             player.value = calculateMarketValue(player.ovr, player.age);
             player.history = []; player.trophyList = [];
@@ -830,9 +867,87 @@
             return [possible[0], possible[1]];
         }
 
+        function renderLoanReview() {
+            // Si ya alcanzaste un nivel alto, no tiene sentido seguir de cesión en cesión:
+            // te asientas directo en el club grande y de ahí sigue el mercado normal.
+            if (player.ovr >= 80) {
+                player.onLoan = false;
+                player.club = player.parentClub;
+                renderDecisionPanel();
+                return;
+            }
+
+            const panel = document.getElementById('action-panel');
+            let confed = countryData[player.country].confed;
+            let loan1 = pickLoanDestination(confed, player.ovr, player.club);
+            let loan2 = pickLoanDestination(confed, player.ovr, player.club);
+            let tries = 0;
+            while (loan2 === loan1 && tries < 5) { loan2 = pickLoanDestination(confed, player.ovr, player.club); tries++; }
+
+            panel.innerHTML = `
+                <h4>Mercado de Cesiones</h4>
+                <p>Sigues perteneciendo a ${player.parentClub}, pero necesitas rodaje. ¿A dónde te ceden, o intentas quedarte a pelear tu puesto?</p>
+                <div class="decisions-grid full">
+                    <div style="display:flex; gap:15px;">
+                        <button class="dec-btn" style="flex:1; align-items:center;" onclick="processLoan(this, '${loan1}')">
+                            <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(loan1, 56)}</div>
+                            <div class="dec-title">Cesión a ${loan1}</div>
+                            <div class="dec-prob"><span style="color:var(--success)">Sumar Minutos</span></div>
+                        </button>
+                        <button class="dec-btn" style="flex:1; align-items:center;" onclick="processLoan(this, '${loan2}')">
+                            <div class="dec-img-container" style="display:flex; align-items:center; justify-content:center;">${crestHTML(loan2, 56)}</div>
+                            <div class="dec-title">Cesión a ${loan2}</div>
+                            <div class="dec-prob"><span style="color:var(--success)">Sumar Minutos</span></div>
+                        </button>
+                    </div>
+                    <button class="dec-btn" onclick="processReturnFromLoan(this)" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                        ${crestHTML(player.parentClub, 44)}
+                        <div><div class="dec-title">Volver a ${player.parentClub} y Pelear tu Puesto</div><div class="dec-prob"><span style="color:var(--success)">Te asientas como titular (35%)</span> | <span style="color:var(--danger)">Sigues sin sitio (65%)</span></div></div>
+                    </button>
+                </div>
+            `;
+        }
+
+        function processLoan(btn, loanClub) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            btn.classList.add('processing');
+            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">CERRANDO LA CESIÓN...</div>`;
+            setTimeout(() => {
+                player.club = loanClub;
+                btn.classList.remove('processing');
+                btn.classList.add('success-anim');
+                btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">¡CESIÓN CONFIRMADA!</div>`;
+                setTimeout(() => { ejecutarSimulacionAnual(0); }, 1500);
+            }, 2000);
+        }
+
+        function processReturnFromLoan(btn) {
+            document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
+            btn.classList.add('processing');
+            btn.innerHTML = `<div style="color:#FFF; font-weight:900; font-size:14px; text-align:center; width:100%;">PELEANDO TU PUESTO...</div>`;
+            setTimeout(() => {
+                let success = Math.random() < 0.35;
+                let impact;
+                if (success) {
+                    player.club = player.parentClub;
+                    player.onLoan = false;
+                    btn.classList.add('success-anim');
+                    btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:15px; text-align:center; width:100%;">¡TE GANASTE UN LUGAR EN ${player.parentClub}!</div>`;
+                    impact = 5;
+                } else {
+                    btn.classList.add('fail-anim');
+                    btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:14px; text-align:center; width:100%;">SIGUES SIN MINUTOS, TOCA OTRA CESIÓN</div>`;
+                    impact = 1;
+                }
+                setTimeout(() => { ejecutarSimulacionAnual(impact); }, 1500);
+            }, 2200);
+        }
+
         function renderDecisionPanel() {
             const panel = document.getElementById('action-panel');
             if(player.age > 37) { showSummary(); return; }
+
+            if (player.onLoan) { renderLoanReview(); return; }
 
             // Casi cada año es mercado de fichajes; de vez en cuando hay un evento narrativo o especial.
             let isTransferWindow = (Math.random() < 0.75) || player.age === 16;
@@ -1063,6 +1178,9 @@
             document.getElementById('infoClub').innerHTML = `${crestHTML(player.club, 22)}<span style="margin-left:8px;">${player.club}</span>`;
             document.getElementById('natIndicator').style.display = player.calledUp ? 'block' : 'none';
             document.getElementById('natIndicator').innerText = player.calledUp ? `Convocado a la Selección de ${countryData[player.country].name}` : '';
+            document.getElementById('natStatsRow').style.display = player.natCaps > 0 ? 'grid' : 'none';
+            document.getElementById('statNatCaps').innerText = player.natCaps;
+            document.getElementById('statNatGoals').innerText = player.natGoals;
             document.getElementById('statOvr').innerText = player.ovr;
             document.getElementById('statAge').innerText = player.age <= 37 ? player.age : 37;
             document.getElementById('statValue').innerText = formatMoney(player.value);
