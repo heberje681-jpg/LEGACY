@@ -412,15 +412,49 @@
             MAR: { name: "Marruecos", main: "#C1272D", trim: "#006233", confed: "CAF", cup: "Copa Africana de Naciones", tier: "mid" }
         };
 
-        // Clubes de cantera / segunda división, agrupados por confederación (para las primeras ofertas,
-        // acordes al continente del jugador). Clubes ficticios genéricos para no usar marcas reales de ligas menores.
+        // Clubes reales de segunda división / bajo nivel, agrupados por confederación y con el país
+        // de cada uno etiquetado (para priorizar el país del jugador cuando hay datos disponibles).
+        // Fuentes: Liga de Expansión MX, Primera Nacional (ARG), Segunda División (ESP) / EFL League One-Two (ING),
+        // J2/J3 League (JPN), ligas domésticas de CAF verificadas.
         const feederClubsByConfed = {
-            CONCACAF: ["Atlético Nacional Sub-20", "Real Fuerza FC", "Deportivo Continental", "Unión Centroamericana"],
-            CONMEBOL: ["Club Andino FC", "Deportivo del Sur", "Atlético Rioplatense", "Sporting Cono Sur"],
-            UEFA: ["FC Segunda Región", "Athletic Continental", "Unión Europea B", "Deportivo Norte FC"],
-            CAF: ["Real Sahel FC", "Unión Africana Sub-20", "Deportivo Continental África", "Atlético del Norte"],
-            AFC: ["FC Oriente Sub-20", "Unión Asiática Deportiva", "Deportivo Pacífico", "Atlético Continental Este"]
+            CONCACAF: [
+                {n:"Atlante", c:"MEX"}, {n:"Tapatío", c:"MEX"}, {n:"Celaya", c:"MEX"}, {n:"Atlético Morelia", c:"MEX"},
+                {n:"Cancún FC", c:"MEX"}, {n:"Venados de Mérida", c:"MEX"}, {n:"Leones Negros", c:"MEX"}, {n:"Dorados", c:"MEX"},
+                {n:"Oaxaca FC", c:"MEX"}, {n:"Correcaminos UAT", c:"MEX"}, {n:"Mineros de Zacatecas", c:"MEX"}, {n:"Cimarrones de Sonora", c:"MEX"}
+            ],
+            CONMEBOL: [
+                {n:"Aldosivi", c:"ARG"}, {n:"Chacarita Juniors", c:"ARG"}, {n:"Quilmes", c:"ARG"}, {n:"All Boys", c:"ARG"},
+                {n:"Almirante Brown", c:"ARG"}, {n:"Atlético Rafaela", c:"ARG"}, {n:"Deportivo Madryn", c:"ARG"}, {n:"Arsenal de Sarandí", c:"ARG"},
+                {n:"Banfield", c:"ARG"}, {n:"Patronato", c:"ARG"}, {n:"Agropecuario", c:"ARG"}, {n:"Nueva Chicago", c:"ARG"}
+            ],
+            UEFA: [
+                {n:"Mirandés", c:"ESP"}, {n:"Real Oviedo", c:"ESP"}, {n:"Cultural Leonesa", c:"ESP"}, {n:"Racing de Santander", c:"ESP"},
+                {n:"Albacete", c:"ESP"}, {n:"SD Eibar", c:"ESP"}, {n:"SD Huesca", c:"ESP"},
+                {n:"Peterborough United", c:"GBR"}, {n:"Stockport County", c:"GBR"}, {n:"Lincoln City", c:"GBR"},
+                {n:"Wycombe Wanderers", c:"GBR"}, {n:"Bolton Wanderers", c:"GBR"}, {n:"Cambridge United", c:"GBR"},
+                {n:"Barnsley", c:"GBR"}, {n:"Blackpool", c:"GBR"}, {n:"Bradford City", c:"GBR"}
+            ],
+            CAF: [
+                {n:"Enyimba", c:"NGA"}, {n:"Kano Pillars", c:"NGA"}, {n:"Rivers United", c:"NGA"},
+                {n:"Asante Kotoko", c:"GHA"}, {n:"Hearts of Oak", c:"GHA"}, {n:"Aduana Stars", c:"GHA"},
+                {n:"Al Masry", c:"EGY"}, {n:"Ismaily", c:"EGY"}, {n:"ENPPI", c:"EGY"},
+                {n:"RS Berkane", c:"MAR"}, {n:"Difaa El Jadida", c:"MAR"},
+                {n:"SuperSport United", c:"RSA"}, {n:"AmaZulu", c:"RSA"}, {n:"Golden Arrows", c:"RSA"}
+            ],
+            AFC: [
+                {n:"Omiya Ardija", c:"JPN"}, {n:"Fagiano Okayama", c:"JPN"}, {n:"Ventforet Kofu", c:"JPN"}, {n:"Roasso Kumamoto", c:"JPN"},
+                {n:"Tokushima Vortis", c:"JPN"}, {n:"Mito HollyHock", c:"JPN"}, {n:"Iwaki FC", c:"JPN"}, {n:"JEF United Chiba", c:"JPN"},
+                {n:"Blaublitz Akita", c:"JPN"}, {n:"Vegalta Sendai", c:"JPN"}
+            ]
         };
+
+        function getStartingClub() {
+            let confed = countryData[player.country].confed;
+            let pool = feederClubsByConfed[confed] || feederClubsByConfed.UEFA;
+            let ownCountry = pool.filter(c => c.c === player.country);
+            let chosen = ownCountry.length > 0 ? ownCountry[Math.floor(Math.random() * ownCountry.length)] : pool[Math.floor(Math.random() * pool.length)];
+            return chosen.n;
+        }
 
         // Clubes de élite mundial reales, para cuando el OVR ya es alto (mercado de fichajes global).
         const globalTeamsForTransfers = [
@@ -584,8 +618,8 @@
         function renderCoachBenchEvent() {
             const panel = document.getElementById('action-panel');
             let confed = countryData[player.country].confed;
-            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c !== player.club);
-            let lesserTeam = feeders[Math.floor(Math.random() * feeders.length)];
+            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c.n !== player.club);
+            let lesserTeam = feeders[Math.floor(Math.random() * feeders.length)].n;
             panel.innerHTML = `
                 <h4>El DT No Cuenta Contigo</h4>
                 <p>El entrenador decidió que ya no eres pieza clave del once titular. ¿Qué haces?</p>
@@ -712,7 +746,7 @@
             player.country = countryInput;
             player.pos = posInput;
 
-            player.club = "Cantera " + countryData[player.country].name;
+            player.club = getStartingClub();
             player.ovr = 55; player.peakOvr = 55; player.declineTarget = null;
             player.age = 16;
             player.value = calculateMarketValue(player.ovr, player.age);
@@ -777,13 +811,13 @@
 
         function getTransferOffers() {
             let confed = countryData[player.country].confed;
-            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c !== player.club);
+            let feeders = (feederClubsByConfed[confed] || feederClubsByConfed.UEFA).filter(c => c.n !== player.club);
 
-            // Mientras el nivel es bajo (etapa de cantera), las ofertas son de clubes de segunda
+            // Mientras el nivel es bajo (etapa de cantera), las ofertas son de clubes reales de segunda
             // división / ligas del propio continente, no de clubes de élite mundial todavía.
             if (player.ovr < 65) {
                 let pool = [...feeders].sort(() => 0.5 - Math.random());
-                return [{n: pool[0]}, {n: pool[1]}];
+                return [{n: pool[0].n}, {n: pool[1].n}];
             }
 
             let possible = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8);
@@ -792,7 +826,7 @@
             possible = possible.filter(c => c.n !== player.club);
             possible.sort(() => 0.5 - Math.random());
 
-            if (possible.length < 2) return [{n: feeders[0] || "Oferta Árabe"}, {n: feeders[1] || "Equipo Asiático"}];
+            if (possible.length < 2) return [{n: feeders[0] ? feeders[0].n : "Real Oviedo"}, {n: feeders[1] ? feeders[1].n : "Omiya Ardija"}];
             return [possible[0], possible[1]];
         }
 
