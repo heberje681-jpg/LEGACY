@@ -36,6 +36,12 @@
         
         .pos-dot { position: absolute; width: 34px; height: 34px; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 50%; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; transform: translate(-50%, -50%); z-index: 10; }
         .pos-dot.active { background: var(--legacy-gold); border-color: #fff; color: #000; transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 15px rgba(245, 158, 11, 0.6); }
+        .pos-dot-off { border-color: #3B82F6; }
+        .pos-dot-def { border-color: #EF4444; }
+        .scrimmage-line { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.7) 0, rgba(255,255,255,0.7) 6px, transparent 6px, transparent 12px); z-index: 5; }
+        .side-label { position: absolute; top: 6px; font-size: 9px; font-weight: 800; letter-spacing: 1px; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+        .side-label.off { left: 10px; }
+        .side-label.def { right: 10px; }
 
         .input-group { display: flex; flex-direction: column; margin-bottom: 20px; }
         .input-group.row { flex-direction: row; gap: 15px; }
@@ -107,6 +113,39 @@
 
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+        /* ===== RESPONSIVE MÓVIL ===== */
+        @media (max-width: 820px) {
+            .main-container { padding: 20px 12px; }
+            .setup-card, .summary-card { padding: 24px 18px; }
+            .setup-top-grid { grid-template-columns: 1fr; gap: 25px; }
+            .game-layout { grid-template-columns: 1fr; gap: 20px; }
+            .history-card { max-height: 420px; padding: 18px; }
+            .field-container { height: 220px; }
+            .pos-dot { width: 32px; height: 32px; font-size: 10px; }
+            .games-grid { grid-template-columns: 1fr; }
+            .hero-section h1 { font-size: 32px; }
+            .hero-section { padding: 40px 20px 10px 20px; }
+        }
+
+        @media (max-width: 480px) {
+            header { padding: 12px 16px; }
+            .nav-links { gap: 12px; font-size: 11px; }
+            .stats-grid { gap: 6px; padding: 10px; }
+            .stat-box .val { font-size: 16px; }
+            .stat-box .lbl { font-size: 9px; letter-spacing: 0; }
+            .ovr-badge { font-size: 20px; padding: 8px 12px; top: 18px; right: 18px; }
+            .player-name { font-size: 20px; }
+            .setup-card, .summary-card { padding: 18px 14px; }
+            .setup-card h1, .summary-card h1 { font-size: 24px !important; }
+            .field-container { height: 190px; }
+            .pos-dot { width: 28px; height: 28px; font-size: 9px; }
+            .dec-title { font-size: 13px; }
+            .clubs-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+            .club-box { padding: 10px; }
+            .t-badge { font-size: 12px; }
+        }
+
     </style>
 </head>
 <body>
@@ -145,17 +184,18 @@
                         <div class="input-group row">
                             <div>
                                 <label>Apellido</label>
-                                <input type="text" id="playerName" value="">
+                                <input type="text" id="playerName" value="" placeholder="TU APELLIDO">
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="" min="1" max="99">
+                                <input type="number" id="playerNum" value="" placeholder="24" min="1" max="99">
                             </div>
                         </div>
 
                         <div class="input-group">
                             <label>Nacionalidad</label>
                             <select id="playerCountry">
+                                <option value="" disabled selected>Selecciona tu país</option>
                                 <option value="USA">🇺🇸 Estados Unidos</option>
                                 <option value="DOM">🇩🇴 República Dominicana</option>
                                 <option value="MEX">🇲🇽 México</option>
@@ -217,21 +257,29 @@
                         <div class="field-container">
                             <div class="field-endzone left"></div>
                             <div class="field-endzone right"></div>
+                            <div class="scrimmage-line"></div>
+                            <div class="side-label off">Ofensiva</div>
+                            <div class="side-label def">Defensiva</div>
 
-                            <div class="pos-dot active" style="top: 45%; left: 42%;" onclick="selectPos('QB', this)">QB</div>
-                            <div class="pos-dot" style="top: 75%; left: 42%;" onclick="selectPos('RB', this)">RB</div>
-                            <div class="pos-dot" style="top: 20%; left: 20%;" onclick="selectPos('WR', this)">WR</div>
-                            <div class="pos-dot" style="top: 20%; left: 65%;" onclick="selectPos('TE', this)">TE</div>
-                            <div class="pos-dot" style="top: 45%; left: 55%;" onclick="selectPos('OL', this)">OL</div>
-                            <div class="pos-dot" style="top: 15%; left: 85%;" onclick="selectPos('CB', this)">CB</div>
-                            <div class="pos-dot" style="top: 45%; left: 80%;" onclick="selectPos('LB', this)">LB</div>
-                            <div class="pos-dot" style="top: 75%; left: 85%;" onclick="selectPos('S', this)">S</div>
-                            <div class="pos-dot" style="top: 45%; left: 92%;" onclick="selectPos('DL', this)">DL</div>
+                            <!-- OFENSIVA: a la izquierda de la línea de scrimmage -->
+                            <div class="pos-dot pos-dot-off active" style="top: 50%; left: 35%;" onclick="selectPos('QB', this)">QB</div>
+                            <div class="pos-dot pos-dot-off" style="top: 62%; left: 24%;" onclick="selectPos('RB', this)">RB</div>
+                            <div class="pos-dot pos-dot-off" style="top: 15%; left: 33%;" onclick="selectPos('WR', this)">WR</div>
+                            <div class="pos-dot pos-dot-off" style="top: 85%; left: 44%;" onclick="selectPos('TE', this)">TE</div>
+                            <div class="pos-dot pos-dot-off" style="top: 50%; left: 47%;" onclick="selectPos('OL', this)">OL</div>
+
+                            <!-- DEFENSIVA: a la derecha de la línea de scrimmage, frente a la ofensiva -->
+                            <div class="pos-dot pos-dot-def" style="top: 50%; left: 53%;" onclick="selectPos('DL', this)">DL</div>
+                            <div class="pos-dot pos-dot-def" style="top: 50%; left: 63%;" onclick="selectPos('LB', this)">LB</div>
+                            <div class="pos-dot pos-dot-def" style="top: 15%; left: 58%;" onclick="selectPos('CB', this)">CB</div>
+                            <div class="pos-dot pos-dot-def" style="top: 50%; left: 76%;" onclick="selectPos('S', this)">S</div>
                         </div>
-                        <input type="hidden" id="playerPos" value="QB">
+                        <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Alineación previa al snap: ofensiva (azul) a la izquierda de la línea, defensiva (rojo) a la derecha.</p>
+                    </div>                        <input type="hidden" id="playerPos" value="">
                     </div>
                 </div>
                 <button class="btn-main" onclick="startCareer()">Comenzar en Fuerzas Básicas</button>
+                <div id="setupError" style="color:var(--danger); font-size:13px; font-weight:700; text-align:center; margin-top:10px; display:none;">Completa tu nombre, número, posición y nacionalidad para continuar.</div>
             </div>
         </div>
 
@@ -375,7 +423,8 @@
                 head: '<circle cx="12" cy="9" r="6"/><path d="M9 20l1-5h4l1 5"/><line x1="9" y1="9" x2="15" y2="9"/>',
                 back: '<path d="M9 3v6l-3 4v8"/><path d="M15 3v6l3 4v8"/><line x1="9" y1="9" x2="15" y2="9"/>',
                 leg: '<path d="M10 3h5v6l-2 3 1 9h-3l-1-8-3 4-2-2 4-5V6a3 3 0 0 1 1-3Z"/>',
-                trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/>'
+                trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/>',
+                star: '<path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.4 6-5.5-3.2-5.5 3.2 1.4-6-4.6-4.1 6.1-.6Z"/>'
             };
             return icons[name] || icons.calm;
         }
@@ -386,8 +435,26 @@
             return `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${bg};color:${color};"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svgIconPath(iconName)}</svg></div>`;
         }
 
-        function trophyIconSmall() {
-            return `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;">${svgIconPath('trophy')}</svg>`;
+        function trophyIconMeta(name) {
+            const map = {
+                "Super Bowl": { icon: "trophy", color: "#F59E0B" },
+                "MVP de la NFL": { icon: "star", color: "#F59E0B" },
+                "Jugador Defensivo del Año": { icon: "shield", color: "#F59E0B" },
+                "Pro Bowl": { icon: "star", color: "#F59E0B" },
+                "All-Pro": { icon: "star", color: "#F59E0B" }
+            };
+            return map[name] || { icon: "trophy", color: "#F59E0B" };
+        }
+
+        function trophyIconSmall(name, size) {
+            size = size || 14;
+            let meta = trophyIconMeta(name);
+            return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${meta.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;">${svgIconPath(meta.icon)}</svg>`;
+        }
+
+        function handleTrophyImgError(imgEl, name, size) {
+            let meta = trophyIconMeta(name);
+            imgEl.outerHTML = `<div style="width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;color:${meta.color};filter:drop-shadow(0 0 20px ${meta.color}80);"><svg viewBox="0 0 24 24" width="70%" height="70%" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${svgIconPath(meta.icon)}</svg></div>`;
         }
 
         const randomEvents = [
@@ -601,10 +668,21 @@
         }
 
         function startCareer() {
-            player.name = document.getElementById('playerName').value.toUpperCase() || "JUGADOR";
-            player.num = document.getElementById('playerNum').value || 24;
-            player.pos = document.getElementById('playerPos').value;
-            player.country = document.getElementById('playerCountry').value;
+            let nameInput = document.getElementById('playerName').value.trim();
+            let numInput = document.getElementById('playerNum').value;
+            let posInput = document.getElementById('playerPos').value;
+            let countryInput = document.getElementById('playerCountry').value;
+
+            if (!nameInput || !numInput || !posInput || !countryInput) {
+                document.getElementById('setupError').style.display = 'block';
+                return;
+            }
+            document.getElementById('setupError').style.display = 'none';
+
+            player.name = nameInput.toUpperCase();
+            player.num = numInput;
+            player.pos = posInput;
+            player.country = countryInput;
             player.age = 18; player.ovr = 56;
             player.peakOvr = 56; player.declineTarget = null; player.proDebutDone = false; player.contract = null;
             player.careerEarnings = 0; player.trophyList = []; usedEventTitles = [];
@@ -1023,7 +1101,7 @@
             trophiesArr.forEach((t, i) => {
                 container.innerHTML += `
                     <div class="cinematic-trophy" style="animation-delay: ${i*0.2}s">
-                        <img src="${t.img}" class="cinematic-img" onerror="this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cpath%20fill%3D%22%23F59E0B%22%20d%3D%22M30%2010h40v8c12%200%2018%208%2018%2018%200%2014-10%2022-22%2024-3%2010-10%2016-16%2018v10h14v8H36v-8h14V78c-6-2-13-8-16-18-12-2-22-10-22-24%200-10%206-18%2018-18v-8zm-8%2016c-6%200-10%204-10%2010%200%208%206%2013%2013%2015-2-8-3-16-3-25zm56%200c0%209-1%2017-3%2025%207-2%2013-7%2013-15%200-6-4-10-10-10z%22/%3E%3C/svg%3E';">
+                        <img src="${t.img}" class="cinematic-img" onerror="handleTrophyImgError(this, '${t.name.replace(/'/g, "\\'")}', 160)">
                         <div class="cinematic-title">${t.name}</div>
                     </div>`;
             });
@@ -1090,14 +1168,14 @@
             for (let c in clubsMap) {
                 let cs = clubsMap[c];
                 let statLine = (g === 'QB' || g === 'SKILL') ? `${cs.YDS} YDS • ${cs.TD} TD` : (g === 'OL' ? `${cs.G} Juegos` : `${cs.TKL} TKL • ${cs.SACK} SACK`);
-                let badges = (clubTrophies[c] || []).map(name => `<span title="${name}">${trophyIconSmall()}</span>`).join(' ');
+                let badges = (clubTrophies[c] || []).map(name => `<span title="${name}">${trophyIconSmall(name)}</span>`).join(' ');
                 clubsHtml += `<div class="club-box">${crestHTML(c, 40)}<h5 style="margin-top:10px;">${c}</h5><p>${cs.G} Juegos • ${statLine}</p>${badges ? `<div style="margin-top:6px;">${badges}</div>` : ''}</div>`;
             }
             document.getElementById('clubsGrid').innerHTML = clubsHtml;
 
             let trophiesHtml = "";
             if (player.trophyList.length === 0) trophiesHtml = `<span style="color:var(--text-muted); font-size:14px;">Carrera sin premios mayores.</span>`;
-            else player.trophyList.forEach(t => { trophiesHtml += `<div class="t-badge">${trophyIconSmall()} ${t.name} <span style="color:var(--text-muted); font-weight:500;">(${t.club})</span></div>`; });
+            else player.trophyList.forEach(t => { trophiesHtml += `<div class="t-badge">${trophyIconSmall(t.name)} ${t.name} <span style="color:var(--text-muted); font-weight:500;">(${t.club})</span></div>`; });
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
     </script>
