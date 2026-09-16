@@ -266,7 +266,7 @@
                         <input type="hidden" id="playerPos" value="">
                     </div>
                 </div>
-                <button class="btn-main" onclick="startCareer()">Comenzar Carrera Universitaria</button>
+                <button class="btn-main" onclick="startCareer()">Iniciar Carrera</button>
                 <div id="setupError" style="color:var(--danger); font-size:13px; font-weight:700; text-align:center; margin-top:10px; display:none;">Completa tu nombre, número, posición y nacionalidad para continuar.</div>
             </div>
         </div>
@@ -333,7 +333,10 @@
         async function loadNBATicker() {
             const ticker = document.getElementById('live-ticker-container');
             try {
-                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard', { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await res.json();
                 let html = '';
                 if (data.events && data.events.length > 0) {
@@ -635,7 +638,7 @@
             player.club = team;
             player.value = value;
             player.careerEarnings += value;
-            player.contract = { team: team, yearsTotal: years, yearsLeft: years, yearsElapsed: 0, checkpointYear: Math.max(1, Math.ceil(years / 2)) };
+            player.contract = { team: team, yearsTotal: years, yearsLeft: years, yearsElapsed: 0, checkpointYear: years >= 3 ? Math.ceil(years / 2) : years + 1 };
         }
 
         function generateContractOffer(teamName) {
@@ -788,6 +791,11 @@
         // ====== FLUJO DE CONTRATOS (post-Draft) ======
         function advanceFlow() {
             if (player.age > 38) { showSummary(); return; }
+            if (player.age >= 35) { renderRetirementCheck(); return; }
+            proceedNormalFlow();
+        }
+
+        function proceedNormalFlow() {
             if (!player.proDebutDone) { renderDecisionPanel(); return; }
             if (!player.contract) { renderFreeAgency(); return; }
             let c = player.contract;
@@ -795,11 +803,31 @@
             renderAutoContractYear();
         }
 
+        function renderRetirementCheck() {
+            const panel = document.getElementById('action-panel');
+            panel.innerHTML = `
+                <h4>¿Sigues en Activo?</h4>
+                <p>Ya tienes ${player.age} años y tu nivel viene bajando. ¿Cuelgas los tenis aquí o vas por una temporada más?</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="showSummary()">
+                        <div class="dec-img-container">${eventIconHTML('house', 'safe')}</div>
+                        <div class="dec-title">Retirarme</div>
+                        <div class="dec-prob"><span style="color:#FFF">Cierro mi carrera aquí</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="proceedNormalFlow()">
+                        <div class="dec-img-container">${eventIconHTML('flag', 'risk')}</div>
+                        <div class="dec-title">Seguir Jugando</div>
+                        <div class="dec-prob"><span style="color:#FFF">Una temporada más</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
         function renderAutoContractYear() {
             const panel = document.getElementById('action-panel');
             let c = player.contract;
 
-            if (Math.random() < 0.55) {
+            if (Math.random() < 0.4) {
                 if (maybeRenderSpecialEvent()) return;
                 renderStandardEventPanel();
                 return;
