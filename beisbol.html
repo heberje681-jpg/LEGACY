@@ -183,11 +183,11 @@
                         <div class="input-group row">
                             <div>
                                 <label>Apellido</label>
-                                <input type="text" id="playerName" value="" placeholder="">
+                                <input type="text" id="playerName" value="" placeholder="TU APELLIDO">
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="" placeholder="" min="1" max="99">
+                                <input type="number" id="playerNum" value="" placeholder="24" min="1" max="99">
                             </div>
                         </div>
 
@@ -340,22 +340,23 @@
         async function loadMLBTicker() {
             const ticker = document.getElementById('live-ticker-container');
             try {
-                const res = await fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard', { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await res.json();
                 let html = '';
-                if (data.dates && data.dates.length > 0) {
-                    data.dates[0].games.forEach(g => {
-                        let away = g.teams.away.team.teamName.substring(0,3).toUpperCase(); 
-                        let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
-                        let aScore = g.teams.away.score || 0; let hScore = g.teams.home.score || 0;
-                        let status = g.status.abstractGameState; 
-                        let inning = g.linescore ? (g.linescore.inningState + " " + g.linescore.currentInning) : status;
-                        if(status === 'Final') inning = 'FT'; if(status === 'Preview') inning = 'Próximo';
-                        html += `<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`;
+                if (data.events && data.events.length > 0) {
+                    data.events.forEach(ev => {
+                        let comp = ev.competitions[0];
+                        let away = comp.competitors.find(c => c.homeAway === 'away');
+                        let home = comp.competitors.find(c => c.homeAway === 'home');
+                        let status = comp.status.type.shortDetail;
+                        html += `<div class="live-match">⚾ <b>${away.team.abbreviation}</b> ${away.score || 0} - ${home.score || 0} <b>${home.team.abbreviation}</b> <span>${status}</span></div>`;
                     });
                 } else { html = '<div class="live-match">⚾ Sin juegos programados hoy</div>'; }
                 ticker.innerHTML = html;
-            } catch (e) { ticker.innerHTML = '<div class="live-match">⚾ Cargando MLB API...</div>'; }
+            } catch (e) { ticker.innerHTML = '<div class="live-match">⚾ Sin conexión con la API deportiva</div>'; }
         }
         loadMLBTicker();
 
@@ -423,7 +424,7 @@
                 trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/>',
                 star: '<path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.4 6-5.5-3.2-5.5 3.2 1.4-6-4.6-4.1 6.1-.6Z"/>',
                 glove: '<path d="M6 13c0-4.5 2.2-8 6-8s6 3.5 6 8v3a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-3Z"/><line x1="9" y1="8" x2="9" y2="15"/><line x1="12" y1="6.5" x2="12" y2="15"/><line x1="15" y1="8" x2="15" y2="15"/>',
-                bat: '<line x1="5" y1="19" x2="15" y2="9"/><circle cx="17" cy="7" r="2.5"/>',
+                bat: '<circle cx="5.5" cy="20.5" r="1.4" fill="currentColor" stroke="none"/><line x1="5.5" y1="20.5" x2="9" y2="17" stroke-width="3.2"/><line x1="9" y1="17" x2="19" y2="5.5" stroke-width="6.5" stroke-linecap="round"/>',
                 baseball_ball: '<circle cx="12" cy="12" r="9"/><path d="M7 5.5c2 2 2 11 0 13"/><path d="M17 5.5c-2 2-2 11 0 13"/>',
                 bench_down: '<polyline points="19,12 12,19 5,12"/><line x1="12" y1="5" x2="12" y2="19"/>',
                 house: '<path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><line x1="10" y1="20" x2="10" y2="14"/><line x1="14" y1="20" x2="14" y2="14"/>',
@@ -654,7 +655,7 @@
             player.club = team;
             player.value = value;
             player.careerEarnings += value;
-            player.contract = { team: team, yearsTotal: years, yearsLeft: years, yearsElapsed: 0, checkpointYear: Math.max(1, Math.ceil(years / 2)) };
+            player.contract = { team: team, yearsTotal: years, yearsLeft: years, yearsElapsed: 0, checkpointYear: years >= 3 ? Math.ceil(years / 2) : years + 1 };
         }
 
         function generateContractOffer(teamName) {
@@ -828,6 +829,11 @@
         // ====== FLUJO DE CONTRATOS (post-Draft) ======
         function advanceFlow() {
             if (player.age > 38) { showSummary(); return; }
+            if (player.age >= 35) { renderRetirementCheck(); return; }
+            proceedNormalFlow();
+        }
+
+        function proceedNormalFlow() {
             if (!player.proDebutDone) { renderDecisionPanel(); return; }
             if (!player.contract) { renderFreeAgency(); return; }
             let c = player.contract;
@@ -835,12 +841,32 @@
             renderAutoContractYear();
         }
 
+        function renderRetirementCheck() {
+            const panel = document.getElementById('action-panel');
+            panel.innerHTML = `
+                <h4>¿Sigues en Activo?</h4>
+                <p>Ya tienes ${player.age} años y tu nivel viene bajando. ¿Cuelgas los guantes aquí o vas por una temporada más?</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="showSummary()">
+                        <div class="dec-img-container">${eventIconHTML('house', 'safe')}</div>
+                        <div class="dec-title">Retirarme</div>
+                        <div class="dec-prob"><span style="color:#FFF">Cierro mi carrera aquí</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="proceedNormalFlow()">
+                        <div class="dec-img-container">${eventIconHTML('flag', 'risk')}</div>
+                        <div class="dec-title">Seguir Jugando</div>
+                        <div class="dec-prob"><span style="color:#FFF">Una temporada más</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
         function renderAutoContractYear() {
             const panel = document.getElementById('action-panel');
             let c = player.contract;
 
             // Probabilidad de que este año traiga una decisión real en vez de auto-simularse.
-            if (Math.random() < 0.55) {
+            if (Math.random() < 0.4) {
                 if (maybeRenderSpecialEvent()) return;
                 renderStandardEventPanel();
                 return;
