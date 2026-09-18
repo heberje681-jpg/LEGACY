@@ -178,17 +178,19 @@
                             <svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                 <path id="svg-body" fill="#FFFFFF" d="M170,60 L342,60 L360,140 L400,150 L390,220 L350,210 L350,470 L162,470 L162,210 L122,220 L112,150 L152,140 Z"/>
                                 <path id="svg-trim" fill="#7C2D12" d="M170,60 L190,60 L190,470 L170,470 Z M322,60 L342,60 L342,470 L322,470 Z"/>
+                                <text id="svg-name" x="256" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="2" fill="#7C2D12"></text>
+                                <text id="svg-number" x="256" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="130" fill="#7C2D12"></text>
                             </svg>
                         </div>
                         
                         <div class="input-group row">
                             <div>
                                 <label>Apellido</label>
-                                <input type="text" id="playerName" value="" placeholder="">
+                                <input type="text" id="playerName" value="" placeholder="" oninput="updateJerseyText()">
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="" placeholder="" min="1" max="99">
+                                <input type="number" id="playerNum" value="" placeholder= "" min="1" max="99" oninput="updateJerseyText()">
                             </div>
                         </div>
 
@@ -611,6 +613,13 @@
             if (pos === 'RB' || pos === 'WR' || pos === 'TE') return 'SKILL';
             if (pos === 'OL') return 'OL';
             return 'DEF';
+        }
+
+        function updateJerseyText() {
+            let nameVal = document.getElementById('playerName').value.trim().toUpperCase();
+            let numVal = document.getElementById('playerNum').value;
+            document.getElementById('svg-name').textContent = nameVal;
+            document.getElementById('svg-number').textContent = numVal || '';
         }
 
         function selectPos(pos, element) {
@@ -1207,5 +1216,6 @@
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
     </script>
+    <div style="text-align:center; font-size:10px; color:var(--text-muted); opacity:0.7; padding:10px 16px; max-width:1050px; margin:0 auto;">Los nombres de clubes, equipos y ligas se usan únicamente con fines de identificación dentro de la simulación. Legacy es un proyecto independiente de fans, no afiliado ni avalado por ninguna de las organizaciones mencionadas.</div>
 </body>
 </html>
