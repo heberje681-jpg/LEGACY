@@ -262,6 +262,15 @@
                                 <option value="Izquierdo">Izquierdo</option>
                             </select>
                         </div>
+
+                        <div class="input-group">
+                            <label>Personalidad</label>
+                            <select id="playerTrait">
+                                <option value="balanced">Mentalidad Fría (equilibrado)</option>
+                                <option value="loyal">Ídolo de Cantera (más leal, menos ofertas)</option>
+                                <option value="ambitious">Ambicioso (más ofertas, más riesgo)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -309,19 +318,19 @@
 
                         <div class="stats-row" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">16</div><div class="lbl">Edad</div></div>
-                            <div class="stat-box"><div class="val" id="statValue">€150K</div><div class="lbl">Valor</div></div>
-                            <div class="stat-box"><div class="val" id="statApps">0</div><div class="lbl">Partidos</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">€150K</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="12" cy="12" r="9"/><path d="M9 15.3c0 1.1 1.3 2 3 2s3-.9 3-2-1.3-1.5-3-1.9-3-.8-3-1.9 1.3-2 3-2 3 .9 3 2"/><line x1="12" y1="6.5" x2="12" y2="17.3"/></svg>Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statApps">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/></svg>Partidos</div></div>
                         </div>
 
                         <div class="stats-row">
-                            <div class="stat-box"><div class="val" id="statGoals">0</div><div class="lbl" id="lblGoles">Goles</div></div>
-                            <div class="stat-box"><div class="val" id="statAst">0</div><div class="lbl" id="lblAst">Asistencias</div></div>
-                            <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl">Trofeos</div></div>
+                            <div class="stat-box"><div class="val" id="statGoals">0</div><div class="lbl" id="lblGoles"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="12" cy="12" r="9"/><path d="M12 6l3 3-1 4h-4l-1-4 3-3Z"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="9" y1="13" x2="6" y2="16"/><line x1="15" y1="13" x2="18" y2="16"/></svg>Goles</div></div>
+                            <div class="stat-box"><div class="val" id="statAst">0</div><div class="lbl" id="lblAst"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><path d="M4 12l5-5 4 3 3-3 5 5"/><path d="M11 10l4 4"/><path d="M15 10l-2 6"/></svg>Asistencias</div></div>
+                            <div class="stat-box"><div class="val" id="statTrophies">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Trofeos</div></div>
                         </div>
 
                         <div class="stats-row" id="natStatsRow" style="display:none; grid-template-columns: repeat(2, 1fr);">
-                            <div class="stat-box"><div class="val" id="statNatCaps">0</div><div class="lbl">Part. Selección</div></div>
-                            <div class="stat-box"><div class="val" id="statNatGoals">0</div><div class="lbl">Goles Selección</div></div>
+                            <div class="stat-box"><div class="val" id="statNatCaps">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/></svg>Part. Selección</div></div>
+                            <div class="stat-box"><div class="val" id="statNatGoals">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="12" cy="12" r="9"/><path d="M12 6l3 3-1 4h-4l-1-4 3-3Z"/><line x1="12" y1="3" x2="12" y2="6"/><line x1="9" y1="13" x2="6" y2="16"/><line x1="15" y1="13" x2="18" y2="16"/></svg>Goles Selección</div></div>
                         </div>
 
                         <!-- PANEL ACCIÓN DINÁMICO -->
@@ -348,11 +357,14 @@
                 
                 <div class="stats-row" style="margin-top: 30px;">
                     <div class="stat-box"><div class="val" id="sumOvr" style="color: var(--legacy-gold); font-size:24px;">90</div><div class="lbl">Media Final</div></div>
-                    <div class="stat-box"><div class="val" id="sumApps" style="font-size:24px;">0</div><div class="lbl">Partidos Totales</div></div>
+                    <div class="stat-box"><div class="val" id="sumApps" style="font-size:24px;">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/></svg>Partidos Totales</div></div>
                     <div class="stat-box"><div class="val" id="sumGoals" style="font-size:24px;">0</div><div class="lbl" id="sumLblGoles">Goles</div></div>
                 </div>
 
-                <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Clubes Representados</h3>
+                <h3 style="margin-top: 30px; font-weight: 800; font-size: 18px; text-align: left;">Tu Trayectoria</h3>
+                <div id="careerPathRow" style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px;"></div>
+
+                <h3 style="margin-top: 30px; font-weight: 800; font-size: 18px; text-align: left;">Clubes Representados</h3>
                 <div class="clubs-grid" id="clubsGrid"></div>
 
                 <h3 style="margin-top: 40px; font-weight: 800; font-size: 18px; text-align: left;">Selección Nacional</h3>
@@ -649,9 +661,15 @@
                 leg: '<path d="M10 3h5v6l-2 3 1 9h-3l-1-8-3 4-2-2 4-5V6a3 3 0 0 1 1-3Z"/>',
                 trophy: '<path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 4H4v2a4 4 0 0 0 4 4"/><path d="M16 4h4v2a4 4 0 0 1-4 4"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/>',
                 boot: '<path d="M6 3v9l-4 4v3h18v-4c0-2-2-3-4-3h-3l-4-4V3Z"/>',
-                medal: '<circle cx="12" cy="15" r="6"/><path d="M9 3l3 8 3-8"/>'
+                medal: '<circle cx="12" cy="15" r="6"/><path d="M9 3l3 8 3-8"/>',
+                ball: '<circle cx="12" cy="12" r="9"/><path d="M12 6.5l3 2.2-1.1 3.6H10.1L9 8.7Z"/><line x1="12" y1="6.5" x2="12" y2="3.5"/><line x1="9.3" y1="10.8" x2="5.5" y2="12.3"/><line x1="14.7" y1="10.8" x2="18.5" y2="12.3"/><line x1="10.6" y1="14.9" x2="9" y2="18.5"/><line x1="13.4" y1="14.9" x2="15" y2="18.5"/>',
+                run: '<circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/>'
             };
             return icons[name] || icons.calm;
+        }
+
+        function statIcon(name) {
+            return `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;">${svgIconPath(name)}</svg>`;
         }
 
         function eventIconHTML(iconName, tone) {
@@ -768,7 +786,44 @@
             `;
         }
 
+        const rivalries = {
+            "Real Madrid": { rival: "FC Barcelona", name: "El Clásico" },
+            "FC Barcelona": { rival: "Real Madrid", name: "El Clásico" },
+            "Boca Juniors": { rival: "River Plate", name: "El Superclásico" },
+            "River Plate": { rival: "Boca Juniors", name: "El Superclásico" },
+            "América": { rival: "Cruz Azul", name: "El Clásico de Clásicos" },
+            "Cruz Azul": { rival: "América", name: "El Clásico de Clásicos" },
+            "Liverpool FC": { rival: "Manchester United", name: "El Clásico del Norte" },
+            "Manchester United": { rival: "Liverpool FC", name: "El Clásico del Norte" }
+        };
+
+        function renderRivalryEvent(info) {
+            const panel = document.getElementById('action-panel');
+            panel.innerHTML = `
+                <h4>${info.name}</h4>
+                <p>Es el partido más importante del año: ${player.club} recibe a ${info.rival}. Todo el país está pendiente. ¿Buscas dejar tu huella o juegas con cautela?</p>
+                <div class="decisions-grid">
+                    <button class="dec-btn" onclick="processDecision(this, true, 4, -3, 0.5)">
+                        <div class="dec-img-container">${eventIconHTML('medal', 'risk')}</div>
+                        <div class="dec-title">Buscar Protagonismo</div>
+                        <div class="dec-prob"><span style="color:var(--success)">+4 OVR (50%)</span> | <span style="color:var(--danger)">-3 OVR (50%)</span></div>
+                    </button>
+                    <button class="dec-btn" onclick="processDecision(this, false, 1, 0, 1)">
+                        <div class="dec-img-container">${eventIconHTML('shield', 'safe')}</div>
+                        <div class="dec-title">Jugar con Cautela</div>
+                        <div class="dec-prob"><span style="color:#FFF">+1 OVR Garantizado</span></div>
+                    </button>
+                </div>
+            `;
+        }
+
         function maybeRenderSpecialEvent() {
+            let rivalry = rivalries[player.club];
+            if (rivalry && Math.random() < 0.3) {
+                renderRivalryEvent(rivalry);
+                return true;
+            }
+
             let specials = ['coach_bench'];
             let available = specials.filter(s => !usedEventTitles.includes(s));
             if (available.length > 0 && Math.random() < 0.2) {
@@ -939,6 +994,7 @@
             player.country = countryInput;
             player.pos = posInput;
             player.foot = document.getElementById('playerFoot').value;
+            player.trait = document.getElementById('playerTrait').value;
             player.ovr = 55; player.peakOvr = 55; player.declineTarget = null;
             player.bigOfferPending = false; player.yearsOutgrowingClub = 0;
 
@@ -965,17 +1021,17 @@
             usedEventTitles = [];
 
             if(player.pos === 'CB' || player.pos === 'LB' || player.pos === 'RB' || player.pos === 'GK') {
-                document.getElementById('lblGoles').innerText = "V. Invictas";
-                document.getElementById('lblAst').innerText = "Entradas";
+                document.getElementById('lblGoles').innerHTML = statIcon('shield') + "V. Invictas";
+                document.getElementById('lblAst').innerHTML = statIcon('flag') + "Entradas";
                 document.getElementById('thGoles').innerText = "VI";
                 document.getElementById('thAst').innerText = "DEF";
-                document.getElementById('sumLblGoles').innerText = "Vallas Invictas";
+                document.getElementById('sumLblGoles').innerHTML = statIcon('shield') + "Vallas Invictas";
             } else {
-                document.getElementById('lblGoles').innerText = "Goles";
-                document.getElementById('lblAst').innerText = "Asistencias";
+                document.getElementById('lblGoles').innerHTML = statIcon('ball') + "Goles";
+                document.getElementById('lblAst').innerHTML = statIcon('flag') + "Asistencias";
                 document.getElementById('thGoles').innerText = "G";
                 document.getElementById('thAst').innerText = "A";
-                document.getElementById('sumLblGoles').innerText = "Goles";
+                document.getElementById('sumLblGoles').innerHTML = statIcon('ball') + "Goles";
             }
 
             let tbody = document.getElementById('historyBody');
@@ -1025,12 +1081,14 @@
         // continente termina recibiendo ofertas de la UEFA con más frecuencia, como en la vida real
         // (los clubes sudamericanos/CONCACAF/CAF/AFC no compiten económicamente ahí arriba).
         function pickWeightedOffer(country, confed, played, noRepeat, exclude1, exclude2) {
-            let pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8 && c.n !== exclude1 && c.n !== exclude2);
+            // "Ambicioso" apunta más alto: el filtro alcanza clubes por encima de tu nivel actual con más margen.
+            let reachBonus = player.trait === 'ambitious' ? 6 : 0;
+            let pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8 + reachBonus && c.n !== exclude1 && c.n !== exclude2);
 
             let widen = 8;
             while (pool.length < 3 && widen < 30) {
                 widen += 6;
-                pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + widen && c.n !== exclude1 && c.n !== exclude2);
+                pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + widen + reachBonus && c.n !== exclude1 && c.n !== exclude2);
             }
 
             if (noRepeat) {
@@ -1207,7 +1265,8 @@
 
             // Si hay una oferta grande garantizada pendiente (logro, techo nuevo, o ya te quedó chico
             // tu club), la ventana de mercado se fuerza este año en vez de dejarlo al azar.
-            let isTransferWindow = player.bigOfferPending || (Math.random() < 0.5) || player.age === 16;
+            let traitWindowMod = player.trait === 'ambitious' ? 0.15 : player.trait === 'loyal' ? -0.15 : 0;
+            let isTransferWindow = player.bigOfferPending || (Math.random() < (0.5 + traitWindowMod)) || player.age === 16;
 
             if (isTransferWindow) {
                 let offers = getTransferOffers();
@@ -1263,14 +1322,18 @@
                 btn.classList.remove('processing');
                 let ovrChange = 0;
                 if(isRisk) {
+                    // El "Ambicioso" arriesga más fuerte en ambos sentidos; el "Ídolo de Cantera" es más estable.
+                    let riskMult = player.trait === 'ambitious' ? 1.4 : player.trait === 'loyal' ? 0.7 : 1;
+                    let adjReward = Math.max(1, Math.round(reward * riskMult));
+                    let adjPenalty = Math.min(-1, Math.round(penalty * riskMult));
                     if(Math.random() < successRate) {
                         btn.classList.add('success-anim');
-                        btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:16px; text-align:center; width:100%;">¡ÉXITO! +${reward} OVR</div>`;
-                        ovrChange = reward;
+                        btn.innerHTML = `<div style="color:var(--success); font-weight:900; font-size:16px; text-align:center; width:100%;">¡ÉXITO! +${adjReward} OVR</div>`;
+                        ovrChange = adjReward;
                     } else {
                         btn.classList.add('fail-anim');
-                        btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:16px; text-align:center; width:100%;">¡LESIÓN! ${penalty} OVR</div>`;
-                        ovrChange = penalty;
+                        btn.innerHTML = `<div style="color:var(--danger); font-weight:900; font-size:16px; text-align:center; width:100%;">¡LESIÓN! ${adjPenalty} OVR</div>`;
+                        ovrChange = adjPenalty;
                     }
                 } else {
                     btn.classList.add('success-anim');
@@ -1305,6 +1368,19 @@
             }
 
             applyAging();
+
+            // "Ídolo de Cantera": la afición y el club premian la lealtad con un pequeño plus
+            // cuando llevas varias temporadas seguidas en el mismo equipo.
+            if (player.trait === 'loyal') {
+                let lastClub = player.history.length > 0 ? player.history[player.history.length - 1].club : null;
+                if (lastClub === player.club) {
+                    player.loyaltyYears = (player.loyaltyYears || 0) + 1;
+                    if (player.loyaltyYears >= 2) player.ovr += 1;
+                } else {
+                    player.loyaltyYears = 0;
+                }
+            }
+
             if (player.ovr > 99) player.ovr = 99;
             if (player.ovr < 40) player.ovr = 40;
 
@@ -1477,6 +1553,22 @@
             return "€" + (num / 1000).toFixed(0) + "K";
         }
 
+        function renderCareerPath() {
+            let path = [];
+            player.history.forEach(h => {
+                if (path.length === 0 || path[path.length - 1] !== h.club) path.push(h.club);
+            });
+            let arrow = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted); flex-shrink:0;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>`;
+            let html = path.map((c, i) => `
+                <div style="display:flex; flex-direction:column; align-items:center; flex-shrink:0; width:64px;">
+                    ${crestHTML(c, 36)}
+                    <span style="font-size:9px; color:var(--text-muted); margin-top:4px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${c}</span>
+                </div>
+                ${i < path.length - 1 ? arrow : ''}
+            `).join('');
+            return `<div style="display:flex; align-items:flex-start; gap:8px; overflow-x:auto; padding:15px;">${html}</div>`;
+        }
+
         function showSummary() {
             document.getElementById('screen-game').classList.remove('active');
             document.getElementById('screen-summary').classList.add('active');
@@ -1501,6 +1593,7 @@
                 clubsHtml += `<div class="club-box">${crestHTML(c, 40)}<h5 style="margin-top:10px;">${c}</h5><p>${clubsMap[c].apps} Partidos</p><p>${clubsMap[c].goals} G / VI</p>${badges ? `<div style="margin-top:6px;">${badges}</div>` : ''}</div>`;
             }
             document.getElementById('clubsGrid').innerHTML = clubsHtml;
+            document.getElementById('careerPathRow').innerHTML = renderCareerPath();
 
             // Sección Nacional: solo se muestra si el jugador llegó a ser convocado alguna vez.
             let natName = countryData[player.country].name;
