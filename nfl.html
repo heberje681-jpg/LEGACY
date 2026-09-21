@@ -190,7 +190,7 @@
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="" placeholder= "" min="1" max="99" oninput="updateJerseyText()">
+                                <input type="number" id="playerNum" value="" placeholder="" min="1" max="99" oninput="updateJerseyText()">
                             </div>
                         </div>
 
@@ -305,8 +305,8 @@
 
                         <div class="stats-grid" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">18</div><div class="lbl">Edad</div></div>
-                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl">Valor</div></div>
-                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="12" cy="12" r="9"/><path d="M9 15.3c0 1.1 1.3 2 3 2s3-.9 3-2-1.3-1.5-3-1.9-3-.8-3-1.9 1.3-2 3-2 3 .9 3 2"/><line x1="12" y1="6.5" x2="12" y2="17.3"/></svg>Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/></svg>Juegos</div></div>
                         </div>
 
                         <!-- STATS DINÁMICAS SEGÚN GRUPO DE POSICIÓN -->
@@ -726,21 +726,25 @@
             renderDecisionPanel();
         }
 
+        function statIcon(name) {
+            return `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;">${svgIconPath(name)}</svg>`;
+        }
+
         function setupStatHeaders() {
             const dRow = document.getElementById('statsDynamicRow');
             const tRow = document.getElementById('thDynamicRow');
             let g = posGroup(player.pos);
             if (g === 'QB') {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">Yardas Pase</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">TD</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">INT</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">${statIcon('pulse')}Yardas Pase</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">${statIcon('flag')}TD</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">${statIcon('ban')}INT</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>YDS</th><th>TD</th><th>INT</th>`;
             } else if (g === 'SKILL') {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">Yardas</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">TD</div></div><div class="stat-box"><div class="val" id="statREC">0</div><div class="lbl">Recep.</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statYDS">0</div><div class="lbl">${statIcon('pulse')}Yardas</div></div><div class="stat-box"><div class="val" id="statTD">0</div><div class="lbl">${statIcon('flag')}TD</div></div><div class="stat-box"><div class="val" id="statREC">0</div><div class="lbl">${statIcon('swap')}Recep.</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>YDS</th><th>TD</th><th>REC</th>`;
             } else if (g === 'OL') {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statSTARTS">0</div><div class="lbl">Titular.</div></div><div class="stat-box"><div class="val" id="statPANCAKES">0</div><div class="lbl">Pancakes</div></div><div class="stat-box"><div class="val" id="statG2">0</div><div class="lbl">Juegos</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statSTARTS">0</div><div class="lbl">${statIcon('shield')}Titular.</div></div><div class="stat-box"><div class="val" id="statPANCAKES">0</div><div class="lbl">${statIcon('dumbbell')}Pancakes</div></div><div class="stat-box"><div class="val" id="statG2">0</div><div class="lbl">Juegos</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>Titular</th><th>Pancakes</th>`;
             } else {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statTKL">0</div><div class="lbl">Tacleadas</div></div><div class="stat-box"><div class="val" id="statSACK">0</div><div class="lbl">Sacks</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">INT</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statTKL">0</div><div class="lbl">${statIcon('shield')}Tacleadas</div></div><div class="stat-box"><div class="val" id="statSACK">0</div><div class="lbl">${statIcon('fire')}Sacks</div></div><div class="stat-box"><div class="val" id="statINT">0</div><div class="lbl">${statIcon('ban')}INT</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>J</th><th>TKL</th><th>SACK</th><th>INT</th>`;
             }
         }
@@ -777,16 +781,22 @@
                 return;
             }
 
-            // Combine + Draft de la NFL a los 21
+            // Combine + Draft de la NFL a los 21 — elegir el tipo de franquicia cambia cómo arranca tu carrera.
             if (player.age === 21 && !player.proDebutDone) {
+                let shuffledDraft = [...nflTeams].sort(() => 0.5 - Math.random());
+                let teamNeedy = shuffledDraft[0];
+                let teamContender = shuffledDraft[1];
                 panel.innerHTML = `
                     <h4>NFL Scouting Combine</h4>
-                    <p>Terminaste tu etapa universitaria. Es hora del Combine y del Draft de la NFL.</p>
+                    <p>Terminaste tu etapa universitaria. Dos franquicias muestran interés real — el tipo de equipo que te elige cambia cómo arranca tu carrera.</p>
                     <div class="decisions-grid full">
-                        <button class="dec-btn" onclick="executeNFLDraft()" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
-                            <div style="width:56px;height:56px;border-radius:50%;background:var(--bg-card);border:2px dashed var(--legacy-gold);display:flex;align-items:center;justify-content:center;color:var(--legacy-gold);"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></div>
-                            <div><div class="dec-title">Asistir al Draft</div>
-                            <div class="dec-prob"><span style="color:var(--success)">Contrato Rookie (4 años)</span></div></div>
+                        <button class="dec-btn" onclick="executeNFLDraft('${teamNeedy}', 'needy')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(teamNeedy, 48)}
+                            <div><div class="dec-title">${teamNeedy} — Equipo Necesitado</div><div class="dec-prob"><span style="color:var(--success)">Titular desde el día 1 (+2 OVR de arranque)</span></div></div>
+                        </button>
+                        <button class="dec-btn" onclick="executeNFLDraft('${teamContender}', 'contender')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(teamContender, 48)}
+                            <div><div class="dec-title">${teamContender} — Equipo Contendiente</div><div class="dec-prob"><span style="color:#FFF">Mejor contrato, pelearás minutos</span></div></div>
                         </button>
                     </div>
                 `;
@@ -805,16 +815,18 @@
             setTimeout(() => { ejecutarSimulacionAnual(0); }, 1000);
         }
 
-        function executeNFLDraft() {
+        function executeNFLDraft(team, path) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
-            let randomTeam = nflTeams[Math.floor(Math.random() * nflTeams.length)];
             player.proDebutDone = true;
-            signContract(randomTeam, 4, 700000);
+            let bonus = path === 'needy' ? Math.floor(400000 + Math.random() * 300000) : Math.floor(700000 + Math.random() * 600000);
+            signContract(team, 4, bonus);
+            player.ovr += (path === 'needy' ? 2 : -1);
 
             const panel = document.getElementById('action-panel');
-            panel.innerHTML = `<h4 style="color:var(--legacy-gold); font-size:20px; text-align:center;">¡Seleccionado por ${randomTeam}!</h4>`;
+            let msg = path === 'needy' ? `¡Seleccionado por ${team}! Serás titular de inmediato.` : `¡Seleccionado por ${team}! Tendrás que ganarte tu lugar.`;
+            panel.innerHTML = `<h4 style="color:var(--legacy-gold); font-size:20px; text-align:center;">${msg}</h4>`;
             updateUI();
-            setTimeout(() => { ejecutarSimulacionAnual(2); }, 2000);
+            setTimeout(() => { ejecutarSimulacionAnual(0); }, 2000);
         }
 
         // ====== FLUJO DE CONTRATOS (post-Draft) ======
