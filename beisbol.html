@@ -258,6 +258,15 @@
                             </select>
                         </div>
 
+                        <div class="input-group">
+                            <label>Personalidad</label>
+                            <select id="playerTrait">
+                                <option value="balanced">Mentalidad Fría (equilibrado)</option>
+                                <option value="loyal">Ídolo de Cantera (más leal, menos ofertas)</option>
+                                <option value="ambitious">Ambicioso (más ofertas, más riesgo)</option>
+                            </select>
+                        </div>
+
                         <!-- OMITIMOS ELEGIR EQUIPO, SE HARÁ POR SCOUTING -->
                     </div>
 
@@ -308,8 +317,8 @@
 
                         <div class="stats-grid" style="margin-top: 20px;">
                             <div class="stat-box"><div class="val" id="statAge">18</div><div class="lbl">Edad</div></div>
-                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl">Valor</div></div>
-                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl">Juegos</div></div>
+                            <div class="stat-box"><div class="val" id="statValue">$0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="12" cy="12" r="9"/><path d="M9 15.3c0 1.1 1.3 2 3 2s3-.9 3-2-1.3-1.5-3-1.9-3-.8-3-1.9 1.3-2 3-2 3 .9 3 2"/><line x1="12" y1="6.5" x2="12" y2="17.3"/></svg>Valor</div></div>
+                            <div class="stat-box"><div class="val" id="statG">0</div><div class="lbl"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;"><circle cx="14" cy="4.5" r="2"/><path d="M9 21l2-6 3 2 2 5"/><path d="M8 13l3-3 3 1 3-3"/><path d="M6 9l4-1 2 3"/></svg>Juegos</div></div>
                         </div>
 
                         <!-- STATS DINÁMICAS (Bateador o Pitcher) -->
@@ -713,6 +722,7 @@
             player.pos = posInput;
             player.country = countryInput;
             player.hand = document.getElementById('playerHand').value;
+            player.trait = document.getElementById('playerTrait').value;
             player.age = 18; player.ovr = 58; 
             player.peakOvr = 58; player.declineTarget = null; player.proDebutDone = false; player.contract = null;
             player.careerEarnings = 0; player.trophyList = []; usedEventTitles = [];
@@ -739,14 +749,18 @@
             renderDecisionPanel();
         }
 
+        function statIcon(name) {
+            return `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px; opacity:0.65;">${svgIconPath(name)}</svg>`;
+        }
+
         function setupStatHeaders() {
             const dRow = document.getElementById('statsDynamicRow');
             const tRow = document.getElementById('thDynamicRow');
             if (player.pos === 'SP' || player.pos === 'RP') {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statERA">0.00</div><div class="lbl">ERA</div></div><div class="stat-box"><div class="val" id="statWL">0-0</div><div class="lbl">W-L</div></div><div class="stat-box"><div class="val" id="statK">0</div><div class="lbl">Ponches</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statERA">0.00</div><div class="lbl">${statIcon('pulse')}ERA</div></div><div class="stat-box"><div class="val" id="statWL">0-0</div><div class="lbl">${statIcon('flag')}W-L</div></div><div class="stat-box"><div class="val" id="statK">0</div><div class="lbl">${statIcon('baseball_ball')}Ponches</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>G</th><th>ERA</th><th>W-L</th><th>K</th><th>IP</th>`;
             } else {
-                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statAVG">.000</div><div class="lbl">AVG</div></div><div class="stat-box"><div class="val" id="statHR">0</div><div class="lbl">HR</div></div><div class="stat-box"><div class="val" id="statOPS">.000</div><div class="lbl">OPS</div></div>`;
+                dRow.innerHTML = `<div class="stat-box"><div class="val" id="statAVG">.000</div><div class="lbl">${statIcon('pulse')}AVG</div></div><div class="stat-box"><div class="val" id="statHR">0</div><div class="lbl">${statIcon('baseball_ball')}HR</div></div><div class="stat-box"><div class="val" id="statOPS">.000</div><div class="lbl">${statIcon('trending')}OPS</div></div>`;
                 tRow.innerHTML = `<th>Edad</th><th>Equipo</th><th>OVR</th><th>G</th><th>AB</th><th>AVG</th><th>HR</th><th>OPS</th>`;
             }
         }
@@ -784,16 +798,22 @@
                 return;
             }
 
-            // Draft MLB a los 21
+            // Draft MLB a los 21 — elegir el tipo de equipo cambia cómo arranca tu carrera.
             if (player.age === 21 && !player.proDebutDone) {
+                let shuffledDraft = [...mlbTeams].sort(() => 0.5 - Math.random());
+                let teamNeedy = shuffledDraft[0];
+                let teamContender = shuffledDraft[1];
                 panel.innerHTML = `
                     <h4>Draft de la MLB</h4>
-                    <p>Terminaste tu etapa colegial. Te has declarado elegible para el Draft de las Mayores.</p>
+                    <p>Terminaste tu etapa colegial. Dos organizaciones muestran interés real — el tipo de equipo que te elige cambia cómo arranca tu carrera.</p>
                     <div class="decisions-grid full">
-                        <button class="dec-btn" onclick="executeMLBDraft()" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
-                            <div style="width:56px;height:56px;border-radius:50%;background:var(--bg-card);border:2px dashed var(--legacy-gold);display:flex;align-items:center;justify-content:center;color:var(--legacy-gold);"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg></div>
-                            <div><div class="dec-title">Asistir al Draft</div>
-                            <div class="dec-prob"><span style="color:var(--success)">Firma de Novato (6 años de control)</span></div></div>
+                        <button class="dec-btn" onclick="executeMLBDraft('${teamNeedy}', 'needy')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(teamNeedy, 48)}
+                            <div><div class="dec-title">${teamNeedy} — Equipo Necesitado</div><div class="dec-prob"><span style="color:var(--success)">Titular desde el día 1 (+2 OVR de arranque)</span></div></div>
+                        </button>
+                        <button class="dec-btn" onclick="executeMLBDraft('${teamContender}', 'contender')" style="min-height:auto; flex-direction:row; align-items:center; gap:15px;">
+                            ${crestHTML(teamContender, 48)}
+                            <div><div class="dec-title">${teamContender} — Equipo Contendiente</div><div class="dec-prob"><span style="color:#FFF">Mejor bono de firma, pelearás minutos</span></div></div>
                         </button>
                     </div>
                 `;
@@ -812,16 +832,18 @@
             setTimeout(() => { ejecutarSimulacionAnual(0); }, 1000);
         }
 
-        function executeMLBDraft() {
+        function executeMLBDraft(team, path) {
             document.querySelectorAll('.dec-btn').forEach(b => b.style.pointerEvents = 'none');
-            let randomTeam = mlbTeams[Math.floor(Math.random() * mlbTeams.length)];
             player.proDebutDone = true;
-            signContract(randomTeam, 6, Math.floor(300000 + Math.random() * 400000));
-            
+            let bonus = path === 'needy' ? Math.floor(250000 + Math.random() * 250000) : Math.floor(400000 + Math.random() * 500000);
+            signContract(team, 6, bonus);
+            player.ovr += (path === 'needy' ? 2 : -1);
+
             const panel = document.getElementById('action-panel');
-            panel.innerHTML = `<h4 style="color:var(--legacy-gold); font-size:20px; text-align:center;">¡Seleccionado por ${randomTeam}!</h4>`;
+            let msg = path === 'needy' ? `¡Seleccionado por ${team}! Serás titular de inmediato.` : `¡Seleccionado por ${team}! Tendrás que ganarte tu lugar.`;
+            panel.innerHTML = `<h4 style="color:var(--legacy-gold); font-size:20px; text-align:center;">${msg}</h4>`;
             updateUI();
-            setTimeout(() => { ejecutarSimulacionAnual(2); }, 2000);
+            setTimeout(() => { ejecutarSimulacionAnual(0); }, 2000);
         }
 
         function processDecision(btn, isRisk, reward, penalty, successRate) {
@@ -832,10 +854,13 @@
                 btn.classList.remove('processing');
                 let ovrChange = 0;
                 if(isRisk) {
+                    let riskMult = player.trait === 'ambitious' ? 1.4 : player.trait === 'loyal' ? 0.7 : 1;
+                    let adjReward = Math.max(1, Math.round(reward * riskMult));
+                    let adjPenalty = Math.min(-1, Math.round(penalty * riskMult));
                     if(Math.random() < successRate) {
-                        btn.classList.add('success-anim'); btn.innerHTML = `¡ÉXITO! +${reward} OVR`; ovrChange = reward;
+                        btn.classList.add('success-anim'); btn.innerHTML = `¡ÉXITO! +${adjReward} OVR`; ovrChange = adjReward;
                     } else {
-                        btn.classList.add('fail-anim'); btn.innerHTML = `¡LESIÓN! ${penalty} OVR`; ovrChange = penalty;
+                        btn.classList.add('fail-anim'); btn.innerHTML = `¡LESIÓN! ${adjPenalty} OVR`; ovrChange = adjPenalty;
                     }
                 } else {
                     btn.classList.add('success-anim'); btn.innerHTML = `TEMPORADA COMPLETADA`; ovrChange = reward;
@@ -884,7 +909,9 @@
             let c = player.contract;
 
             // Probabilidad de que este año traiga una decisión real en vez de auto-simularse.
-            if (Math.random() < 0.4) {
+            // El "Ambicioso" busca más protagonismo (más decisiones); el "Ídolo de Cantera" prefiere la calma.
+            let traitDecisionMod = player.trait === 'ambitious' ? 0.12 : player.trait === 'loyal' ? -0.12 : 0;
+            if (Math.random() < (0.4 + traitDecisionMod)) {
                 if (maybeRenderSpecialEvent()) return;
                 renderStandardEventPanel();
                 return;
