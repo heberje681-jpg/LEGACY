@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legacy | Elige tu Deporte</title>
     <link rel="icon" type="image/png" href="logo.png">
+
+    <meta property="og:title" content="Legacy | Elige tu Deporte">
+    <meta property="og:description" content="El simulador de carrera deportiva más completo. Elige fútbol, béisbol, básquetbol o americano, toma decisiones y construye tu leyenda desde novato hasta el Salón de la Fama.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:url" content="https://heberje681-jpg.github.io/LEGACY/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Legacy | Elige tu Deporte">
+    <meta name="twitter:description" content="Elige tu disciplina, toma decisiones y construye tu leyenda deportiva desde novato hasta el Salón de la Fama.">
+    <meta name="twitter:image" content="logo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root { --bg-main: #07090F; --bg-card: #131A2B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border-color: #1E293B; --legacy-gold: #F59E0B; }
@@ -145,32 +157,59 @@
     </footer>
 
     <script>
+        async function fetchWithTimeout(url, ms) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), ms);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                return await res.json();
+            } catch (e) {
+                clearTimeout(timeoutId);
+                return null;
+            }
+        }
+
         async function loadGlobalTicker() {
             const ticker = document.getElementById('live-ticker-container');
-            let html = '';
-            
-            try {
-                // Solo datos 100% reales de la API
-                const res = await fetch('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore');
-                const data = await res.json();
-                if (data.dates && data.dates.length > 0) {
-                    data.dates[0].games.forEach(g => {
-                        let away = g.teams.away.team.teamName.substring(0,3).toUpperCase(); 
-                        let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
-                        let aScore = g.teams.away.score || 0; let hScore = g.teams.home.score || 0;
-                        let status = g.status.abstractGameState; 
-                        let inning = g.linescore ? (g.linescore.inningState + " " + g.linescore.currentInning) : status;
-                        if(status === 'Final') inning = 'FT'; if(status === 'Preview') inning = 'Próximo';
-                        html += `<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`;
-                    });
-                } else {
-                    html = `<div class="live-match">⚾ Sin juegos programados hoy en la MLB</div>`;
-                }
-            } catch (e) { 
-                html = `<div class="live-match">Error de conexión con la API deportiva</div>`;
+            let matches = [];
+
+            // MLB (API oficial)
+            const mlb = await fetchWithTimeout('https://statsapi.mlb.com/api/v1/schedule?sportId=1&hydrate=linescore', 6000);
+            if (mlb && mlb.dates && mlb.dates.length > 0) {
+                mlb.dates[0].games.forEach(g => {
+                    let away = g.teams.away.team.teamName.substring(0,3).toUpperCase();
+                    let home = g.teams.home.team.teamName.substring(0,3).toUpperCase();
+                    let aScore = g.teams.away.score || 0; let hScore = g.teams.home.score || 0;
+                    let status = g.status.abstractGameState;
+                    let inning = g.linescore ? (g.linescore.inningState + " " + g.linescore.currentInning) : status;
+                    if(status === 'Final') inning = 'FT'; if(status === 'Preview') inning = 'Próximo';
+                    matches.push(`<div class="live-match">⚾ <b>${away}</b> ${aScore} - ${hScore} <b>${home}</b> <span>${inning}</span></div>`);
+                });
             }
-            
-            ticker.innerHTML = html;
+
+            // NBA, NFL, y ligas de fútbol vía ESPN (mismo patrón que cada juego individual)
+            const espnSources = [
+                { url: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard', icon: '🏀' },
+                { url: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard', icon: '🏈' },
+                { url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard', icon: '⚽' },
+                { url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1/scoreboard', icon: '⚽' }
+            ];
+
+            const results = await Promise.all(espnSources.map(s => fetchWithTimeout(s.url, 5000)));
+            results.forEach((data, i) => {
+                if (data && data.events) {
+                    data.events.slice(0, 4).forEach(ev => {
+                        let comp = ev.competitions[0];
+                        let home = comp.competitors.find(c => c.homeAway === 'home');
+                        let away = comp.competitors.find(c => c.homeAway === 'away');
+                        let status = comp.status.type.shortDetail;
+                        matches.push(`<div class="live-match">${espnSources[i].icon} <b>${away.team.abbreviation}</b> ${away.score || 0} - ${home.score || 0} <b>${home.team.abbreviation}</b> <span>${status}</span></div>`);
+                    });
+                }
+            });
+
+            ticker.innerHTML = matches.length > 0 ? matches.join('') : `<div class="live-match">Sin partidos programados hoy</div>`;
         }
         loadGlobalTicker();
     </script>
