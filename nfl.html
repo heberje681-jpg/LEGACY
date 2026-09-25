@@ -13,12 +13,12 @@
         .live-ticker { background: #000; border-bottom: 1px solid var(--border-color); padding: 10px 20px; display: flex; gap: 40px; overflow-x: auto; white-space: nowrap; font-size: 13px; font-weight: 600; color: var(--text-muted); align-items: center; }
         .live-match b { color: #FFF; } .live-match span { color: var(--legacy-gold); margin-left: 8px; font-size: 11px; text-transform: uppercase; border: 1px solid var(--legacy-gold); padding: 2px 6px; border-radius: 4px; }
 
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 40px; background-color: var(--bg-card); border-bottom: 1px solid var(--border-color); }
         .logo { font-weight: 900; font-size: 24px; letter-spacing: -1.5px; color: #FFF; text-decoration: none;}
         .logo span { color: var(--legacy-gold); }
         .nav-links { display: flex; gap: 25px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
 
-        .main-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 22px 20px; }
         .screen { display: none; width: 100%; max-width: 1050px; animation: fadeIn 0.4s ease-out; }
         .screen.active { display: block; }
 
@@ -53,8 +53,8 @@
         .btn-main:hover { background: var(--legacy-gold); transform: translateY(-2px); }
 
         /* JUEGO */
-        .game-layout { display: grid; grid-template-columns: 440px 1fr; gap: 30px; align-items: start; }
-        .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 25px; position: relative; }
+        .game-layout { display: grid; grid-template-columns: 400px 1fr; gap: 20px; align-items: start; }
+        .player-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; position: relative; }
         .ovr-badge { position: absolute; top: 25px; right: 25px; color: #000; font-weight: 900; font-size: 26px; padding: 10px 15px; border-radius: 12px; transition: background 0.3s; }
         .ovr-bronze { background: linear-gradient(135deg, #CD7F32, #8C5A28); color: #FFF; }
         .ovr-silver { background: linear-gradient(135deg, #E4E7EB, #A8AFB8); color: #000; }
@@ -68,7 +68,7 @@
         .stat-box .lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-top: 4px; }
 
         /* ACTION PANEL FOTORREALISTA */
-        .action-panel { margin-top: 25px; }
+        .action-panel { margin-top: 16px; }
         .action-panel h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
         .action-panel p { font-size: 13px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5; }
         .decisions-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
@@ -186,11 +186,11 @@
                         <div class="input-group row">
                             <div>
                                 <label>Apellido</label>
-                                <input type="text" id="playerName" value="" placeholder="" oninput="updateJerseyText()">
+                                <input type="text" id="playerName" value="" placeholder="TU APELLIDO" oninput="updateJerseyText()">
                             </div>
                             <div style="flex: 0.4;">
                                 <label>Número</label>
-                                <input type="number" id="playerNum" value="" placeholder="" min="1" max="99" oninput="updateJerseyText()">
+                                <input type="number" id="playerNum" value="" placeholder="24" min="1" max="99" oninput="updateJerseyText()">
                             </div>
                         </div>
 
