@@ -980,12 +980,13 @@
             // Lesión aleatoria: solo en etapa profesional. Aquiles en los pívots/aleros
             // grandes (más carga articular), rodilla (LCA) en bases/escoltas más explosivos.
             let seasonInjury = null;
-            if (player.age >= 19 && player.contract && Math.random() < 0.06) {
+            if (player.age >= 19 && player.contract && Math.random() < 0.06 && ((player.lastInjuryAge == null) || (player.age - player.lastInjuryAge >= 4))) {
                 if (player.pos === 'C' || player.pos === 'PF') {
                     seasonInjury = { label: "Ruptura de Tendón de Aquiles", icon: "leg", penalty: 6 };
                 } else {
                     seasonInjury = { label: "Ruptura de LCA (Rodilla)", icon: "leg", penalty: 5 };
                 }
+                player.lastInjuryAge = player.age;
                 player.ovr -= seasonInjury.penalty;
             }
 
