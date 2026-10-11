@@ -251,7 +251,7 @@
                         </div>
 
                         <div class="input-group">
-                            <label>Mano Hábil </label>
+                            <label>Mano Hábil (Bateo/Lanzeo)</label>
                             <select id="playerHand">
                                 <option value="Derecho">Derecho</option>
                                 <option value="Zurdo">Zurdo</option>
@@ -380,7 +380,7 @@
         loadMLBTicker();
 
         const collegeTeams = ["Vanderbilt", "LSU Tigers", "Florida Gators", "Texas Longhorns", "UCLA Bruins", "Stanford Cardinal"];
-        const mlbTeams = ["San Diego Padres", "New York Yankees", "Los Angeles Dodgers", "Boston Red Sox", "Houston Astros", "Atlanta Braves", "Texas Rangers"];
+        const mlbTeams = ["San Diego Padres", "New York Yankees", "Los Angeles Dodgers", "Boston Red Sox", "Houston Astros", "Atlanta Braves", "Texas Rangers", "New York Mets", "Philadelphia Phillies", "Chicago Cubs", "San Francisco Giants", "Seattle Mariners", "Toronto Blue Jays"];
 
         // Colores reales de cada programa/franquicia (dato público, no logo). Sirve como
         // "escudo" seguro a nivel de derechos mientras no tengamos assets oficiales licenciados.
@@ -389,7 +389,8 @@
             "Texas Longhorns": "#BF5700", "UCLA Bruins": "#2D68C4", "Stanford Cardinal": "#8C1515",
             "San Diego Padres": "#2F241D", "New York Yankees": "#003087", "Los Angeles Dodgers": "#005A9C",
             "Boston Red Sox": "#BD3039", "Houston Astros": "#EB6E1F", "Atlanta Braves": "#CE1141",
-            "Texas Rangers": "#003278"
+            "Texas Rangers": "#003278", "New York Mets": "#002D72", "Philadelphia Phillies": "#E81828",
+            "Chicago Cubs": "#0E3386", "San Francisco Giants": "#FD5A1E", "Seattle Mariners": "#005C5C", "Toronto Blue Jays": "#134A8E"
         };
 
         function teamInitials(name) {
@@ -512,11 +513,20 @@
                 optSafe: { label: "Dejarlo en Manos del Front Office", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
+                only: "hitter",
                 title: "Mala Racha al Bate",
                 desc: "Llevas dos semanas sin conectar. La prensa empieza a especular. ¿Cambias tu stance por completo o confías en el proceso?",
                 iconRisk: "wrench", iconSafe: "trending",
                 optRisk: { label: "Cambiar tu Stance de Bateo", succ: 0.5, rwd: 4, pen: -3 },
                 optSafe: { label: "Confiar en el Proceso", succ: 1.0, rwd: 1, pen: 0 }
+            },
+            {
+                only: "pitcher",
+                title: "Mala Racha en la Lomita",
+                desc: "Llevas tres aperturas seguidas dejando salir carreras. El pitching coach propone cambiar tu mecánica de lanzamiento. ¿Lo haces o confías en tu repertorio?",
+                iconRisk: "wrench", iconSafe: "trending",
+                optRisk: { label: "Rehacer tu Mecánica de Lanzamiento", succ: 0.5, rwd: 4, pen: -3 },
+                optSafe: { label: "Confiar en tu Repertorio", succ: 1.0, rwd: 1, pen: 0 }
             },
             {
                 title: "Fiesta Después de la Derrota",
@@ -544,8 +554,11 @@
         // Picker sin repetición: no vuelve a salir el mismo evento hasta agotar el banco completo.
         let usedEventTitles = [];
         function pickStandardEvent() {
-            let available = randomEvents.filter(e => !usedEventTitles.includes(e.title));
-            if (available.length === 0) { usedEventTitles = []; available = randomEvents; }
+            // Solo eventos que apliquen a tu posición (un pitcher no se queja de su stance de bateo).
+            let isP = (player.pos === 'SP' || player.pos === 'RP');
+            let pool = randomEvents.filter(e => !e.only || ((e.only === 'pitcher') === isP));
+            let available = pool.filter(e => !usedEventTitles.includes(e.title));
+            if (available.length === 0) { usedEventTitles = []; available = pool; }
             let ev = available[Math.floor(Math.random() * available.length)];
             usedEventTitles.push(ev.title);
             return ev;
@@ -686,11 +699,28 @@
 
         function generateContractOffer(teamName) {
             let ovr = player.ovr, age = player.age;
-            let yearsBase = ovr >= 88 ? 7 : ovr >= 80 ? 5 : ovr >= 70 ? 3 : 1;
-            let ageFactor = age < 28 ? 1.2 : age < 32 ? 1.0 : age < 35 ? 0.65 : 0.35;
-            let years = Math.max(1, Math.min(10, Math.round(yearsBase * ageFactor + (Math.random() * 2 - 1))));
-            let annual = Math.floor(ovr * ovr * 700 * ageFactor * (0.85 + Math.random() * 0.3));
-            return { team: teamName, years: years, value: annual * years };
+            // Salario anual en millones de USD según tu nivel (escala tipo MLB real: las estrellas pasan de 40M al año).
+            let annualM;
+            if (ovr >= 88) annualM = 44 + Math.random() * 12;
+            else if (ovr >= 85) annualM = 34 + Math.random() * 10;
+            else if (ovr >= 82) annualM = 26 + Math.random() * 8;
+            else if (ovr >= 78) annualM = 17 + Math.random() * 9;
+            else if (ovr >= 74) annualM = 9 + Math.random() * 8;
+            else if (ovr >= 70) annualM = 4.5 + Math.random() * 4.5;
+            else if (ovr >= 65) annualM = 2 + Math.random() * 2.5;
+            else annualM = 0.76 + Math.random() * 1.2;
+            let ageFactor = age < 28 ? 1.0 : age < 32 ? 0.92 : age < 35 ? 0.75 : 0.55;
+            annualM *= ageFactor;
+
+            let years;
+            if (ovr >= 85 && age <= 29) years = 8 + Math.floor(Math.random() * 5);
+            else if (ovr >= 80 && age <= 31) years = 5 + Math.floor(Math.random() * 4);
+            else if (ovr >= 72) years = 3 + Math.floor(Math.random() * 3);
+            else years = 1 + Math.floor(Math.random() * 2);
+            if (age >= 35) years = Math.min(years, 2);
+            else if (age >= 32) years = Math.min(years, 4);
+            years = Math.max(1, Math.min(15, years));
+            return { team: teamName, years: years, value: Math.round(annualM * 1000000) * years };
         }
 
         // Curva de envejecimiento en forma de campana: sube rápido de joven,
@@ -995,9 +1025,17 @@
                 { label: `Firmar con ${shuffled[1]}`, o: generateContractOffer(shuffled[1]) },
                 { label: `Renovar con ${player.club}`, o: generateContractOffer(player.club) }
             ];
-            if (player.ovr >= 92 && player.age <= 29 && Math.random() > 0.5) {
+            if (player.ovr >= 85 && player.age <= 31) {
+                // Estilo Juan Soto: contrato de franquicia, 12-15 años y más de 500 millones.
                 let megaTeam = shuffled[2] || shuffled[0];
-                offers.push({ label: `¡Oferta Histórica de ${megaTeam}!`, o: { team: megaTeam, years: 10, value: 500000000 }, mega: true });
+                let yrs = player.ovr >= 88 ? 14 + Math.floor(Math.random() * 2) : 12 + Math.floor(Math.random() * 3);
+                let annual = (44 + (player.ovr - 85) * 1.2 + Math.random() * 6) * 1000000;
+                offers.push({ label: `¡Contrato Histórico de ${megaTeam}!`, o: { team: megaTeam, years: yrs, value: Math.round(annual) * yrs }, mega: true });
+            } else if (player.ovr >= 80 && player.age <= 32 && Math.random() < 0.65) {
+                let bigTeam = shuffled[2] || shuffled[0];
+                let yrs = 8 + Math.floor(Math.random() * 4);
+                let annual = (28 + Math.random() * 8) * 1000000;
+                offers.push({ label: `Contrato Récord de ${bigTeam}`, o: { team: bigTeam, years: yrs, value: Math.round(annual) * yrs }, mega: true });
             }
             panel.innerHTML = `
                 <h4>Agencia Libre</h4>
@@ -1039,12 +1077,21 @@
 
             // Lesión aleatoria: solo en la etapa profesional, no elegible por el jugador.
             let seasonInjury = null;
-            if (player.age >= 21 && Math.random() < 0.06) {
+            // Tras una lesión grave hay 4 temporadas de enfriamiento; la Tommy John solo se repite como
+            // lesión de hombro (una segunda cirugía seguida no es realista).
+            let injuryReady = (player.lastInjuryAge == null) || (player.age - player.lastInjuryAge >= 4);
+            if (player.age >= 21 && injuryReady && Math.random() < 0.06) {
                 if (player.pos === 'SP' || player.pos === 'RP') {
-                    seasonInjury = { label: "Cirugía Tommy John", icon: "bandage", penalty: 6 };
+                    if (!player.hadTommyJohn) {
+                        seasonInjury = { label: "Cirugía Tommy John", icon: "bandage", penalty: 6 };
+                        player.hadTommyJohn = true;
+                    } else {
+                        seasonInjury = { label: "Lesión de Hombro", icon: "bandage", penalty: 4 };
+                    }
                 } else {
                     seasonInjury = { label: "Ruptura de Ligamento (LCA)", icon: "leg", penalty: 5 };
                 }
+                player.lastInjuryAge = player.age;
                 player.ovr -= seasonInjury.penalty;
             }
 
