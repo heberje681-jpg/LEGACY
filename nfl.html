@@ -1016,12 +1016,13 @@
 
             // Lesión aleatoria: solo en etapa profesional. El tipo depende del grupo de posición.
             let seasonInjury = null;
-            if (player.age >= 21 && player.contract && Math.random() < 0.07) {
+            if (player.age >= 21 && player.contract && Math.random() < 0.07 && ((player.lastInjuryAge == null) || (player.age - player.lastInjuryAge >= 4))) {
                 let g0 = posGroup(player.pos);
                 if (g0 === 'QB') seasonInjury = { label: "Lesión de Hombro (Manguito Rotador)", icon: "shoulder", penalty: 5 };
                 else if (g0 === 'SKILL') seasonInjury = { label: "Ruptura de LCA (Rodilla)", icon: "leg", penalty: 6 };
                 else if (g0 === 'OL') seasonInjury = { label: "Lesión de Espalda / Cadera", icon: "back", penalty: 4 };
                 else seasonInjury = { label: "Conmoción Cerebral", icon: "head", penalty: 5 };
+                player.lastInjuryAge = player.age;
                 player.ovr -= seasonInjury.penalty;
             }
 
