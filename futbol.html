@@ -583,6 +583,12 @@
             {n:"Olympique de Marsella", min:79, confed:"UEFA", c:"FRA"}, {n:"Olympique de Lyon", min:76, confed:"UEFA", c:"FRA"}, {n:"Lille OSC", min:77, confed:"UEFA", c:"FRA"},
             {n:"FC Barcelona", min:86, confed:"UEFA", c:"ESP"}, {n:"Real Madrid", min:88, confed:"UEFA", c:"ESP"}, {n:"Atlético de Madrid", min:83, confed:"UEFA", c:"ESP"},
             {n:"Paris Saint-Germain", min:87, confed:"UEFA", c:"FRA"},
+            {n:"Chelsea", min:83, confed:"UEFA", c:"GBR"}, {n:"Manchester City", min:87, confed:"UEFA", c:"GBR"}, {n:"Tottenham Hotspur", min:80, confed:"UEFA", c:"GBR"},
+            {n:"West Ham United", min:75, confed:"UEFA", c:"GBR"}, {n:"Brighton", min:74, confed:"UEFA", c:"GBR"}, {n:"Fulham", min:72, confed:"UEFA", c:"GBR"},
+            {n:"Bayern Múnich", min:88, confed:"UEFA", c:"GER"}, {n:"Eintracht Fráncfort", min:77, confed:"UEFA", c:"GER"}, {n:"VfB Stuttgart", min:74, confed:"UEFA", c:"GER"},
+            {n:"Atalanta", min:79, confed:"UEFA", c:"ITA"}, {n:"Lazio", min:76, confed:"UEFA", c:"ITA"}, {n:"Fiorentina", min:74, confed:"UEFA", c:"ITA"},
+            {n:"Villarreal", min:76, confed:"UEFA", c:"ESP"}, {n:"Real Sociedad", min:77, confed:"UEFA", c:"ESP"}, {n:"Athletic Club", min:76, confed:"UEFA", c:"ESP"}, {n:"Real Betis", min:75, confed:"UEFA", c:"ESP"}, {n:"Valencia", min:73, confed:"UEFA", c:"ESP"},
+            {n:"AS Mónaco", min:77, confed:"UEFA", c:"FRA"}, {n:"Stade Rennais", min:72, confed:"UEFA", c:"FRA"},
             {n:"Juventus", min:85, confed:"UEFA", c:"ITA"}, {n:"AC Milan", min:83, confed:"UEFA", c:"ITA"}, {n:"Inter de Milán", min:84, confed:"UEFA", c:"ITA"}, {n:"AS Roma", min:78, confed:"UEFA", c:"ITA"}, {n:"Napoli", min:80, confed:"UEFA", c:"ITA"},
             {n:"Deportivo Táchira", min:58, confed:"CONMEBOL", c:"VEN"}, {n:"Caracas FC", min:57, confed:"CONMEBOL", c:"VEN"},
             {n:"Asante Kotoko", min:56, confed:"CAF", c:"GHA"}, {n:"Hearts of Oak", min:55, confed:"CAF", c:"GHA"},
@@ -1081,14 +1087,19 @@
         // continente termina recibiendo ofertas de la UEFA con más frecuencia, como en la vida real
         // (los clubes sudamericanos/CONCACAF/CAF/AFC no compiten económicamente ahí arriba).
         function pickWeightedOffer(country, confed, played, noRepeat, exclude1, exclude2) {
-            // "Ambicioso" apunta más alto: el filtro alcanza clubes por encima de tu nivel actual con más margen.
-            let reachBonus = player.trait === 'ambitious' ? 6 : 0;
-            let pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + 8 + reachBonus && c.n !== exclude1 && c.n !== exclude2);
+            // Un jugador recibe ofertas de clubes de SU nivel o ligeramente mejores — nunca de clubes
+            // muy por debajo (un 81 de media no recibe ofertas de un club de 73). "Ambicioso" apunta más alto.
+            let reachBonus = player.trait === 'ambitious' ? 4 : 0;
+            let dropMargin = player.ovr >= 75 ? 6 : 10;   // cuánto por debajo de tu nivel se tolera
+            let upMargin = 4 + reachBonus;                // cuánto por encima de tu nivel puede llegar la oferta
+            let band = (drop, up) => globalTeamsForTransfers.filter(c =>
+                c.min >= player.ovr - drop && c.min <= player.ovr + up && c.n !== exclude1 && c.n !== exclude2);
 
-            let widen = 8;
-            while (pool.length < 3 && widen < 30) {
-                widen += 6;
-                pool = globalTeamsForTransfers.filter(c => player.ovr >= c.min - 3 && player.ovr <= c.min + widen + reachBonus && c.n !== exclude1 && c.n !== exclude2);
+            let pool = band(dropMargin, upMargin);
+            let widen = 0;
+            while (pool.length < 4 && widen < 24) {
+                widen += 4;
+                pool = band(dropMargin + Math.floor(widen / 2), upMargin + widen);
             }
 
             if (noRepeat) {
@@ -1104,8 +1115,12 @@
 
             let roll = Math.random();
             let chosenPool;
-            if (player.ovr >= 80 && confed !== 'UEFA' && uefaOutside.length > 0) {
-                chosenPool = roll < 0.5 ? uefaOutside : (roll < 0.75 && own.length > 0) ? own : (sameConfed.length > 0 ? sameConfed : (rest.length > 0 ? rest : pool));
+            if (player.ovr >= 78 && confed === 'UEFA') {
+                // Un crack europeo recibe ofertas de Europa (su país o el resto de la UEFA); fuera de ahí, rarísimo.
+                chosenPool = (roll < 0.4 && own.length > 0) ? own : (roll < 0.93 && sameConfed.length > 0) ? sameConfed : (rest.length > 0 && roll >= 0.97) ? rest : (sameConfed.length > 0 ? sameConfed : pool);
+            } else if (player.ovr >= 78 && uefaOutside.length > 0) {
+                // Un crack de otro continente: el salto a Europa es lo más común.
+                chosenPool = roll < 0.55 ? uefaOutside : (roll < 0.8 && own.length > 0) ? own : (sameConfed.length > 0 ? sameConfed : (rest.length > 0 ? rest : pool));
             } else {
                 chosenPool = (roll < 0.5 && own.length > 0) ? own : (roll < 0.8 && sameConfed.length > 0) ? sameConfed : ((uefaOutside.concat(rest)).length > 0 ? uefaOutside.concat(rest) : pool);
             }
@@ -1357,13 +1372,14 @@
 
             // Lesión aleatoria: no es una decisión, simplemente puede ocurrir.
             let seasonInjury = null;
-            if (player.age >= 18 && Math.random() < 0.06) {
+            if (player.age >= 18 && Math.random() < 0.06 && ((player.lastInjuryAge == null) || (player.age - player.lastInjuryAge >= 4))) {
                 let injuryPool = [
                     { label: "Rotura de Ligamento Cruzado (LCA)", icon: "leg", penalty: 6 },
                     { label: "Lesión Muscular (Isquiotibiales)", icon: "leg", penalty: 3 },
                     { label: "Fractura de Tobillo", icon: "bandage", penalty: 4 }
                 ];
                 seasonInjury = injuryPool[Math.floor(Math.random() * injuryPool.length)];
+                player.lastInjuryAge = player.age;
                 player.ovr -= seasonInjury.penalty;
             }
 
