@@ -6,7 +6,7 @@
     <title>Legacy | Americano (NFL)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-main: #07090F; --bg-card: #131A2B; --text-main: #F8FAFC; --text-muted: #94A3B8; --border-color: #1E293B; --legacy-gold: #F59E0B; --danger: #EF4444; --success: #10B981; }
+        :root { --bg-main: #11131a; --bg-card: #191b22; --text-main: #e1e2eb; --text-muted: #a3a5b1; --border-color: #2c2e37; --legacy-gold: #F59E0B; --danger: #EF4444; --success: #10B981; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
@@ -146,6 +146,72 @@
             .t-badge { font-size: 12px; }
         }
 
+        /* ===== DISEÑO STITCH: PANTALLA DE CREACIÓN (versión de prueba) ===== */
+        #screen-setup.sx-setup { max-width: 1180px; }
+        .sx-head { margin-bottom: 22px; }
+        .sx-eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--legacy-gold); font-size: 12px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .sx-step { width: 20px; height: 20px; border-radius: 50%; background: var(--legacy-gold); color: #11131a; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
+        .sx-head h1 { font-size: 38px; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; line-height: 1.05; color: #fff; }
+        .sx-head p { color: var(--text-muted); margin-top: 8px; font-size: 15px; max-width: 640px; }
+        .sx-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 20px; align-items: start; }
+        .sx-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .sx-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; }
+        .sx-card-title { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+        .sx-hint { display: inline-flex; align-items: center; gap: 6px; color: var(--legacy-gold); letter-spacing: 0; text-transform: none; font-weight: 600; font-size: 12px; }
+        .sx-hint i { width: 7px; height: 7px; border-radius: 50%; background: var(--legacy-gold); display: inline-block; }
+        .sx-jersey { background: radial-gradient(ellipse at center, #232733 0%, #0c0e14 75%); border: 1px solid var(--border-color); border-radius: 12px; display: flex; justify-content: center; padding: 14px 0; }
+        .sx-jersey .jersey-container { margin: 0 !important; padding: 0 !important; background: none !important; border: none !important; height: auto !important; }
+        .sx-jersey .jersey-svg { width: 190px; height: 190px; display: block; }
+        .sx-row { display: flex; gap: 14px; }
+        .sx-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; min-width: 0; }
+        .sx-field label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin: 0; }
+        .sx-card input[type="text"], .sx-card input[type="number"], .sx-card select { width: 100%; background: #0c0e14; border: 1px solid var(--border-color); color: #fff; border-radius: 10px; padding: 13px 14px; font-size: 16px; font-weight: 700; outline: none; transition: border-color .2s, box-shadow .2s; }
+        .sx-card input:focus, .sx-card select:focus { border-color: var(--legacy-gold); box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+        .sx-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .sx-seg-btn { background: #0c0e14; border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; transition: .2s; }
+        .sx-seg-btn:hover { border-color: #4a4d59; color: #fff; }
+        .sx-seg-btn.active { background: var(--legacy-gold); border-color: var(--legacy-gold); color: #11131a; }
+        .sx-traits { display: flex; flex-direction: column; gap: 10px; }
+        .sx-trait { display: flex; gap: 12px; align-items: flex-start; background: #0c0e14; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; cursor: pointer; transition: .2s; }
+        .sx-trait:hover { border-color: #4a4d59; }
+        .sx-trait.active { border-color: var(--legacy-gold); background: rgba(245,158,11,.07); }
+        .sx-trait-ico { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-card); color: var(--text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .sx-trait.active .sx-trait-ico { color: var(--legacy-gold); }
+        .sx-trait-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+        .sx-trait-top b { font-size: 14px; color: #fff; }
+        .sx-trait small { display: block; color: var(--text-muted); font-size: 12px; line-height: 1.4; margin-top: 3px; }
+        .sx-tag { font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; background: #2c2e37; color: var(--text-muted); white-space: nowrap; }
+        .sx-tag.gold { background: rgba(245,158,11,.18); color: var(--legacy-gold); }
+        .sx-tag.red { background: rgba(239,68,68,.15); color: #f87171; }
+        .sx-pitch-note { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px; letter-spacing: .5px; }
+        .sx-posinfo-top { display: flex; align-items: center; gap: 12px; }
+        .sx-poscode { background: var(--legacy-gold); color: #11131a; font-weight: 900; font-size: 13px; padding: 4px 10px; border-radius: 6px; }
+        .sx-posinfo-top b { font-size: 18px; color: #fff; }
+        .sx-posinfo p { color: var(--text-muted); font-size: 13.5px; line-height: 1.5; margin-top: 10px; }
+        #setupError { margin-top: 16px; }
+        .sx-cta { margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .sx-cta-text { display: flex; flex-direction: column; gap: 3px; }
+        .sx-cta-text b { font-size: 17px; color: #fff; }
+        .sx-cta-text span { font-size: 13px; color: var(--text-muted); }
+        .sx-cta-btns { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+        .sx-back { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 18px; border: 1px solid var(--border-color); border-radius: 10px; }
+        .sx-back:hover { color: #fff; border-color: #4a4d59; }
+        .sx-go { display: inline-flex; align-items: center; gap: 10px; background: var(--legacy-gold); color: #11131a; border: none; border-radius: 10px; padding: 14px 24px; font-size: 15px; font-weight: 900; letter-spacing: .5px; text-transform: uppercase; cursor: pointer; transition: transform .15s, box-shadow .2s; }
+        .sx-go:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,158,11,.3); }
+        @media (max-width: 900px) {
+            .sx-grid { grid-template-columns: 1fr; }
+            .sx-head h1 { font-size: 28px; }
+            .sx-cta { flex-direction: column; align-items: stretch; text-align: left; }
+            .sx-cta-btns { justify-content: space-between; }
+            .sx-go { flex: 1; justify-content: center; }
+            }
+
+        #screen-setup .field-container { height: 340px; margin: 0; }
+
+        @media (max-width: 480px) {
+            header { flex-wrap: wrap; row-gap: 10px; }
+            .nav-links { flex-wrap: wrap; gap: 6px 14px; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -167,36 +233,30 @@
     <div class="main-container">
         
         <!-- PANTALLA SETUP -->
-        <div id="screen-setup" class="screen active">
-            <div class="setup-card">
-                <h1 style="font-size: 32px; font-weight: 900; margin-bottom: 5px; text-align: center;">El Emparrillado te Espera</h1>
-                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 40px; text-align: center;">Define tu prospecto de fuerzas básicas. Empiezas a los 18 años.</p>
-                
-                <div class="setup-top-grid">
-                    <div>
-                        <div class="jersey-container">
-                            <svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <div id="screen-setup" class="screen active sx-setup">
+                <div class="sx-head">
+                    <div class="sx-eyebrow"><span class="sx-step">1</span>FASE INICIAL</div>
+                    <h1>El Emparrillado te Espera</h1>
+                    <p>Define tu prospecto de fuerzas básicas. Empiezas a los 18 años.</p>
+                </div>
+                <div class="sx-grid">
+                    <div class="sx-col">
+                        <div class="sx-card">
+                            <div class="sx-card-title">Indumentaria Oficial</div>
+                            <div class="sx-jersey"><div class="jersey-container"><svg class="jersey-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                 <path id="svg-body" fill="#FFFFFF" d="M170,60 L342,60 L360,140 L400,150 L390,220 L350,210 L350,470 L162,470 L162,210 L122,220 L112,150 L152,140 Z"/>
                                 <path id="svg-trim" fill="#7C2D12" d="M170,60 L190,60 L190,470 L170,470 Z M322,60 L342,60 L342,470 L322,470 Z"/>
                                 <text id="svg-name" x="256" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="800" font-size="26" letter-spacing="2" fill="#7C2D12"></text>
                                 <text id="svg-number" x="256" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-weight="900" font-size="130" fill="#7C2D12"></text>
-                            </svg>
+                            </svg></div></div>
                         </div>
-                        
-                        <div class="input-group row">
-                            <div>
-                                <label>Apellido</label>
-                                <input type="text" id="playerName" value="" placeholder="" oninput="updateJerseyText()">
+                        <div class="sx-card">
+                            <div class="sx-card-title">Datos del Deportista</div>
+                            <div class="sx-row">
+                                <div class="sx-field" style="flex:1.6;"><label>Apellido en camiseta</label><input type="text" id="playerName" value="" placeholder="TU APELLIDO" oninput="updateJerseyText()"></div>
+                                <div class="sx-field" style="flex:0.7;"><label>Dorsal</label><input type="number" id="playerNum" value="" placeholder="24" min="1" max="99" oninput="updateJerseyText()"></div>
                             </div>
-                            <div style="flex: 0.4;">
-                                <label>Número</label>
-                                <input type="number" id="playerNum" value="" placeholder="" min="1" max="99" oninput="updateJerseyText()">
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Nacionalidad</label>
-                            <select id="playerCountry">
+                            <div class="sx-field"><label>Nacionalidad deportiva</label><select id="playerCountry">
                                 <option value="" disabled selected>Selecciona tu país</option>
                                 <option value="USA">🇺🇸 Estados Unidos</option>
                                 <option value="DOM">🇩🇴 República Dominicana</option>
@@ -248,15 +308,15 @@
                                 <option value="CRO">🇭🇷 Croacia</option>
                                 <option value="SRB">🇷🇸 Serbia</option>
                                 <option value="MAR">🇲🇦 Marruecos</option>
-                            </select>
+                            </select></div>
+                            
+                            
                         </div>
-
-                        <!-- OMITIMOS ELEGIR EQUIPO, SE HARÁ POR SCOUTING -->
                     </div>
-
-                    <div>
-                        <label style="display:block; margin-bottom:10px;">Posición en el Emparrillado</label>
-                        <div class="field-container">
+                    <div class="sx-col">
+                        <div class="sx-card">
+                            <div class="sx-card-title">Posición en el Emparrillado <span class="sx-hint"><i></i>Selecciona una demarcación</span></div>
+                            <div class="field-container">
                             <div class="field-endzone left"></div>
                             <div class="field-endzone right"></div>
                             <div class="scrimmage-line"></div>
@@ -264,7 +324,7 @@
                             <div class="side-label def">Defensiva</div>
 
                             <!-- OFENSIVA: a la izquierda de la línea de scrimmage -->
-                            <div class="pos-dot pos-dot-off active" style="top: 50%; left: 35%;" onclick="selectPos('QB', this)">QB</div>
+                            <div class="pos-dot pos-dot-off" style="top: 50%; left: 35%;" onclick="selectPos('QB', this)">QB</div>
                             <div class="pos-dot pos-dot-off" style="top: 62%; left: 24%;" onclick="selectPos('RB', this)">RB</div>
                             <div class="pos-dot pos-dot-off" style="top: 15%; left: 33%;" onclick="selectPos('WR', this)">WR</div>
                             <div class="pos-dot pos-dot-off" style="top: 85%; left: 44%;" onclick="selectPos('TE', this)">TE</div>
@@ -276,17 +336,26 @@
                             <div class="pos-dot pos-dot-def" style="top: 15%; left: 58%;" onclick="selectPos('CB', this)">CB</div>
                             <div class="pos-dot pos-dot-def" style="top: 50%; left: 76%;" onclick="selectPos('S', this)">S</div>
                         </div>
-                        <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Alineación previa al snap: ofensiva (azul) a la izquierda de la línea, defensiva (rojo) a la derecha.</p>
-                    </div>                        <input type="hidden" id="playerPos" value="">
+                            <input type="hidden" id="playerPos" value="">
+                            <p style="font-size:11px; color:var(--text-muted); margin-top:8px;">Alineación previa al snap: ofensiva (azul) a la izquierda de la línea, defensiva (rojo) a la derecha.</p>
+                        </div>
+                        <div class="sx-card sx-posinfo">
+                            <div class="sx-posinfo-top"><span class="sx-poscode" id="sxPosCode">--</span><b id="sxPosName">Posición</b></div>
+                            <p id="sxPosDesc"></p>
+                        </div>
                     </div>
                 </div>
-                <button class="btn-main" onclick="startCareer()">Iniciar Carrera</button>
                 <div id="setupError" style="color:var(--danger); font-size:13px; font-weight:700; text-align:center; margin-top:10px; display:none;">Completa tu nombre, número, posición y nacionalidad para continuar.</div>
+                <div class="sx-cta">
+                    <div class="sx-cta-text"><b>¿Listo para saltar al terreno de juego?</b><span>Arrancas en la NCAA a los 18 años. A los 21 llega el Combine y el Draft de la NFL.</span></div>
+                    <div class="sx-cta-btns">
+                        <a class="sx-back" href="index.html">Volver</a>
+                        <button type="button" class="sx-go" onclick="startCareer()">Iniciar Carrera <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="13,5 20,12 13,19"/></svg></button>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- PANTALLA JUEGO -->
-        <div id="screen-game" class="screen">
+            <div id="screen-game" class="screen">
             <div class="game-layout">
                 <div>
                     <div class="player-card">
@@ -622,7 +691,36 @@
             document.getElementById('svg-number').textContent = numVal || '';
         }
 
+
+        // ===== Diseño Stitch: los botones visuales controlan los <select> reales (la lógica no cambia) =====
+        function sxPickHand(v, btn) {
+            document.getElementById('playerHand').value = v;
+            document.querySelectorAll('#sxHand .sx-seg-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        function sxPickTrait(v, card) {
+            document.getElementById('playerTrait').value = v;
+            document.querySelectorAll('#sxTraits .sx-trait').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        }
+        const sxPosInfo = {'QB':['Quarterback', 'Ofensiva. Se mide en yardas de pase, touchdowns e intercepciones. Su lesión típica es de hombro.'],'RB':['Corredor', 'Ofensiva. Se mide en yardas, touchdowns y recepciones. Su lesión típica es la ruptura de LCA.'],'WR':['Receptor Abierto', 'Ofensiva. Se mide en yardas, touchdowns y recepciones. Su lesión típica es la ruptura de LCA.'],'TE':['Ala Cerrada', 'Ofensiva. Se mide en yardas, touchdowns y recepciones. Su lesión típica es la ruptura de LCA.'],'OL':['Línea Ofensiva', 'Ofensiva. Se mide en juegos como titular y bloqueos clave. Su lesión típica es de espalda o cadera.'],'DL':['Línea Defensiva', 'Defensiva. Se mide en tacleadas, capturas e intercepciones. Su riesgo típico es la conmoción cerebral.'],'LB':['Apoyador', 'Defensiva. Se mide en tacleadas, capturas e intercepciones. Su riesgo típico es la conmoción cerebral.'],'CB':['Esquinero', 'Defensiva. Se mide en tacleadas, capturas e intercepciones. Su riesgo típico es la conmoción cerebral.'],'S':['Safety', 'Defensiva. Se mide en tacleadas, capturas e intercepciones. Su riesgo típico es la conmoción cerebral.']};
+        function sxUpdatePosInfo(pos) {
+            let pill = document.getElementById('sxPosCode');
+            if (!pos) {
+                pill.style.display = 'none';
+                document.getElementById('sxPosName').innerText = 'Elige tu posición';
+                document.getElementById('sxPosDesc').innerText = 'Toca un círculo en la pizarra para definir tu posición inicial.';
+                return;
+            }
+            let info = sxPosInfo[pos] || [pos, 'Tu posición inicial en el campo.'];
+            pill.style.display = '';
+            pill.innerText = pos;
+            document.getElementById('sxPosName').innerText = info[0];
+            document.getElementById('sxPosDesc').innerText = info[1];
+        }
+
         function selectPos(pos, element) {
+            try { sxUpdatePosInfo(pos); } catch (e) {}
             document.querySelectorAll('.pos-dot').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             document.getElementById('playerPos').value = pos;
@@ -1228,6 +1326,7 @@
             else player.trophyList.forEach(t => { trophiesHtml += `<div class="t-badge">${trophyIconSmall(t.name)} ${t.name} <span style="color:var(--text-muted); font-weight:500;">(${t.club})</span></div>`; });
             document.getElementById('trophyCabinet').innerHTML = trophiesHtml;
         }
+        try { sxUpdatePosInfo(document.getElementById("playerPos").value); } catch (e) {}
     </script>
     <div style="text-align:center; font-size:10px; color:var(--text-muted); opacity:0.7; padding:10px 16px; max-width:1050px; margin:0 auto;">Los nombres de clubes, equipos y ligas se usan únicamente con fines de identificación dentro de la simulación. Legacy es un proyecto independiente de fans, no afiliado ni avalado por ninguna de las organizaciones mencionadas.</div>
 </body>
